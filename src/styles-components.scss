@@ -1,0 +1,143 @@
+
+
+.dialog-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    width: 100%;
+    height: 34px;
+    padding: 5px;
+
+    button {
+        margin-right: 10px;
+    }
+
+}
+
+.dialog-image {
+    width: 300px;
+    height: auto;
+}
+
+.form-header {
+    height: 20px;
+}
+
+.form-container {
+    display: block;
+    width: 100%;
+}
+
+.card-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 360px;
+    margin: 0 auto;
+    padding:0 10px 0 10px;
+}
+
+.card-header {
+    height:45px;
+
+    .card-header-text {
+        font-weight: 500 !important;
+        color: #3F51B5 !important;
+        font-size: 1.6em;
+        height: 45px;
+        line-height: 45px;
+        margin-left: 0px;
+    }
+}
+
+input {
+    width: 100px;
+    padding: 8px 20px;
+    //margin: 8px 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: large;
+    margin: 0 10px 5px 0;
+}
+
+.card-title-sub-centered {
+    font-weight: 550 !important;
+    color: #b53f49 !important;
+    font-size: 1.3em;
+    height: 45px;
+    line-height: 45px;
+    margin-left: 16px;
+}
+
+table {
+    font-size: 14px;
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 6px;
+}
+
+table td {
+    padding: 8px;
+}
+
+table thead tr th {
+    background-color: #54585d;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 13px;
+    border: 1px solid #54585d;
+}
+
+table tbody td {
+    color: #000000;
+    border: 1px solid #dddfe1;
+}
+
+table tbody tr {
+    background-color: #f9fafb;
+    font-size: 12px;
+}
+
+.label-banner-red {
+    width: 100%;
+    height: 24px;
+    display: block;
+	background-color: #FF8080;
+	line-height: 24px;
+}
+
+.label-banner-green {
+    width: 100%;
+    height: 24px;
+    display: block;
+	background-color: #80BBFF;
+	line-height: 24px;
+    margin-top:10px;
+}
+
+.label-banner-purple {
+    width: 100%;
+    height: 24px;
+    display: block;
+	background-color:#8BB982;
+	line-height: 24px;
+    margin-top:10px;
+}
+
+
+.label-banner-font {
+    color: black;
+    margin-left: 4px;
+    font-size: 16px;
+    font-weight: 450;
+	padding: 6px 0;
+}
+
+
+.label-banner h3 {
+    font-size: 18px;
+    font-weight: 620;
+    margin: 0;
+}

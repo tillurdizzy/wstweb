@@ -1,1 +1,150 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+html {
+  color-scheme: light dark;
+  @include mat.theme((
+    color: mat.$violet-palette,
+    typography: Roboto,
+    density: 0
+  ));
+  height: 100%;
+}
+
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; 
+    background: var(--mat-sys-surface);
+    color: var(--mat-sys-on-surface);
+}
+
+// .center and .overlay are for the mat-spinner
+.center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-50%);
+    -webkit-transform: translateX(-50%) translateY(-50%);
+    transform: translateX(-50%) translateY(-50%);
+}
+
+.overlay {
+    height: 100vh;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.286);
+    z-index: 10;
+    top: 0;
+    left: 0;
+    position: fixed;
+}
+
+.btn-margins {
+    margin: 3px 10px 3px 0;
+}
+
+.col-container {
+    display: block; 
+}
+
+.unit-data-container {
+    display: block;
+    width: 100%
+}
+
+.unit-data {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+	margin:10px 0 10px 10px
+}
+
+.edit-button {
+    margin-right: 10px;
+    height: 36px;
+}
+
+.unit-input {
+    max-width: 300px;
+    height: 80px;
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+}
+
+
+.spread-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.flex-row-start {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    width: 100%;
+}
+
+.flex-row-space-between {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.flex-row-space-even {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    width: 100%;
+}
+
+
+.button-container {
+    margin: 10px 0 10px 0;
+    height: 36px;
+    margin-bottom: 20px;
+}
+
+.form-header {
+    height: 20px;
+}
+
+.divider-red{
+    border-top: 2px solid#FF8080;
+}
+
+.divider-blue{
+    border-top: 2px solid#80BBFF;
+}
+
+.divider-green{
+    border-top: 2px solid#8BB982;
+}
+
+
+.hidden {
+    display: none;
+}
+
+[hidden] {
+    display: none !important;
+}
+
+.spacer-5 {
+    margin-bottom: 5px;
+}
+
+.spacer-10 {
+    margin-bottom: 10px;
+}
+
+.spacer-15 {
+    margin-bottom: 15px;
+}
+
+.spacer-20 {
+    margin-bottom: 20px;
+}
+

@@ -1,0 +1,68 @@
+
+
+.example-spacer {
+    flex: 1 1 auto;
+  }
+  .example-container {
+    width: 500px;
+    height: 100%;
+  }
+  
+  .example-sidenav-content {
+    padding: 16px;
+    height: 100vh;
+  }
+  
+  .example-sidenav {
+    padding: 16px;
+    width:200px;
+    //background-color:#f0f0f0;
+  }
+
+/* mat-toolbar{
+    background:#1976d2;
+}   */
+
+
+// Style the mat-list-item links
+mat-list {
+  a[mat-list-item] {
+    // Default text styling
+    //color:#1976d2;
+    font-family: 'Roboto', sans-serif; // Matches Angular Material's default
+    font-size: 16px;
+    font-weight: 400;
+    text-decoration: none; // Remove underline from links
+    padding: 8px 16px; // Comfortable padding
+    border-radius: 4px; // Slight rounding
+    transition: all 0.3s ease; // Smooth transition for hover/active states
+
+    // Hover state
+    &:hover {
+      background-color: rgba(0, 0, 0, 0.04);
+      //color:#363555;
+    }
+
+    &.router-link-active {
+      //background-color: #998675; 
+      //color:#666666;
+      font-weight: 500;
+      border-left: 4px solid #678676; 
+    }
+  }
+  [mat-subheader] {
+    font-size: 14px;
+    font-weight: 500;
+    //color:#363555;
+    margin-top: 8px;
+    margin-bottom: 4px;
+  }
+
+  mat-divider {
+    margin: 8px 0;
+    //border-color:#333333;
+  }
+}
+
+
+  

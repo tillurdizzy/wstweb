@@ -1,0 +1,30 @@
+
+
+table {
+    font-size: 14px;
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 6px;
+}
+
+table td {
+    padding: 8px;
+}
+
+table thead tr th {
+    background-color: #54585d;
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 13px;
+    border: 1px solid #54585d;
+}
+
+table tbody td {
+    color: #000000;
+    border: 1px solid #dddfe1;
+}
+
+table tbody tr {
+    background-color: #f9fafb;
+    font-size: 12px;
+}
