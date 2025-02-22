@@ -6,7 +6,6 @@ export interface IProfile {
   lastname: string;
   cell: string;
   email: string;
-
 }
 
 // All columns

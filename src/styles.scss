@@ -2,13 +2,15 @@
 
 html {
   color-scheme: light dark;
+  height:100%;
   @include mat.theme((
     color: mat.$violet-palette,
     typography: Roboto,
-    density: 0
+    density: 0,
+    
   ));
-  height: 100%;
 }
+ 
 
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; 
     background: var(--mat-sys-surface);

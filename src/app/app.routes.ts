@@ -33,8 +33,8 @@ export const routes: Routes = [
       {path:'units', component: UnitsComponent,
         children:
           [
-            {path:'', redirectTo:'units-detail', pathMatch:'full'},
-            {path:'units-detail', title:'Home', component: DetailsComponent},
+            {path:'', redirectTo:'app-details', pathMatch:'full'},
+            {path:'app-details', title:'Home', component: DetailsComponent},
             {path:'edit-resident', title:'Home', component: EditResidentComponent},
             {path:'edit-vehicle', title:'Home', component: EditVehicleComponent},
             {path:'add-resident', title:'Home', component: AddResidentComponent},
