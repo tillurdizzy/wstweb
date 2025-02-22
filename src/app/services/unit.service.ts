@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject, Subscription, BehaviorSubject } from 'rxjs'
+import { signal, computed, WritableSignal } from '@angular/core';
 import { IUnit } from '../interfaces/iunit';
 import { Globals } from '../interfaces/globals';
 import { IProfile, IProfileUpdate  } from '../interfaces/iprofile';
@@ -38,84 +39,118 @@ export class UnitService {
 
   // * Selected for any reason... most likely for editing
   //private selectedProfile: IProfile = { id:0, unit:0, firstname:'',lastname:'',cell:'',email:''};
-  private selectedProfile: IProfile | null | undefined = null;
+  private selectedProfile: IProfile | null  = null;
 
-  private selectedVehicle: IVehicle | null | undefined = null;
+  private selectedVehicle: IVehicle | null  = null;
 
-  private currentUnit: number | null | undefined = null;
+  private currentUnit: number | null  = null;
 
-  //* >>>>>>>>>>> OBSERVABLES  <<<<<<<<<<<<
-  //^unit$
-  private unitBS: BehaviorSubject<IUnit> = new BehaviorSubject(this.selectedUnit);
-  public unit$ = this.unitBS.asObservable();
+  //* >>>>>>>>>>> SIGNALS  <<<<<<<<<<<<
+  //^unit
 
-  getUnitObs(): Observable<IUnit> {
-    return this.unit$
+  private unitSignal: WritableSignal<IUnit> = signal(this.selectedUnit);
+  // Public read-only signal
+  public unit = this.unitSignal.asReadonly();
+  
+  getUnit(): IUnit {
+    return this.unit();
   }
-  setUnitObs(u:IUnit){
-    this.unitBS.next(u)
+  
+  setUnit(u: IUnit): void {
+    this.unitSignal.set(u);
   }
+
+  //Usage in a component
+//this.setUnit(newUnit);
+
+// Getting a value synchronously
+//const currentUnit = this.getUnit();
+
+// Using in template with async pipe not needed anymore
+//{{ unit() }}
 
   
   //^residents$
-  private residentsBS: BehaviorSubject<IResidentAccount[]> = new BehaviorSubject([]);
-  public residents$ = this.residentsBS.asObservable();
+  private residentsSignal: WritableSignal<IResidentAccount[]> = signal([]);
+  public residents = this.residentsSignal.asReadonly();
 
-  getResidentsObs(): Observable<IResidentAccount[]> {
-    return this.residents$
+  getResidents(): IResidentAccount[] {
+    return this.residents();
   }
-  setResidentObs(n:IResidentAccount[]){
-     //Sort descending order... larger number is "Primary" resident - i.e. Owner
-    n.sort((e1, e2) => e1.id > e2.id ? -1 : e1.id < e2.id ? 1 : 0);
 
-    let role = this.userAccount.role;
-    var ownerUuid = this.userAccount.uuid;
-    var clone = structuredClone(this.emptyResidentAccount);
-    var residentAccountArray = [];
-    if (role == 'admin') {
-      residentAccountArray.push(n[0])
-      residentAccountArray.push(n[1])
+  setResidents(residents: IResidentAccount[]): void {
+  // Sort in descending order (larger ID first - "Primary" resident/Owner)
+  const sortedResidents = [...residents].sort((a, b) => b.id - a.id);
 
-    }else if(role == 'non-resident'){
-      residentAccountArray.push(n[0])
-      residentAccountArray.push(n[1])
-      
-    }else if (role == 'resident' && ownerUuid != null) {
-      clone.firstname = this.userAccount.firstname;
-      clone.lastname = this.userAccount.lastname;
-      clone.cell = this.userAccount.cell;
-      clone.email = this.userAccount.email;
-      clone.id = this.userAccount.id;
-      clone.alerts = this.userAccount.alerts;
-      clone.uuid = this.userAccount.uuid;
-      residentAccountArray.push(clone)
-      residentAccountArray.push(n[1])
-      
-    } else if (role == 'resident +') {
-      // If owner is 'resident +', get currentUnit info from Accounts table Units.reSidesAt!
-      //^ currentUnitselected == ResidesAt
-      let u = this.userAccount.units;
-      let v = this.parseObj(u, 'residesAt');
-      if (v == this.currentUnit  && ownerUuid != null)  {
-        residentAccountArray.push(n[0])
-        residentAccountArray.push(n[1])
-      } 
-    }
-    this.residentsBS.next(residentAccountArray);
+  const { role, uuid: ownerUuid } = this.userAccount;
+  let residentAccountArray: IResidentAccount[];
+
+  switch (role) {
+    case 'admin':
+    case 'non-resident':
+      residentAccountArray = sortedResidents.slice(0, 2);
+      break;
+
+    case 'resident':
+      if (ownerUuid) {
+        const clone = {
+          ...this.emptyResidentAccount,
+          firstname: this.userAccount.firstname,
+          lastname: this.userAccount.lastname,
+          cell: this.userAccount.cell,
+          email: this.userAccount.email,
+          id: this.userAccount.id,
+          alerts: this.userAccount.alerts,
+          uuid: ownerUuid
+        };
+        residentAccountArray = [clone, sortedResidents[1] ?? this.emptyResidentAccount];
+      } else {
+        residentAccountArray = [];
+      }
+      break;
+
+    case 'resident +':
+      if (ownerUuid && this.isResidentPlusMatch()) {
+        residentAccountArray = sortedResidents.slice(0, 2);
+      } else {
+        residentAccountArray = [];
+      }
+      break;
+
+    default:
+      residentAccountArray = [];
   }
+
+  this.residentsSignal.set(residentAccountArray);
+}
+
+// Helper method extracted for clarity
+private isResidentPlusMatch(): boolean {
+  const units = this.userAccount.units;
+  const residesAt = this.parseObj(units, 'residesAt');
+  return residesAt === this.currentUnit;
+}
 
   //^vehicles$
-  private vehiclesBS: BehaviorSubject<IVehicle[]> = new BehaviorSubject([]);
-  public vehicles$ = this.vehiclesBS.asObservable();
+  private vehiclesSignal: WritableSignal<IVehicle[]> = signal([]);
+public vehicles = this.vehiclesSignal.asReadonly();
 
-  getVehiclesObs(): Observable<IVehicle[]> {
-    return this.vehicles$
-  }
+getVehicles(): IVehicle[] {
+  return this.vehicles();
+}
 
-  setVehiclesObs(n:IVehicle[]){
-    n.sort((e1, e2) => e1.space > e2.space ? 1 : e1.space < e2.space ? -1 : 0);
-    this.vehiclesBS.next(n);
-  }
+setVehicles(vehicles: IVehicle[]): void {
+  // Sort in ascending order by space
+  const sortedVehicles = [...vehicles].sort((a, b) => a.space - b.space);
+  this.vehiclesSignal.set(sortedVehicles);
+}
+
+// Setting vehicles
+//this.setVehicles(newVehiclesArray);
+
+// Getting vehicles
+//const currentVehicles = this.getVehicles();
+
 
   unitSelectionHandler(u:number){
     console.log("UnitService  > unitSelectionHandler() = " + u)
@@ -125,47 +160,53 @@ export class UnitService {
     this.supabase.fetchResidentVehicles(this.currentUnit);
   }
 
-  updateResidentProfile(updatedProfile:IProfile){
-    console.log("UnitService  > updateResidentProfile()")
-    var subData:IResidentAccount[] = [];
-    var newData:IResidentAccount[] = [];
-    const sub = this.residentsBS.subscribe(p => subData = p);
-    sub.unsubscribe();
-    let updateID =  updatedProfile.id;
-    for (let index = 0; index < subData.length; index++) {
-      const element = subData[index];
-      let thisID = element.id;
-      if (thisID == updateID) {
-        subData[index].email = updatedProfile.email
-        subData[index].firstname = updatedProfile.firstname
-        subData[index].lastname = updatedProfile.lastname
-        subData[index].cell = updatedProfile.cell
+  updateResidentProfile(updatedProfile: IProfile): void {
+    console.log("UnitService > updateResidentProfile()");
+    
+    // Get current residents from signal
+    const currentResidents = this.residents();
+    
+    // Update the matching resident and create new array
+    const updatedResidents = currentResidents.map(resident => {
+      if (resident.id === updatedProfile.id) {
+        return {
+          ...resident,
+          email: updatedProfile.email,
+          firstname: updatedProfile.firstname,
+          lastname: updatedProfile.lastname,
+          cell: updatedProfile.cell
+        };
       }
-      newData.push(subData[index])
-    }
-    this.residentsBS.next(subData);
+      return resident;
+    });
+  
+    // Update the signal with new array
+    this.residentsSignal.set(updatedResidents);
   }
 
-  updateVehicle(aCar:ISpaceUpdate,id:string){
-    console.log("UnitService  > updateVehicle()")
-    var subData:IVehicle[] = [];
-    var newData:IVehicle[] = [];
-    const sub = this.vehiclesBS.subscribe(p => subData = p);
-    sub.unsubscribe();
-    for (let index = 0; index < subData.length; index++) {
-      const element = subData[index];
-      let thisID = element.id;
-      if (thisID = parseInt(id)) {
-        subData[index].name = aCar.name
-        subData[index].tag = aCar.tag
-        subData[index].make= aCar.make
-        subData[index].model= aCar.model
-        subData[index].color = aCar.color
+  updateVehicle(aCar: ISpaceUpdate, id: string): void {
+    console.log("UnitService > updateVehicle()");
+    
+    // Get current vehicles from signal
+    const currentVehicles = this.vehicles();
+    
+    // Update the matching vehicle
+    const updatedVehicles = currentVehicles.map(vehicle => {
+      if (vehicle.id === parseInt(id)) {  // Fixed comparison operator
+        return {
+          ...vehicle,
+          name: aCar.name,
+          tag: aCar.tag,
+          make: aCar.make,
+          model: aCar.model,
+          color: aCar.color
+        };
       }
-      newData.push(subData[index])
-    }
-    this.setVehiclesObs(subData)
-
+      return vehicle;
+    });
+  
+    // Update the signal with new array
+    this.vehiclesSignal.set(updatedVehicles);
   }
   
   // * >>>>>>>>>>>>>>>> Data Service <<<<<<<<<<<<<<<<<<
@@ -276,13 +317,14 @@ export class UnitService {
     return this.unitVehicles;
   };
 
-  getSelectedProfile(): IProfile {
-    return this.selectedProfile;
+  //  private selectedProfile: IProfile | null = null;
+  getSelectedProfile(): IProfile | null {
+      return this.selectedProfile;
   };
 
   getUpdateProfileID():number | undefined{
     var x:number | undefined = 0;
-    if(this.selectedProfile != undefined){
+    if(this.selectedProfile != null){
       x = this.selectedProfile.id;
     }
     return x;
@@ -332,22 +374,22 @@ export class UnitService {
         //* Unit/Owner
         if(dataPassed.event == 'publishUnitData'){
           this.selectedUnit = dataPassed.iUnit;
-          this.setUnitObs(dataPassed.iUnit)
+          this.setUnit(dataPassed.iUnit)
         //* Vehicles
         }else if(dataPassed.event == 'fetchResidentVehicles'){
-          this.setVehiclesObs(dataPassed.data)
+          this.setVehicles(dataPassed.data)
           console.log('UnitService > this.setVehiclesObs(data)');
          //* Residents / Profiles  
         }else if(dataPassed.event == 'fetchResidentProfiles'){
           //this.unitProfiles = dataPassed.profiles;
-          this.setResidentObs(dataPassed.data);
+          this.setResidents(dataPassed.data);
           console.log('UnitService > this.setResidentObs(data)');
         //* Residents / Delete Profile
         }else if (dataPassed.event == 'updateResidentProfile success!') {
          this.selectedProfile =  { id:0, unit:0, firstname:'',lastname:'',cell:'',email:''};
 
         }else if (dataPassed.event == 'removeVehicleSuccess!') {
-          this.selectedVehicle = undefined;
+          this.selectedVehicle = null;
          
         }else if(dataPassed.event == 'updateResident'){
           let residentProfile:IProfileUpdate = dataPassed.residentUpdate;

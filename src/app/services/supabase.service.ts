@@ -5,7 +5,7 @@ import { DialogComponent } from '../dialog/alert/dialog.component';
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import { AuthChangeEvent, AuthSession } from '@supabase/supabase-js';
 import { Session, User } from '@supabase/supabase-js';
-import { Observable, Subject, BehaviorSubject } from 'rxjs';
+import { signal, computed } from '@angular/core';
 import { IProfile, IProfileFetch } from '../interfaces/iprofile';
 import { IVehicle } from '../interfaces/ivehicle';
 import { IVehicleTable } from '../interfaces/ivehicle';
@@ -26,7 +26,7 @@ export class SupabaseService {
   private supabase: SupabaseClient;
 
   //private iProfile: IProfile;
-  private vehicle: IVehicle | null | undefined = null;
+  private vehicle: IVehicle | null = null;
 
   private myVehicles: IVehicle[] = [];
 
@@ -34,40 +34,58 @@ export class SupabaseService {
 
   //* Observables
   _session: AuthSession | null = null;
-  private currentUser: BehaviorSubject < User | boolean > = new BehaviorSubject(false);
-  public currentUser$ = this.currentUser.asObservable();
 
+
+  private currentUserSignal = signal<User | boolean>(false);
+  public currentUser = this.currentUserSignal.asReadonly();
+    
+  setUser(user: User | boolean) {
+    this.currentUserSignal.set(user);
+  }
+
+  // Get the current user value synchronously
+public getUser(): User | boolean {
+  return this.currentUser();
+}
+  
+  clearUser() {
+    this.currentUserSignal.set(false);
+  }
   //Starts out true... if a profile exists it becomes User... if no profile yet... becomes false
   //private userProfile: BehaviorSubject<IProfile | boolean> = new BehaviorSubject(true);
   //public userProfile$ = this.userProfile.asObservable();
 
   dialogRef: any;
 
-  //* >>>>>>>>>>>>>> MESSENGER <<<<<<<<<<<<<<<<
+ //* >>>>>>>>>>>>>> MESSENGER <<<<<<<<<<<<<<<<
+ private messageSignal = signal<any>(null);
+ public message = this.messageSignal.asReadonly();
 
-  private subject = new Subject<any>();
+ public sendData(message: any) {
+   console.log('SupabaseService > sendData >  to:' + message.to + ' event:' + message.event);
+   this.messageSignal.set(message);
+ }
 
-  public sendData(message: any) {
-    console.log('SupabaseService > sendData >  to:' + message.to + ' event:' + message.event);
-    this.subject.next(message);
-  }
+ clearData() {
+   this.messageSignal.set(null);
+ }
 
-  clearData() {
-    this.subject.next(null);
-  }
+ // Optional: If you need a computed value
+ public getMessageData = computed(() => {
+   return this.message();
+ });
 
-  getData(): Observable<any> {
-    return this.subject.asObservable();
-  }
+ publishData(to: string, event: string, data: any) {
+   let dataObj = {
+     to: to,
+     event: event,
+     data: data
+   };
+   this.sendData(dataObj);
+ }
+ //* >>>>>>>>>>>>>> END MESSENGER <<<<<<<<<<<<<<<<
 
-  publishData(to:string,event:string,data:any) {
-    let dataObj = {
-      to:to,
-      event: event,
-      data: data
-    };
-    this.sendData(dataObj);
-  }
+  
 
   doConsole(message: string) {
     console.log(message);
@@ -374,9 +392,13 @@ export class SupabaseService {
   async signIn(credentials: { email: string; password: string }) {
     this.doConsole('Supabase > signIn() ' + JSON.stringify(credentials));
     try {
-      var result = await this.supabase.auth.signInWithPassword(credentials);
-      if(result.data.user == null){
-        throw result.error.message
+      const result = await this.supabase.auth.signInWithPassword(credentials);
+      if (result.data.user == null) {
+        if (result.error) {
+          throw result.error.message;
+        } else {
+          throw new Error('Sign in failed with no user data and no error message');
+        }
       }
       let dataObj = {
         to: 'DataService',
@@ -384,24 +406,29 @@ export class SupabaseService {
         result: result
       };
       this.sendData(dataObj);
-
     } catch (error) {
-      alert("Error: "  + JSON.stringify(error))
+      alert("Error: " + JSON.stringify(error));
     }
   }
 
   async signUp(credentials: { email: string; password: string }) {
     this.doConsole('Supabase > signUp()' + JSON.stringify(credentials));
     try {
-      var result = await this.supabase.auth.signUp(credentials);
-      if(result.data.user == null) {
-        throw result.error.message
-      }else {
-        this.showResultDialog('User created: ' + result.data.user.id)
+      const result = await this.supabase.auth.signUp(credentials);
+      
+      if (result.data.user == null) {
+        // Check if error exists before accessing message
+        if (result.error) {
+          throw result.error.message;
+        } else {
+          throw new Error('Sign up failed with no user data and no error message');
+        }
+      } else {
+        this.showResultDialog('User created: ' + result.data.user.id);
       }
     } catch (error) {
-      this.showResultDialog('Error: ' + error)
-    };
+      this.showResultDialog('Error: ' + error);
+    }
   }
 
   authChanges(callback: (event: AuthChangeEvent, session: Session | null) => void) {
@@ -478,11 +505,9 @@ export class SupabaseService {
   //* >>>>>>>>>>>>>>> CONSTRUCTOR / SUBSCRIPTIONS <<<<<<<<<<<<<<<<<<<<
 
   constructor(private router: Router,private g: Globals,private dialog: MatDialog ) {
+    this.supabase = createClient(environment.supabaseUrl,environment.supabaseKey);
     this.doConsole('SupabaseService > constructor() ');
-    try {
-      this.supabase = createClient(environment.supabaseUrl,environment.supabaseKey);
-    } catch (error) {alert("Create Client error: "  + JSON.stringify(error))}
-
+   
     this.supabase.auth.onAuthStateChange((event: AuthChangeEvent, sess: Session | null) => {
       this.doConsole('Begin: SupabaseService > onAuthStateChange = ' + event + ' > currentUser = ' + (this.currentUser.value as User).id);
 
@@ -490,16 +515,16 @@ export class SupabaseService {
           let s = sess;
           if (s != null) {
             var u: User = s.user;
-            this.currentUser.next(u);
+            this.setUser(u);
           }
         } else if(event === 'PASSWORD_RECOVERY'){
 
         } else {
-          this.currentUser.next(false);
+          this.setUser(false);
         }
 
         this.doConsole(
-          'End: SupabaseService > onAuthStateChange:event= ' + event + ' > currentUser = ' + (this.currentUser.value as User).id
+          'End: SupabaseService > onAuthStateChange:event= ' + event + ' > currentUser = ' + (this.getUser)
         );
       }
     );
