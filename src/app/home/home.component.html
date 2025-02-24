@@ -1,1 +1,17 @@
-<p>home works!</p>
+<div class="welcome-container">
+  <h4 *ngIf="userEmail">Welcome, {{ userEmail }}!<span *ngIf="isAdmin"> (Admin)</span></h4>
+  <p *ngIf="!userEmail">Not logged in.</p>
+</div>
+
+<div class="button-container">
+  <button mat-raised-button color="primary" routerLink="/units">My Account</button>
+  <button mat-raised-button color="primary" routerLink="/forms">Forms</button>
+  <button mat-raised-button color="primary" routerLink="/home/president">Presidents Monthly Message</button>
+  <button mat-raised-button color="primary" routerLink="/home/reports">Monthly Financial Report</button>
+  <button mat-raised-button color="primary" routerLink="/home/committees">Committees</button>
+  <button *ngIf="isAdmin" mat-raised-button color="accent" routerLink="/admin">Admin View</button>
+</div>
+
+<div>
+  <router-outlet></router-outlet>
+</div>

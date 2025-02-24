@@ -2,10 +2,10 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'app-details',
+  selector: 'app-president',
   standalone: true,
   imports: [CommonModule],
-  template: `<p>Unit details coming soon!</p>`,
+  template: `<p>President's Monthly Message coming soon!</p>`,
   styles: [],
 })
-export class DetailsComponent {}
+export class PresidentComponent {}

@@ -1,0 +1,40 @@
+mat-card {
+    margin: 10px;
+  }
+  
+  mat-card-title {
+    margin: 20px 0 10px 20px;
+  }
+  
+  mat-form-field {
+    width: 200px;
+    margin-bottom: 15px;
+  }
+  
+  h3 {
+    margin: 15px 0 5px 20px;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0 20px;
+    margin: 0;
+  }
+  
+  li {
+    display: flex;
+    align-items: flex-start;
+    padding: 10px 0;
+  }
+  
+  .resident-details, .vehicle-details {
+    flex: 1;
+  }
+  
+  .resident-details div, .vehicle-details div {
+    margin-bottom: 5px;
+  }
+  
+  button[mat-raised-button] {
+    margin: 10px 0 20px 20px;
+  }
