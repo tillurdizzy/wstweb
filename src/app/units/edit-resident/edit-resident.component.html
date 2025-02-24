@@ -1,1 +1,33 @@
-<p>edit-resident works!</p>
+<mat-card>
+    <mat-card-title>Edit Resident</mat-card-title>
+    <mat-card-content>
+      <form (ngSubmit)="save()">
+        <mat-form-field appearance="outline">
+          <mat-label>First Name</mat-label>
+          <input matInput [(ngModel)]="resident.firstname" name="firstname" required>
+          <mat-error *ngIf="!resident.firstname">First Name is required</mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Last Name</mat-label>
+          <input matInput [(ngModel)]="resident.lastname" name="lastname" required>
+          <mat-error *ngIf="!resident.lastname">Last Name is required</mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Phone</mat-label>
+          <input matInput [(ngModel)]="resident.cell" name="cell" type="tel">
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput [(ngModel)]="resident.email" name="email" type="email">
+        </mat-form-field>
+  
+        <div class="button-container">
+          <button mat-raised-button color="primary" type="submit">Save</button>
+          <button mat-raised-button color="warn" type="button" (click)="cancel()">Cancel</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>

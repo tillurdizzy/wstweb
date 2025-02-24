@@ -1,1 +1,34 @@
-<p>edit-vehicle works!</p>
+<mat-card>
+    <mat-card-title>Edit Vehicle</mat-card-title>
+    <mat-card-content>
+      <form (ngSubmit)="save()">
+        <mat-form-field appearance="outline">
+          <mat-label>Make</mat-label>
+          <input matInput [(ngModel)]="vehicle.make" name="make" required>
+          <mat-error *ngIf="!vehicle.make">Make is required</mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Model</mat-label>
+          <input matInput [(ngModel)]="vehicle.model" name="model" required>
+          <mat-error *ngIf="!vehicle.model">Model is required</mat-error>
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>Color</mat-label>
+          <input matInput [(ngModel)]="vehicle.color" name="color">
+        </mat-form-field>
+  
+        <mat-form-field appearance="outline">
+          <mat-label>License</mat-label>
+          <input matInput [(ngModel)]="vehicle.tag" name="tag" required>
+          <mat-error *ngIf="!vehicle.tag">License is required</mat-error>
+        </mat-form-field>
+  
+        <div class="button-container">
+          <button mat-raised-button color="primary" type="submit">Save</button>
+          <button mat-raised-button color="warn" type="button" (click)="cancel()">Cancel</button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>

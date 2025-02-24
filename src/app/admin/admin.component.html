@@ -1,1 +1,31 @@
-<p>admin works!</p>
+<mat-card>
+    <mat-card-title>Admin Dashboard</mat-card-title>
+    <mat-card-content>
+      <div class="search-section">
+        <mat-form-field appearance="outline">
+          <mat-label>Unit Number</mat-label>
+          <mat-select [(ngModel)]="unitNumber" (selectionChange)="goToUnit()">
+            <mat-option *ngFor="let unit of allUnits" [value]="unit">
+              {{ unit }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+  
+      <div class="search-section">
+        <mat-form-field appearance="outline">
+          <mat-label>Search Owner by Name</mat-label>
+          <input matInput [(ngModel)]="searchName" (keyup)="searchOwners()">
+        </mat-form-field>
+        <ul *ngIf="searchResults.length > 0">
+          <li *ngFor="let owner of searchResults">
+            {{ owner.firstname }} {{ owner.lastname }} - {{ owner.cell }} - {{ owner.email }}
+            <button mat-icon-button color="primary" (click)="viewOwnerUnits(owner.owner_id)">
+              <mat-icon>visibility</mat-icon>
+            </button>
+          </li>
+        </ul>
+        <p *ngIf="searchName && searchResults.length === 0">No matches found.</p>
+      </div>
+    </mat-card-content>
+  </mat-card>

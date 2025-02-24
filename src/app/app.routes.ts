@@ -21,6 +21,7 @@ import { EditResidentComponent } from './units/edit-resident/edit-resident.compo
 import { AddResidentComponent } from './units/add-resident/add-resident.component';
 import { EditVehicleComponent } from './units/edit-vehicle/edit-vehicle.component';
 import { AddVehicleComponent } from './units/add-vehicle/add-vehicle.component';
+import { EditOwnerComponent } from './units/edit-owner/edit-owner.component';
 
 export const routes: Routes = [
   {
@@ -57,6 +58,7 @@ export const routes: Routes = [
       },
       { path: 'admin', component: AdminComponent, canActivate: [authGuard] },
       { path: 'edit-resident/:id', component: EditResidentComponent, canActivate: [authGuard] },
+      { path: 'edit-owner/:id', component: EditOwnerComponent, canActivate: [authGuard] },
       { path: 'add-resident', component: AddResidentComponent, canActivate: [authGuard] },
       { path: 'edit-vehicle/:id', component: EditVehicleComponent, canActivate: [authGuard] },
       { path: 'add-vehicle', component: AddVehicleComponent, canActivate: [authGuard] },

@@ -1,57 +1,82 @@
+<mat-form-field appearance="outline" *ngIf="units.length > 1" class="unit-selector">
+  <mat-label>Select Unit</mat-label>
+  <mat-select [(ngModel)]="selectedUnit" (selectionChange)="onUnitChange()">
+    <mat-option *ngFor="let unit of units" [value]="unit.unit">
+      Unit {{ unit.unit }}
+    </mat-option>
+  </mat-select>
+</mat-form-field>
+
 <mat-card>
-    <mat-card-title>Your Unit Details</mat-card-title>
-    <mat-card-content>
-      <div *ngIf="units.length > 0; else noUnits">
-        <mat-form-field appearance="outline" *ngIf="units.length > 1">
-          <mat-label>Select Unit</mat-label>
-          <mat-select [(ngModel)]="selectedUnit" (selectionChange)="onUnitChange()">
-            <mat-option *ngFor="let unit of units" [value]="unit.unit">
-              Unit {{ unit.unit }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <div *ngIf="units.length === 1">
-          <p>Unit {{ selectedUnit }}</p>
-        </div>
-  
-        <h3>Residents</h3>
-        <ul *ngIf="residents.length > 0; else noResidents">
-          <li *ngFor="let resident of residents">
-            <button mat-icon-button color="primary" [routerLink]="['/edit-resident', resident.id]">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <div class="resident-details">
-              <div>{{ resident.firstname }} {{ resident.lastname }}</div>
-              <div>{{ resident.cell }}</div>
-              <div>{{ resident.email }}</div>
-            </div>
-          </li>
-        </ul>
-        <ng-template #noResidents>
-          <p>No residents assigned.</p>
-        </ng-template>
-        <button mat-raised-button color="primary" routerLink="/add-resident">Add Resident</button>
-  
-        <h3>Vehicles</h3>
-        <ul *ngIf="vehicles.length > 0; else noVehicles">
-          <li *ngFor="let vehicle of vehicles">
-            <button mat-icon-button color="primary" [routerLink]="['/edit-vehicle', vehicle.id]">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <div class="vehicle-details">
-              <div>{{ vehicle.make }} {{ vehicle.model }}</div>
-              <div>{{ vehicle.color }}</div>
-              <div>License: {{ vehicle.tag }}</div>
-            </div>
-          </li>
-        </ul>
-        <ng-template #noVehicles>
-          <p>No vehicles assigned.</p>
-        </ng-template>
-        <button mat-raised-button color="primary" routerLink="/add-vehicle">Add Vehicle</button>
-      </div>
-      <ng-template #noUnits>
-        <p>No units assigned.</p>
+  <mat-card-title>Unit {{ selectedUnit }} Details</mat-card-title>
+  <mat-card-content>
+    <div *ngIf="units.length > 0; else noUnits">
+      <h3>Owner</h3>
+      <ul *ngIf="owner">
+        <li>
+          <button *ngIf="isAdmin" mat-icon-button color="primary" [routerLink]="['/edit-owner', owner.owner_id]">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <div class="owner-details">
+            <div>{{ owner.firstname }} {{ owner.lastname }}</div>
+            <div>{{ owner.cell }}</div>
+            <div>{{ owner.email }}</div>
+          </div>
+        </li>
+      </ul>
+
+      <hr class="divider" />
+
+      <h3>{{ ownerOccupied ? 'Residents' : 'Tenants' }}</h3>
+      <ul *ngIf="residents.length > 0 || ownerOccupied; else noResidents">
+        <li *ngIf="ownerOccupied">
+          <button mat-icon-button color="primary" [routerLink]="['/edit-owner', owner.owner_id]">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <div class="resident-details">
+            <div>{{ owner.firstname }} {{ owner.lastname }} (Owner Occupied)</div>
+            <div>{{ owner.cell }}</div>
+            <div>{{ owner.email }}</div>
+          </div>
+        </li>
+        <li *ngFor="let resident of residents">
+          <button mat-icon-button color="primary" [routerLink]="['/edit-resident', resident.id]">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <div class="resident-details">
+            <div>{{ resident.firstname }} {{ resident.lastname }}</div>
+            <div>{{ resident.cell }}</div>
+            <div>{{ resident.email }}</div>
+          </div>
+        </li>
+      </ul>
+      <ng-template #noResidents>
+        <p>No {{ ownerOccupied ? 'residents' : 'tenants' }} assigned.</p>
       </ng-template>
-    </mat-card-content>
-  </mat-card>
+      <button mat-raised-button color="primary" routerLink="/add-resident">{{ ownerOccupied ? 'Add Resident' : 'Add Tenant' }}</button>
+
+      <hr class="divider" />
+
+      <h3>Vehicles</h3>
+      <ul *ngIf="vehicles.length > 0; else noVehicles">
+        <li *ngFor="let vehicle of vehicles">
+          <button mat-icon-button color="primary" [routerLink]="['/edit-vehicle', vehicle.id]">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <div class="vehicle-details">
+            <div>{{ vehicle.make }} {{ vehicle.model }}</div>
+            <div>{{ vehicle.color }}</div>
+            <div>License: {{ vehicle.tag }}</div>
+          </div>
+        </li>
+      </ul>
+      <ng-template #noVehicles>
+        <p>No vehicles assigned.</p>
+      </ng-template>
+      <button mat-raised-button color="primary" routerLink="/add-vehicle">Add Vehicle</button>
+    </div>
+    <ng-template #noUnits>
+      <p>No units assigned.</p>
+    </ng-template>
+  </mat-card-content>
+</mat-card>
