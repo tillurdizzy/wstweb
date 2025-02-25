@@ -21,7 +21,6 @@ export class HomeComponent implements OnInit {
   async ngOnInit() {
     const { data, error } = await this.supabaseService.getUser();
     if (data?.user) {
-      console.log('User ID from auth:', data.user.id); // Add this
       this.userEmail = data.user.email || 'User';
       this.isAdmin = await this.supabaseService.isAdmin();
     }

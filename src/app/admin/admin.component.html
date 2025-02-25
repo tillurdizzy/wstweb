@@ -1,31 +1,44 @@
 <mat-card>
-    <mat-card-title>Admin Dashboard</mat-card-title>
-    <mat-card-content>
-      <div class="search-section">
-        <mat-form-field appearance="outline">
-          <mat-label>Unit Number</mat-label>
-          <mat-select [(ngModel)]="unitNumber" (selectionChange)="goToUnit()">
-            <mat-option *ngFor="let unit of allUnits" [value]="unit">
-              {{ unit }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-  
-      <div class="search-section">
-        <mat-form-field appearance="outline">
-          <mat-label>Search Owner by Name</mat-label>
-          <input matInput [(ngModel)]="searchName" (keyup)="searchOwners()">
-        </mat-form-field>
-        <ul *ngIf="searchResults.length > 0">
-          <li *ngFor="let owner of searchResults">
-            {{ owner.firstname }} {{ owner.lastname }} - {{ owner.cell }} - {{ owner.email }}
-            <button mat-icon-button color="primary" (click)="viewOwnerUnits(owner.owner_id)">
-              <mat-icon>visibility</mat-icon>
-            </button>
-          </li>
-        </ul>
-        <p *ngIf="searchName && searchResults.length === 0">No matches found.</p>
-      </div>
-    </mat-card-content>
-  </mat-card>
+  <mat-card-title>Admin Dashboard</mat-card-title>
+  <mat-card-content>
+    <div class="search-section">
+      <mat-form-field appearance="outline">
+        <mat-label>Unit Number</mat-label>
+        <input matInput type="number" [(ngModel)]="unitNumber" (keyup)="checkUnitNumber()">
+        <button mat-raised-button color="primary" [disabled]="!this.checkUnitNumber()" (click)="goToUnit()">Search</button>
+      </mat-form-field>
+    </div>
+
+    <div class="search-section">
+      <mat-form-field appearance="outline">
+        <mat-label>Search Owner by Name</mat-label>
+        <input matInput [(ngModel)]="searchName" (keyup)="searchOwners()">
+      </mat-form-field>
+    </div>
+
+    <div class="upload-section">
+      <button mat-raised-button color="primary" (click)="openNewsletterFileDialog()">Upload Newsletter</button>
+      <input type="file" accept="application/pdf" (change)="onFileChangeNewsletter($event)" style="display: none;" #newsletterFile />
+    </div>
+
+    <div class="upload-section">
+      <button mat-raised-button color="primary" (click)="openReportFileDialog()">Upload Financial Report</button>
+      <input type="file" accept="application/pdf" (change)="onFileChangeReport($event)" style="display: none;" #reportFile />
+    </div>
+
+    <div class="search-section">
+      <ul *ngIf="searchResults.length > 0">
+        <li *ngFor="let owner of searchResults">
+          <button mat-icon-button color="primary" (click)="viewOwnerUnits(owner.owner_id)">
+            <mat-icon>visibility</mat-icon>
+          </button>
+          {{ owner.firstname }} {{ owner.lastname }} ({{ owner.unitCount }} units)
+          <button *ngIf="unitNumber && allUnits.includes(unitNumber)" mat-icon-button color="accent" (click)="updateOwnerUnit(owner.owner_id, unitNumber)">
+            <mat-icon>link</mat-icon>
+          </button>
+        </li>
+      </ul>
+      <p *ngIf="searchName && searchResults.length === 0">No matches found.</p>
+    </div>
+  </mat-card-content>
+</mat-card>

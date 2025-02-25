@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { SupabaseService } from '../services/supabase.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -7,8 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select'; // Add this
 import { FormsModule } from '@angular/forms';
+import { PostgrestError } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-admin',
@@ -20,7 +20,6 @@ import { FormsModule } from '@angular/forms';
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatSelectModule, // Add this
     FormsModule,
   ],
   templateUrl: './admin.component.html',
@@ -42,17 +41,31 @@ export class AdminComponent {
     519, 520, 521, 522, 523, 524, 525, 526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538,
     539, 540, 541, 542, 543, 544, 545, 546, 547, 548, 549, 550, 551, 552, 553
   ];
+  fileNewsletter: File | null = null;
+  fileReport: File | null = null;
+
+  @ViewChild('newsletterFile') newsletterFileInput!: ElementRef<HTMLInputElement>;
+  @ViewChild('reportFile') reportFileInput!: ElementRef<HTMLInputElement>;
 
   constructor(
     private supabaseService: SupabaseService,
     private router: Router
   ) {}
 
+  checkUnitNumber() {
+    if (this.unitNumber !== null) {
+      const unitStr = this.unitNumber.toString();
+      const isValid = unitStr.length >= 3 && this.allUnits.includes(this.unitNumber);
+      return isValid;
+    }
+    return false;
+  }
+
   async goToUnit() {
     if (this.unitNumber !== null && this.allUnits.includes(this.unitNumber)) {
       this.router.navigate(['/units'], { queryParams: { unit: this.unitNumber } });
     } else {
-      alert('Please select a valid unit number.');
+      alert('Please enter a valid unit number.');
     }
   }
 
@@ -60,12 +73,21 @@ export class AdminComponent {
     if (this.searchName.trim()) {
       const { data, error } = await this.supabaseService.client
         .from('owners')
-        .select('owner_id, firstname, lastname, cell, email')
+        .select('owner_id, firstname, lastname')
         .or(`firstname.ilike.%${this.searchName}%,lastname.ilike.%${this.searchName}%`);
       if (error) {
-        console.error('Error searching owners:', error.message);
+        console.error('Error searching owners:', (error as PostgrestError).message);
       } else {
-        this.searchResults = data || [];
+        this.searchResults = await Promise.all(data.map(async owner => {
+          const { data: units, error: unitsError } = await this.supabaseService.client
+            .from('unit_owners')
+            .select('unit')
+            .eq('owner_id', owner.owner_id);
+          if (unitsError) {
+            console.error('Error fetching units for owner:', (unitsError as PostgrestError).message);
+          }
+          return { ...owner, unitCount: units?.length || 0 };
+        })) || [];
       }
     } else {
       this.searchResults = [];
@@ -74,5 +96,120 @@ export class AdminComponent {
 
   viewOwnerUnits(ownerId: string) {
     this.router.navigate(['/units'], { queryParams: { ownerId } });
+  }
+
+  async updateOwnerUnit(ownerId: string, unit: number) {
+    const { data: currentOwner, error: currentError } = await this.supabaseService.client
+      .from('unit_owners')
+      .select('owner_id')
+      .eq('unit', unit)
+      .single();
+    if (currentError && currentError.code !== 'PGRST116') {
+      console.error('Error checking current owner:', (currentError as PostgrestError).message);
+      return;
+    }
+
+    if (currentOwner) {
+      await this.supabaseService.client
+        .from('unit_owners')
+        .delete()
+        .eq('unit', unit)
+        .eq('owner_id', currentOwner.owner_id);
+    }
+
+    const { error: insertError } = await this.supabaseService.client
+      .from('unit_owners')
+      .insert({ unit, owner_id: ownerId });
+    if (insertError) {
+      console.error('Error updating unit ownership:', (insertError as PostgrestError).message);
+      alert('Failed to update unit ownership: ' + (insertError.message ?? 'An unknown error occurred'));
+    } else {
+      console.log('Unit ownership updated successfully');
+      this.router.navigate(['/units'], { queryParams: { ownerId } });
+    }
+  }
+
+  openNewsletterFileDialog() {
+    this.newsletterFileInput.nativeElement.click();
+  }
+
+  openReportFileDialog() {
+    this.reportFileInput.nativeElement.click();
+  }
+
+  onFileChangeNewsletter(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.fileNewsletter = input.files[0];
+      this.uploadNewsletter(); // Automatically upload after selection
+    }
+  }
+
+  onFileChangeReport(event: Event) {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      this.fileReport = input.files[0];
+      this.uploadReport(); // Automatically upload after selection
+    }
+  }
+
+  async uploadNewsletter() {
+    if (!this.fileNewsletter) {
+      alert('Please select a PDF file to upload.');
+      return;
+    }
+    if (window.innerWidth < 768) {
+      alert('PDF uploads are only available on desktop due to mobile security restrictions.');
+      return;
+    }
+
+    console.log('Uploading newsletter:', this.fileNewsletter.name, 'to bucket:', 'newsletters');
+    const fileName = `${Date.now()}-${this.fileNewsletter.name}`;
+    try {
+      const { data, error } = await this.supabaseService.uploadFile('newsletters', fileName, this.fileNewsletter);
+      if (error) {
+        console.error('Error uploading newsletter PDF:', (error as PostgrestError).message, error);
+        alert('Failed to upload newsletter: ' + (error.message ?? 'An unknown error occurred'));
+      } else {
+        console.log('Upload response:', data);
+        await this.supabaseService.updatePdfPath('newsletters', fileName);
+        console.log('Newsletter PDF uploaded successfully to:', fileName);
+        alert('Newsletter uploaded successfully');
+      }
+    } catch (error) {
+      console.error('Error uploading newsletter PDF:', (error as Error).message, error);
+      alert('Failed to upload newsletter: ' + (error as Error).message);
+    }
+    this.fileNewsletter = null; // Reset file
+  }
+
+  async uploadReport() {
+    if (!this.fileReport) {
+      alert('Please select a PDF file to upload.');
+      return;
+    }
+    if (window.innerWidth < 768) {
+      alert('PDF uploads are only available on desktop due to mobile security restrictions.');
+      return;
+    }
+
+    console.log('Uploading financial report:', this.fileReport.name, 'to bucket:', 'reports');
+    const fileName = `${Date.now()}-${this.fileReport.name}`;
+    try {
+      const { data, error } = await this.supabaseService.uploadFile('reports', fileName, this.fileReport);
+      if (error) {
+        console.error('Error uploading financial report PDF:', (error as PostgrestError).message, error);
+        alert('Failed to upload financial report: ' + (error.message ?? 'An unknown error occurred'));
+      } else {
+        console.log('Upload response:', data);
+        await this.supabaseService.updatePdfPath('reports', fileName);
+        console.log('Financial report PDF uploaded successfully to:', fileName);
+        alert('Financial report uploaded successfully');
+      }
+    } catch (error) {
+      console.error('Error uploading financial report PDF:', (error as Error).message, error);
+      alert('Failed to upload financial report: ' + (error as Error).message);
+    }
+    this.fileReport = null; // Reset file
   }
 }

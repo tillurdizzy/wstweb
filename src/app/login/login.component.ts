@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators ,ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
 import { CommonModule } from '@angular/common';
@@ -26,7 +26,6 @@ import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-
 export class LoginComponent {
   loginForm: FormGroup;
   loading = false;
@@ -50,14 +49,18 @@ export class LoginComponent {
     this.loading = true;
     const { email, password } = this.loginForm.value;
 
-    const { data, error } = await this.supabaseService.signInWithPassword(email, password);
-
-    this.loading = false;
-    if (error) {
-      this.snackBar.open(`Error: ${error.message}`, 'Close', { duration: 3000 });
-    } else if (data.user) {
-      this.snackBar.open('Login successful!', 'Close', { duration: 2000 });
-      this.router.navigate(['/home']);
+    try {
+      const { data, error } = await this.supabaseService.signInWithPassword({ email, password });
+      this.loading = false;
+      if (error) {
+        this.snackBar.open(`Error: ${error.message ?? 'An unknown error occurred'}`, 'Close', { duration: 3000 });
+      } else if (data.user) {
+        this.snackBar.open('Login successful!', 'Close', { duration: 2000 });
+        this.router.navigate(['/home']);
+      }
+    } catch (error) {
+      this.loading = false;
+      this.snackBar.open(`Error: ${(error as Error).message ?? 'An unknown error occurred'}`, 'Close', { duration: 3000 });
     }
   }
 
@@ -68,11 +71,15 @@ export class LoginComponent {
       return;
     }
 
-    const { error } = await this.supabaseService.resetPassword(email);
-    if (error) {
-      this.snackBar.open(`Error: ${error.message}`, 'Close', { duration: 3000 });
-    } else {
-      this.snackBar.open('Check your email for a password reset link!', 'Close', { duration: 5000 });
+    try {
+      const { error } = await this.supabaseService.resetPasswordForEmail(email);
+      if (error) {
+        this.snackBar.open(`Error: ${error.message ?? 'An unknown error occurred'}`, 'Close', { duration: 3000 });
+      } else {
+        this.snackBar.open('Check your email for a password reset link!', 'Close', { duration: 5000 });
+      }
+    } catch (error) {
+      this.snackBar.open(`Error: ${(error as Error).message ?? 'An unknown error occurred'}`, 'Close', { duration: 3000 });
     }
   }
 }

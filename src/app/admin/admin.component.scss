@@ -1,27 +1,41 @@
 mat-card {
-    margin: 10px;
-  }
-  
-  .search-section {
-    margin-bottom: 20px;
-  }
-  
-  mat-form-field {
-    width: 200px;
-    margin-right: 10px;
-  }
-  
-  ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  li {
-    display: flex;
-    align-items: center;
-    padding: 5px 0;
-  }
-  
-  li button {
-    margin-left: 10px;
-  }
+  margin: 10px;
+}
+
+.upload-section {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column; /* Stack buttons vertically */
+  align-items: flex-start; /* Left-align within the section */
+  padding-left: 10px; /* Match form fields */
+}
+
+.upload-section button {
+  width: 100%;
+  max-width: 300px; /* Match home page buttons */
+  margin-bottom: 10px; /* Space between stacked buttons */
+}
+
+.search-section {
+  margin-bottom: 20px;
+}
+
+mat-form-field {
+  width: 200px;
+  margin-right: 10px;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  padding: 5px 0;
+}
+
+li button {
+  margin-left: 10px;
+}

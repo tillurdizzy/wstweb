@@ -13,9 +13,9 @@ import { OwnerUpdateComponent } from './forms/owner-update/owner-update.componen
 import { UserUpdateComponent } from './forms/user-update/user-update.component';
 import { NavErrorComponent } from './nav/nav-error/nav-error.component';
 import { authGuard } from './auth.guard';
-import { PresidentComponent } from './home/president/president.component';
-import { ReportsComponent } from './home/reports/reports.component';
-import { CommitteesComponent } from './home/committees/committees.component';
+import { NewsletterComponent } from './newsletter/newsletter.component';
+import { ReportsComponent } from './reports/reports.component';
+import { CommitteesComponent } from './committees/committees.component';
 import { AdminComponent } from './admin/admin.component';
 import { EditResidentComponent } from './units/edit-resident/edit-resident.component';
 import { AddResidentComponent } from './units/add-resident/add-resident.component';
@@ -29,18 +29,12 @@ export const routes: Routes = [
     title: 'WST Owners Portal',
     children: [
       { path: '', component: LoginComponent },
-      {
-        path: 'home',
-        component: HomeComponent,
-        canActivate: [authGuard],
-        children: [
-          { path: 'president', component: PresidentComponent },
-          { path: 'reports', component: ReportsComponent },
-          { path: 'committees', component: CommitteesComponent },
-        ],
-      },
+      { path: 'home', component: HomeComponent, canActivate: [authGuard] },
+      { path: 'newsletter', component: NewsletterComponent, canActivate: [authGuard] },
+      { path: 'reports', component: ReportsComponent, canActivate: [authGuard] },
+      { path: 'committees', component: CommitteesComponent, canActivate: [authGuard] },
       { path: 'password-reset', title: 'Reset Password', component: PasswordResetComponent },
-      { path: 'units', component: UnitsComponent, canActivate: [authGuard] }, // No children now
+      { path: 'units', component: UnitsComponent, canActivate: [authGuard] },
       {
         path: 'forms',
         component: FormsListComponent,
@@ -58,10 +52,10 @@ export const routes: Routes = [
       },
       { path: 'admin', component: AdminComponent, canActivate: [authGuard] },
       { path: 'edit-resident/:id', component: EditResidentComponent, canActivate: [authGuard] },
-      { path: 'edit-owner/:id', component: EditOwnerComponent, canActivate: [authGuard] },
       { path: 'add-resident', component: AddResidentComponent, canActivate: [authGuard] },
       { path: 'edit-vehicle/:id', component: EditVehicleComponent, canActivate: [authGuard] },
       { path: 'add-vehicle', component: AddVehicleComponent, canActivate: [authGuard] },
+      { path: 'edit-owner/:id', component: EditOwnerComponent, canActivate: [authGuard] },
       { path: '404', component: NavErrorComponent },
       { path: '**', redirectTo: '404' },
     ],

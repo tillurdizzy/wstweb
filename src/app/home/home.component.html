@@ -6,12 +6,8 @@
 <div class="button-container">
   <button mat-raised-button color="primary" routerLink="/units">My Account</button>
   <button mat-raised-button color="primary" routerLink="/forms">Forms</button>
-  <button mat-raised-button color="primary" routerLink="/home/president">Presidents Monthly Message</button>
-  <button mat-raised-button color="primary" routerLink="/home/reports">Monthly Financial Report</button>
-  <button mat-raised-button color="primary" routerLink="/home/committees">Committees</button>
+  <button mat-raised-button color="primary" routerLink="/newsletter">Newsletter</button>
+  <button mat-raised-button color="primary" routerLink="/reports">Monthly Financial Report</button>
+  <button mat-raised-button color="primary" routerLink="/committees">Committees</button>
   <button *ngIf="isAdmin" mat-raised-button color="accent" routerLink="/admin">Admin View</button>
-</div>
-
-<div>
-  <router-outlet></router-outlet>
 </div>

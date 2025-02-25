@@ -1,6 +1,6 @@
 <mat-toolbar>
-  <button mat-icon-button class="example-icon" aria-label="Home" routerLink="/home">
-    <mat-icon>home</mat-icon>
+  <button mat-icon-button class="example-icon" aria-label="Back or Home" (click)="goBackOrHome()">
+    <mat-icon>{{ isBackPage() ? 'arrow_back' : 'home' }}</mat-icon>
   </button>
 
   <span>WST Owners Portal</span>
