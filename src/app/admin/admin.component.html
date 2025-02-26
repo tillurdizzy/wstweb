@@ -1,10 +1,12 @@
 <mat-card>
   <mat-card-title>Admin Dashboard</mat-card-title>
   <mat-card-content>
+    <div  class="search-input">
     <div class="search-section">
       <mat-form-field appearance="outline">
         <mat-label>Unit Number</mat-label>
         <input matInput type="number" [(ngModel)]="unitNumber" (keyup)="checkUnitNumber()">
+        <hr class="divider" />
         <button mat-raised-button color="primary" [disabled]="!this.checkUnitNumber()" (click)="goToUnit()">Search</button>
       </mat-form-field>
     </div>
@@ -15,16 +17,8 @@
         <input matInput [(ngModel)]="searchName" (keyup)="searchOwners()">
       </mat-form-field>
     </div>
+  </div>
 
-    <div class="upload-section">
-      <button mat-raised-button color="primary" (click)="openNewsletterFileDialog()">Upload Newsletter</button>
-      <input type="file" accept="application/pdf" (change)="onFileChangeNewsletter($event)" style="display: none;" #newsletterFile />
-    </div>
-
-    <div class="upload-section">
-      <button mat-raised-button color="primary" (click)="openReportFileDialog()">Upload Financial Report</button>
-      <input type="file" accept="application/pdf" (change)="onFileChangeReport($event)" style="display: none;" #reportFile />
-    </div>
 
     <div class="search-section">
       <ul *ngIf="searchResults.length > 0">

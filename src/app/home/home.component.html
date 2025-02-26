@@ -4,10 +4,13 @@
 </div>
 
 <div class="button-container">
-  <button mat-raised-button color="primary" routerLink="/units">My Account</button>
-  <button mat-raised-button color="primary" routerLink="/forms">Forms</button>
-  <button mat-raised-button color="primary" routerLink="/newsletter">Newsletter</button>
-  <button mat-raised-button color="primary" routerLink="/reports">Monthly Financial Report</button>
-  <button mat-raised-button color="primary" routerLink="/committees">Committees</button>
-  <button *ngIf="isAdmin" mat-raised-button color="accent" routerLink="/admin">Admin View</button>
+  <button mat-raised-button routerLink="/units">My Account</button>
+  <div class="description">(Owner, Resident and Vehicle Information)</div>
+  <button mat-raised-button routerLink="/forms">Management</button>
+  <div class="description">(Work Orders, HOA Dues & Other Forms)</div>
+  <button mat-raised-button routerLink="/board">Board of Directors</button>
+  <div class="description">(Newsletter, Financial Reports, etc.)</div>
+  <button mat-raised-button routerLink="/committees">Committees</button>
+  <div class="description">(Get Involved!  Serve our community and make friends.)</div>
+  <button *ngIf="isAdmin" mat-raised-button routerLink="/admin">Admin View</button>
 </div>

@@ -4,14 +4,45 @@ html {
   color-scheme: light;
   height: 100%;
   @include mat.theme((
-    color: mat.$azure-palette,
+    color: mat.$green-palette,
     typography: Roboto,
     density: 0,
   ));
-  @include mat.card-overrides((
-    elevated-container-color: var(--mat-sys-primary-container),
-  ));
 }
+
+:root {
+  @include mat.card-overrides((
+    elevated-container-color: var(--mat-sys-surface-container-high),
+    title-text-weight:400,
+  ));
+
+  mat-card {
+    margin: 10px;
+  }
+  
+  mat-card-title {
+    margin: 10px 0 10px 20px;
+  }
+
+  mat-form-field .mat-mdc-text-field-wrapper {
+    background-color: #ffffff;
+  }
+
+  @include mat.toolbar-overrides((
+    container-background-color: var(--mat-sys-tertiary),
+    container-text-color:var(--mat-sys-on-tertiary)
+  ));
+
+  @include mat.button-overrides((
+    protected-container-color: var(--mat-sys-secondary-container),
+  ));
+
+  mat-icon{
+    color: var(--mat-sys-tertiary)
+  }
+  
+}
+
 
 body {
   margin: 0;
@@ -20,9 +51,6 @@ body {
   color: var(--mat-sys-on-surface);
 }
 
-mat-form-field .mat-mdc-text-field-wrapper {
-  background-color: #ffffff !important;
-}
 
 
 

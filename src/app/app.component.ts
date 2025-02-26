@@ -10,6 +10,6 @@ import { AppNavComponent } from './nav/app-nav.component';
   imports:[AppNavComponent]
 })
 export class AppComponent {
-  title = 'wstweb';
+  title = 'WST Owners Portal';
 
 }

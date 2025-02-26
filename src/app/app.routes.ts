@@ -9,12 +9,10 @@ import { ArchRequestComponent } from './forms/arch-request/arch-request.componen
 import { CrimeReportComponent } from './forms/crime-report/crime-report.component';
 import { ViolationReportComponent } from './forms/violation-report/violation-report.component';
 import { MessageComponent } from './forms/message/message.component';
-import { OwnerUpdateComponent } from './forms/owner-update/owner-update.component';
-import { UserUpdateComponent } from './forms/user-update/user-update.component';
 import { NavErrorComponent } from './nav/nav-error/nav-error.component';
 import { authGuard } from './auth.guard';
-import { NewsletterComponent } from './newsletter/newsletter.component';
-import { ReportsComponent } from './reports/reports.component';
+import { NewsletterComponent } from './board/newsletter/newsletter.component';
+import { ReportsComponent } from './board/reports/reports.component';
 import { CommitteesComponent } from './committees/committees.component';
 import { AdminComponent } from './admin/admin.component';
 import { EditResidentComponent } from './units/edit-resident/edit-resident.component';
@@ -22,6 +20,7 @@ import { AddResidentComponent } from './units/add-resident/add-resident.componen
 import { EditVehicleComponent } from './units/edit-vehicle/edit-vehicle.component';
 import { AddVehicleComponent } from './units/add-vehicle/add-vehicle.component';
 import { EditOwnerComponent } from './units/edit-owner/edit-owner.component';
+import { BoardComponent } from './board/board.component';
 
 export const routes: Routes = [
   {
@@ -30,8 +29,15 @@ export const routes: Routes = [
     children: [
       { path: '', component: LoginComponent },
       { path: 'home', component: HomeComponent, canActivate: [authGuard] },
-      { path: 'newsletter', component: NewsletterComponent, canActivate: [authGuard] },
-      { path: 'reports', component: ReportsComponent, canActivate: [authGuard] },
+      { path: 'board', 
+        component: BoardComponent, 
+        canActivate: [authGuard],
+        children: [
+          { path: '', redirectTo: 'board', pathMatch: 'full' },
+            { path: 'newsletter', component: NewsletterComponent, title: 'Newsletter' },
+            { path: 'reports', component: ReportsComponent, title: 'Financial'  },
+        ],
+      },
       { path: 'committees', component: CommitteesComponent, canActivate: [authGuard] },
       { path: 'password-reset', title: 'Reset Password', component: PasswordResetComponent },
       { path: 'units', component: UnitsComponent, canActivate: [authGuard] },
@@ -46,8 +52,6 @@ export const routes: Routes = [
           { path: 'crime-report', component: CrimeReportComponent, title: 'Crime Report' },
           { path: 'violation-report', component: ViolationReportComponent, title: 'Violation Report' },
           { path: 'message-board', component: MessageComponent, title: 'Message Board' },
-          { path: 'owner-update', component: OwnerUpdateComponent, title: 'Owner Update' },
-          { path: 'user-update', component: UserUpdateComponent, title: 'User Update' },
         ],
       },
       { path: 'admin', component: AdminComponent, canActivate: [authGuard] },
