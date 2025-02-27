@@ -1,16 +1,18 @@
-<div class="welcome-container">
-  <h4 *ngIf="userEmail">Welcome, {{ userEmail }}!<span *ngIf="isAdmin"> (Admin)</span></h4>
-  <p *ngIf="!userEmail">Not logged in.</p>
-</div>
+<div class="content-container">
+  <div class="welcome-container">
+    <h4 *ngIf="userEmail">Welcome, {{ userEmail }}!<span *ngIf="isAdmin"> (Admin)</span></h4>
+    <p *ngIf="!userEmail">Not logged in.</p>
+  </div>
 
-<div class="button-container">
-  <button mat-raised-button routerLink="/units">My Account</button>
-  <div class="description">(Owner, Resident and Vehicle Information)</div>
-  <button mat-raised-button routerLink="/forms">Management</button>
-  <div class="description">(Work Orders, HOA Dues & Other Forms)</div>
-  <button mat-raised-button routerLink="/board">Board of Directors</button>
-  <div class="description">(Newsletter, Financial Reports, etc.)</div>
-  <button mat-raised-button routerLink="/committees">Committees</button>
-  <div class="description">(Get Involved!  Serve our community and make friends.)</div>
-  <button *ngIf="isAdmin" mat-raised-button routerLink="/admin">Admin View</button>
+  <div class="button-container">
+    <button mat-raised-button routerLink="/units">My Account</button>
+    <div class="description">(Owner, Resident and Vehicle Information)</div>
+    <button mat-raised-button routerLink="/management">Management</button>
+    <div class="description">(Information, HOA Dues & Forms)</div>
+    <button mat-raised-button routerLink="/board">Board of Directors</button>
+    <div class="description">(Newsletter, Financial Reports, etc.)</div>
+    <button mat-raised-button routerLink="/committees">Committees</button>
+    <div class="description">(Get Involved! Serve our community and make friends.)</div>
+    <button *ngIf="isAdmin" mat-raised-button routerLink="/admin">Admin View</button>
+  </div>
 </div>

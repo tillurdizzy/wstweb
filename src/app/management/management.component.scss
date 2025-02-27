@@ -1,4 +1,12 @@
-.router-outlet {
+.menu-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0; /* Adjust gap between icon and text */
+    padding: 0;
+  }
+  
+  .router-outlet {
     padding: 10px;
   }
   

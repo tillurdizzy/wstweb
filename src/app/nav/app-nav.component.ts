@@ -39,6 +39,10 @@ export class AppNavComponent {
       '/edit-vehicle',
       '/add-vehicle',
       '/edit-owner',
+      '/management/forms/work-order',
+      '/management/forms/violation-report',
+      '/management/forms/arch-request',
+      '/management/forms/message-board',
     ];
     return backPages.some(path => currentUrl.startsWith(path));
   }

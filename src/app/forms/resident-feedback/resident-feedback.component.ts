@@ -13,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DialogComponent } from '../../dialog/dialog.component';
 
 @Component({
-  selector: 'app-crime-report',
+  selector: 'app-resident-feedback',
   standalone: true,
   imports: [
     CommonModule,
@@ -26,10 +26,10 @@ import { DialogComponent } from '../../dialog/dialog.component';
     MatDialogModule,
     DialogComponent,
   ],
-  templateUrl: './crime-report.component.html',
-  styleUrls: ['./crime-report.component.scss'],
+  templateUrl: './resident-feedback.component.html',
+  styleUrls: ['./resident-feedback.component.scss'],
 })
-export class CrimeReportComponent implements OnInit {
+export class ResidentFeedbackComponent implements OnInit {
   formData: any = {
     name: '',
     phone: '',
@@ -133,17 +133,17 @@ export class CrimeReportComponent implements OnInit {
         description: this.formData.description,
         photo: photoUrl,
         owner_id: this.formData.owner_id,
-        type: 'Crime', // Set form type
+        type: 'ResidentFeedback', // Set form type
         category: null,
       });
     if (error) {
-      console.error('Error submitting crime report:', error.message);
-      alert('Failed to submit crime report: ' + error.message);
+      console.error('Error submitting resident feedback:', error.message);
+      alert('Failed to submit resident feedback: ' + error.message);
     } else {
-      console.log('Crime report submitted successfully');
+      console.log('Resident feedback submitted successfully');
       this.dialog.open(DialogComponent, {
         width: '300px',
-        data: { message: 'Crime report submitted successfully!' },
+        data: { message: 'Resident feedback submitted successfully!' },
       });
       this.formData.description = ''; // Clear description
     }

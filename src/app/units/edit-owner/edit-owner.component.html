@@ -1,4 +1,6 @@
-<mat-card>
+<div class="content-container">
+
+  <mat-card>
     <mat-card-title>Edit Owner</mat-card-title>
     <mat-card-content>
       <form (ngSubmit)="save()">
@@ -7,36 +9,36 @@
           <input matInput [(ngModel)]="owner.firstname" name="firstname" required>
           <mat-error *ngIf="!owner.firstname">First Name is required</mat-error>
         </mat-form-field>
-  
+
         <mat-form-field appearance="outline">
           <mat-label>Last Name</mat-label>
           <input matInput [(ngModel)]="owner.lastname" name="lastname" required>
           <mat-error *ngIf="!owner.lastname">Last Name is required</mat-error>
         </mat-form-field>
-  
+
         <mat-form-field appearance="outline">
           <mat-label>Email</mat-label>
           <input matInput [(ngModel)]="owner.email" name="email" type="email" required>
           <mat-error *ngIf="!owner.email">Email is required</mat-error>
         </mat-form-field>
-  
+
         <mat-form-field appearance="outline">
           <mat-label>Phone</mat-label>
           <input matInput [(ngModel)]="owner.cell" name="cell" type="tel">
         </mat-form-field>
-  
+
         <mat-form-field appearance="outline">
           <mat-label>Street</mat-label>
           <input matInput [(ngModel)]="owner.street" name="street">
         </mat-form-field>
-  
+
         <mat-form-field appearance="outline">
           <mat-label>City, State, Zip</mat-label>
           <input matInput [(ngModel)]="owner.csz" name="csz">
         </mat-form-field>
-  
+
         <mat-checkbox [(ngModel)]="owner.is_admin" name="is_admin">Is Admin</mat-checkbox>
-  
+
         <div class="button-container">
           <button mat-raised-button color="primary" type="submit">Save</button>
           <button mat-raised-button color="warn" type="button" (click)="cancel()">Cancel</button>
@@ -44,3 +46,4 @@
       </form>
     </mat-card-content>
   </mat-card>
+</div>

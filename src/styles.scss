@@ -10,16 +10,38 @@ html {
   ));
 }
 
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-container {
+  width: 100%;
+  max-width: 500px;
+  min-width: 340px;
+  margin: 0 auto;
+  padding: 10px;
+  box-sizing: border-box;
+  flex-grow: 1;
+}
+
 :root {
   @include mat.card-overrides((
     elevated-container-color: var(--mat-sys-surface-container-high),
-    title-text-weight:400,
+    title-text-weight: 400,
   ));
 
   mat-card {
-    margin: 10px;
+    margin: 0;
+    width: 100%;
+    box-sizing: border-box;
   }
-  
+
   mat-card-title {
     margin: 10px 0 10px 20px;
   }
@@ -28,29 +50,35 @@ html {
     background-color: #ffffff;
   }
 
+  mat-form-field {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
   @include mat.toolbar-overrides((
     container-background-color: var(--mat-sys-tertiary),
-    container-text-color:var(--mat-sys-on-tertiary)
+    container-text-color: var(--mat-sys-on-tertiary)
   ));
 
   @include mat.button-overrides((
     protected-container-color: var(--mat-sys-secondary-container),
   ));
 
-  mat-icon{
-    color: var(--mat-sys-tertiary)
+  button[mat-raised-button] {
+    width: 100%;
+    max-width: 300px;
+    margin: 10px auto;
+    display: block;
   }
-  
+
+  mat-icon {
+    color: var(--mat-sys-tertiary);
+  }
 }
 
-
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  background: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
+@media (max-width: 340px) {
+  .content-container {
+    min-width: 100%;
+    padding: 5px;
+  }
 }
-
-
-
-

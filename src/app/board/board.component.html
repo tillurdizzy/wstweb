@@ -1,13 +1,15 @@
-<div class="menu-container ">
+<div class="content-container">
+  <div class="menu-container">
     <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-        <mat-icon>more_vert</mat-icon>
+      <mat-icon>more_vert</mat-icon>
     </button>
-    <button mat-button [matMenuTriggerFor]="menu">Menu</button>
+    <button mat-button [matMenuTriggerFor]="menu">Board Menu</button>
+  </div>
+  <hr class="divider" />
+  <mat-menu #menu="matMenu">
+    <button mat-menu-item routerLink="/board/newsletter">Newsletter</button>
+    <button mat-menu-item routerLink="/board/reports">Financial Report</button>
+  </mat-menu>
+
+  <div class="router-outlet"><router-outlet></router-outlet></div>
 </div>
-<mat-menu #menu="matMenu">
-  <button mat-menu-item>Newsletter</button>
-  <button mat-menu-item>Financial Report</button>
-</mat-menu>
-
-<div  class="router-outlet"><router-outlet></router-outlet></div>
-

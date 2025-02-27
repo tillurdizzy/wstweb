@@ -1,32 +1,32 @@
 <div class="content-container">
     <mat-card>
-      <mat-card-title>Submit Work Order</mat-card-title>
+      <mat-card-title>Submit Billing Inquiry</mat-card-title>
       <mat-card-content>
         <form (ngSubmit)="submit()">
           <mat-form-field appearance="outline">
             <mat-label>Name</mat-label>
-            <input matInput [(ngModel)]="workOrder.name" name="name" readonly>
+            <input matInput [(ngModel)]="formData.name" name="name" readonly>
           </mat-form-field>
   
           <mat-form-field appearance="outline">
             <mat-label>Phone</mat-label>
-            <input matInput [(ngModel)]="workOrder.phone" name="phone" type="tel" readonly>
+            <input matInput [(ngModel)]="formData.phone" name="phone" type="tel" readonly>
           </mat-form-field>
   
           <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>
-            <input matInput [(ngModel)]="workOrder.email" name="email" type="email" readonly>
+            <input matInput [(ngModel)]="formData.email" name="email" type="email" readonly>
           </mat-form-field>
   
           <mat-form-field appearance="outline">
             <mat-label>Unit #</mat-label>
-            <input matInput [(ngModel)]="workOrder.unit" name="unit" type="number" readonly>
+            <input matInput [(ngModel)]="formData.unit" name="unit" type="number" readonly>
           </mat-form-field>
   
           <mat-form-field appearance="outline">
-            <mat-label>Description of Work Requested</mat-label>
-            <textarea matInput [(ngModel)]="workOrder.description" name="description" rows="5" required></textarea>
-            <mat-error *ngIf="!workOrder.description">Description is required</mat-error>
+            <mat-label>Description</mat-label>
+            <textarea matInput [(ngModel)]="formData.description" name="description" rows="5" required></textarea>
+            <mat-error *ngIf="!formData.description">Description is required</mat-error>
           </mat-form-field>
   
           <div class="file-upload">
