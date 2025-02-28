@@ -1,60 +1,14 @@
-.login-container {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* Move to top */
-  min-height: 100vh;
-  background-color: #ffffff;
-  padding: 10px; /* Sides and top */
-  overflow-x: hidden;
+.p-toolbar {
+  background-color: #2f3b4c; /* Example color from Aura theme */
+  color: white;
+  padding: 10px;
 }
 
-mat-card {
-  width: 100%;
-  max-width: 300px;
-  padding: 12px 2px; /* 12px top/bottom, 2px left/right (was 12px) */
-  box-sizing: border-box;
-  overflow: hidden;
-  margin-top: 10px; /* Match side padding below toolbar */
+.p-button-text {
+  color: white;
 }
 
-mat-form-field {
-  width: 100%;
-  margin-bottom: 12px;
-  font-size: 14px;
-}
-
-button {
-  width: 100%;
-  margin-bottom: 8px;
-}
-
-.actions {
+.p-toolbar-group-center {
+  flex-grow: 1;
   text-align: center;
-  margin-top: 8px;
-}
-
-.forgot-password {
-  cursor: pointer;
-  color: #1976d2;
-  text-decoration: underline;
-}
-
-.instructions {
-  margin-top: 10px;
-  font-size: 11px;
-  color: #666;
-  text-align: center;
-}
-
-@media (max-width: 400px) {
-  mat-card {
-    max-width: 280px;
-    padding: 10px 2px; /* Adjust left/right to 2px */
-  }
-  mat-form-field {
-    font-size: 13px;
-  }
-  .instructions {
-    font-size: 9px;
-  }
 }

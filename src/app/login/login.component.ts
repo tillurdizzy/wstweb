@@ -3,39 +3,38 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
 import { CommonModule } from '@angular/common';
-// Angular Material Imports
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { MatSnackBarModule, MatSnackBar } from '@angular/material/snack-bar';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { PasswordModule } from 'primeng/password';
+import { ToastModule } from 'primeng/toast'; // For snackbar-like feedback
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-login',
+  standalone: true,
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    MatCardModule,         // For mat-card
-    MatFormFieldModule,    // For mat-form-field
-    MatInputModule,        // For matInput
-    MatButtonModule,       // For mat-raised-button
-    MatIconModule,         // For mat-icon
-    MatSnackBarModule,     // For snackbar
+    CardModule,
+    InputTextModule,
+    ButtonModule,
+    PasswordModule,
+    ToastModule,
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
+  providers: [MessageService], // Provide MessageService for toast
 })
 export class LoginComponent {
   loginForm: FormGroup;
   loading = false;
-  hidePassword = true; // For password visibility toggle
 
   constructor(
     private fb: FormBuilder,
     private supabaseService: SupabaseService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private messageService: MessageService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
@@ -53,33 +52,33 @@ export class LoginComponent {
       const { data, error } = await this.supabaseService.signInWithPassword({ email, password });
       this.loading = false;
       if (error) {
-        this.snackBar.open(`Error: ${error.message ?? 'An unknown error occurred'}`, 'Close', { duration: 3000 });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message ?? 'An unknown error occurred' });
       } else if (data.user) {
-        this.snackBar.open('Login successful!', 'Close', { duration: 2000 });
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Login successful!' });
         this.router.navigate(['/home']);
       }
     } catch (error) {
       this.loading = false;
-      this.snackBar.open(`Error: ${(error as Error).message ?? 'An unknown error occurred'}`, 'Close', { duration: 3000 });
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: (error as Error).message ?? 'An unknown error occurred' });
     }
   }
 
   async resetPassword() {
     const email = this.loginForm.get('email')?.value;
     if (!email || this.loginForm.get('email')?.hasError('email')) {
-      this.snackBar.open('Please enter a valid email first', 'Close', { duration: 3000 });
+      this.messageService.add({ severity: 'warn', summary: 'Warning', detail: 'Please enter a valid email first' });
       return;
     }
 
     try {
       const { error } = await this.supabaseService.resetPasswordForEmail(email);
       if (error) {
-        this.snackBar.open(`Error: ${error.message ?? 'An unknown error occurred'}`, 'Close', { duration: 3000 });
+        this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message ?? 'An unknown error occurred' });
       } else {
-        this.snackBar.open('Check your email for a password reset link!', 'Close', { duration: 5000 });
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Check your email for a password reset link!' });
       }
     } catch (error) {
-      this.snackBar.open(`Error: ${(error as Error).message ?? 'An unknown error occurred'}`, 'Close', { duration: 3000 });
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: (error as Error).message ?? 'An unknown error occurred' });
     }
   }
 }

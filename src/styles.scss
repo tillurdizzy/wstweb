@@ -1,25 +1,20 @@
-@use '@angular/material' as mat;
-
+/* Reset and base styles */
 html {
   color-scheme: light;
   height: 100%;
-  @include mat.theme((
-    color: mat.$green-palette,
-    typography: Roboto,
-    density: 0,
-  ));
 }
 
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  background: #F9FAF3;
-  color: var(--mat-sys-on-surface);
+  background: #f5f5f5;
+  color: #333;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
+/* Content container for centering */
 .content-container {
   width: 100%;
   max-width: 500px;
@@ -30,55 +25,15 @@ body {
   flex-grow: 1;
 }
 
-:root {
-  @include mat.card-overrides((
-    elevated-container-color: #DFE7EB,
-    title-text-weight: 400,
-  ));
-
-  mat-card {
-    margin: 0;
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  mat-card-title {
-    margin: 10px 0 10px 20px;
-  }
-
-  mat-form-field .mat-mdc-text-field-wrapper {
-    background-color: #ffffff;
-  }
-
-  mat-form-field {
-    width: 100%;
-    box-sizing: border-box;
-  }
-
-  @include mat.toolbar-overrides((
-    container-background-color:#586a6a,
-    container-text-color:#EDF4F7)
-  );
-
-  @include mat.button-overrides((
-    protected-container-color: #818d92,
-  ));
-
-  button[mat-raised-button] {
-    width: 100%;
-    max-width: 300px;
-    margin: 10px auto;
-    display: block;
-  }
-
-  mat-icon {
-    color: #EDF4F7;
-  }
-}
-
+/* Responsive adjustments */
 @media (max-width: 340px) {
   .content-container {
     min-width: 100%;
     padding: 5px;
   }
+}
+
+/* Custom styles for PrimeNG components (if needed) */
+:host {
+  display: block;
 }
