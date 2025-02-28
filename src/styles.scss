@@ -13,7 +13,7 @@ html {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  background: var(--mat-sys-surface);
+  background: #F9FAF3;
   color: var(--mat-sys-on-surface);
   min-height: 100vh;
   display: flex;
@@ -32,7 +32,7 @@ body {
 
 :root {
   @include mat.card-overrides((
-    elevated-container-color: var(--mat-sys-surface-container-high),
+    elevated-container-color: #DFE7EB,
     title-text-weight: 400,
   ));
 
@@ -56,12 +56,12 @@ body {
   }
 
   @include mat.toolbar-overrides((
-    container-background-color: var(--mat-sys-tertiary),
-    container-text-color: var(--mat-sys-on-tertiary)
-  ));
+    container-background-color:#586a6a,
+    container-text-color:#EDF4F7)
+  );
 
   @include mat.button-overrides((
-    protected-container-color: var(--mat-sys-secondary-container),
+    protected-container-color: #818d92,
   ));
 
   button[mat-raised-button] {
@@ -72,7 +72,7 @@ body {
   }
 
   mat-icon {
-    color: var(--mat-sys-tertiary);
+    color: #EDF4F7;
   }
 }
 
