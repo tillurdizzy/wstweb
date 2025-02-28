@@ -1,14 +1,69 @@
-.p-toolbar {
-  background-color: #2f3b4c; /* Example color from Aura theme */
-  color: white;
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  background-color: #ffffff;
+  padding: 10px;
+  overflow-x: hidden;
+}
+
+p-card {
+  width: 100%;
+  max-width: 300px;
+  padding: 12px 2px;
+  box-sizing: border-box;
+  overflow: hidden;
+  margin-top: 10px;
+  background-color: #EDF4F7; /* Updated to new card background */
+}
+
+.card-content {
   padding: 10px;
 }
 
-.p-button-text {
-  color: white;
+.field {
+  margin-bottom: 15px;
 }
 
-.p-toolbar-group-center {
-  flex-grow: 1;
+:host ::ng-deep{
+  p-button {
+    width: 100%;
+    margin-bottom: 8px;
+    background-color: #586a6a; /* Updated to new button color */
+    border-color: #586a6a;
+    color: white;
+  }
+
+}
+
+
+
+.actions {
   text-align: center;
+  margin-top: 8px;
+}
+
+.forgot-password {
+  cursor: pointer;
+  color: #007ad9;
+  text-decoration: underline;
+}
+
+.instructions {
+  margin-top: 10px;
+  font-size: 11px;
+  color: #666;
+  text-align: center;
+}
+
+@media (max-width: 400px) {
+  p-card {
+    max-width: 280px;
+    padding: 10px 2px;
+  }
+
+  .instructions {
+    font-size: 9px;
+  }
 }
