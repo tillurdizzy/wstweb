@@ -1,14 +1,15 @@
 <div class="login-container">
   <p-card>
-    <ng-template #title> Log In</ng-template>
+    <ng-template #title>Log In</ng-template>
 
 
     <div>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <p-fluid>
         <div class="form-container">
           <div class="field">
             <p-floatlabel variant="on">
-              <input pInputText id="email" formControlName="email" type="email" class="w-full"/>
+              <input pInputText id="email" formControlName="email" type="email" for="fluid"/>
               <label for="email">Email</label>
             </p-floatlabel>
             <small *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched"
@@ -22,7 +23,7 @@
 
           <div class="field">
             <p-floatlabel variant="on">
-              <p-password id="password" formControlName="password" [toggleMask]="true" />
+              <p-password id="password" formControlName="password" [toggleMask]="true" for="fluid"/>
               <label for="password">Password</label>
             </p-floatlabel>
             <small *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched"
@@ -31,17 +32,18 @@
             </small>
           </div>
          
-            <div class="field" [style]="{ width: '80%'}">
-              <p-button label="Login" [style]="{ width: '100%', padding: '8px', fontSize: '14px' }"
+            <div class="field">
+              <p-button label="Login" 
                 [disabled]="loading || loginForm.invalid" (click)="onSubmit()" icon="pi pi-user"></p-button>
             </div>
 
             <div class="field">
-              <p-button label="Forgot Password?" [style]="{ width: '100%', padding: '8px', fontSize: '14px' }"
+              <p-button label="Forgot Password?"
                 (click)="resetPassword()" severity="info"></p-button>
             </div>
       
         </div>
+      </p-fluid>
       </form>
 
       <hr class="custom-divider" />

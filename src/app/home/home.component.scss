@@ -1,27 +1,21 @@
 .card-content {
-  padding: 10px;
   text-align: center;
 }
 
 p {
-  margin: 10px 0;
+  margin: 0 0 20px 0;
 }
 
-.button-container {
+.buttons-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 5px;
-  padding: 5px;
   max-width: 250px;
   width: 100%; 
   margin: 0 auto; 
 }
 
-
-:host{
-  p-button {
-    width: 100%;
-  }
-} 
-
+.button-container{
+  margin-bottom: 10px;
+}

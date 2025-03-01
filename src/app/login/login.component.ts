@@ -11,6 +11,7 @@ import { PasswordModule } from 'primeng/password';
 import { DividerModule } from 'primeng/divider';
 import { ToastModule } from 'primeng/toast'; // For snackbar-like feedback
 import { MessageService } from 'primeng/api';
+import { FluidModule } from 'primeng/fluid';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,8 @@ import { MessageService } from 'primeng/api';
     PasswordModule,
     ToastModule,
     FloatLabelModule,
-    DividerModule
+    DividerModule,
+    FluidModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],

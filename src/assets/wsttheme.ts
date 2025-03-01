@@ -661,8 +661,6 @@ export const MyPreset = definePreset(Aura, {
         }
     },
     components: {
-
-
         badge: {
             root: {
                 borderRadius: "{border.radius.md}",
@@ -1049,11 +1047,9 @@ export const MyPreset = definePreset(Aura, {
                         hoverColor: "{primary.color}",
                         activeColor: "{primary.color}"
                     }
-                },
- 
+                }
             }
         },
-
         card: {
             root: {
                 background: "{lime.300}",
@@ -1076,7 +1072,6 @@ export const MyPreset = definePreset(Aura, {
                 color: "{text.muted.color}"
             }
         },
-
         cascadeselect: {
             root: {
                 background: "{form.field.background}",
@@ -1201,59 +1196,6 @@ export const MyPreset = definePreset(Aura, {
                 }
             }
         },
-        chip: {
-            root: {
-                borderRadius: "16px",
-                paddingX: "0.75rem",
-                paddingY: "0.5rem",
-                gap: "0.5rem",
-                transitionDuration: "{transition.duration}"
-            },
-            image: {
-                width: "2rem",
-                height: "2rem"
-            },
-            icon: {
-                size: "1rem"
-            },
-            removeIcon: {
-                size: "1rem",
-                focusRing: {
-                    width: "{focus.ring.width}",
-                    style: "{focus.ring.style}",
-                    color: "{focus.ring.color}",
-                    offset: "{focus.ring.offset}",
-                    shadow: "{form.field.focus.ring.shadow}"
-                }
-            },
-            colorScheme: {
-                light: {
-                    root: {
-                        background: "{surface.100}",
-                        color: "{surface.800}"
-                    },
-                    icon: {
-                        color: "{surface.800}"
-                    },
-                    removeIcon: {
-                        color: "{surface.800}"
-                    }
-                },
-                dark: {
-                    root: {
-                        background: "{surface.800}",
-                        color: "{surface.0}"
-                    },
-                    icon: {
-                        color: "{surface.0}"
-                    },
-                    removeIcon: {
-                        color: "{surface.0}"
-                    }
-                }
-            }
-        },
-
         confirmdialog: {
             icon: {
                 size: "2rem",
@@ -1286,48 +1228,6 @@ export const MyPreset = definePreset(Aura, {
                 padding: "0 {overlay.popover.padding} {overlay.popover.padding} {overlay.popover.padding}"
             }
         },
-        contextmenu: {
-            root: {
-                background: "{content.background}",
-                borderColor: "{content.border.color}",
-                color: "{content.color}",
-                borderRadius: "{content.border.radius}",
-                shadow: "{overlay.navigation.shadow}",
-                transitionDuration: "{transition.duration}"
-            },
-            list: {
-                padding: "{navigation.list.padding}",
-                gap: "{navigation.list.gap}"
-            },
-            item: {
-                focusBackground: "{navigation.item.focus.background}",
-                activeBackground: "{navigation.item.active.background}",
-                color: "{navigation.item.color}",
-                focusColor: "{navigation.item.focus.color}",
-                activeColor: "{navigation.item.active.color}",
-                padding: "{navigation.item.padding}",
-                borderRadius: "{navigation.item.border.radius}",
-                gap: "{navigation.item.gap}",
-                icon: {
-                    color: "{navigation.item.icon.color}",
-                    focusColor: "{navigation.item.icon.focus.color}",
-                    activeColor: "{navigation.item.icon.active.color}"
-                }
-            },
-            submenu: {
-                mobileIndent: "1rem"
-            },
-            submenuIcon: {
-                size: "{navigation.submenu.icon.size}",
-                color: "{navigation.submenu.icon.color}",
-                focusColor: "{navigation.submenu.icon.focus.color}",
-                activeColor: "{navigation.submenu.icon.active.color}"
-            },
-            separator: {
-                borderColor: "{content.border.color}"
-            }
-        },
-
         datatable: {
             root: {
                 transitionDuration: "{transition.duration}"
@@ -1547,64 +1447,6 @@ export const MyPreset = definePreset(Aura, {
                 }
             }
         },
-        dock: {
-            root: {
-                background: "rgba(255, 255, 255, 0.1)",
-                borderColor: "rgba(255, 255, 255, 0.2)",
-                padding: "0.5rem",
-                borderRadius: "{border.radius.xl}"
-            },
-            item: {
-                borderRadius: "{content.border.radius}",
-                padding: "0.5rem",
-                size: "3rem",
-                focusRing: {
-                    width: "{focus.ring.width}",
-                    style: "{focus.ring.style}",
-                    color: "{focus.ring.color}",
-                    offset: "{focus.ring.offset}",
-                    shadow: "{focus.ring.shadow}"
-                }
-            }
-        },
-
-
-        fieldset: {
-            root: {
-                background: "{content.background}",
-                borderColor: "{content.border.color}",
-                borderRadius: "{content.border.radius}",
-                color: "{content.color}",
-                padding: "0 1.125rem 1.125rem 1.125rem",
-                transitionDuration: "{transition.duration}"
-            },
-            legend: {
-                background: "{content.background}",
-                hoverBackground: "{content.hover.background}",
-                color: "{content.color}",
-                hoverColor: "{content.hover.color}",
-                borderRadius: "{content.border.radius}",
-                borderWidth: "1px",
-                borderColor: "transparent",
-                padding: "0.5rem 0.75rem",
-                gap: "0.5rem",
-                fontWeight: "600",
-                focusRing: {
-                    width: "{focus.ring.width}",
-                    style: "{focus.ring.style}",
-                    color: "{focus.ring.color}",
-                    offset: "{focus.ring.offset}",
-                    shadow: "{focus.ring.shadow}"
-                }
-            },
-            toggleIcon: {
-                color: "{text.muted.color}",
-                hoverColor: "{text.hover.muted.color}"
-            },
-            content: {
-                padding: "0"
-            }
-        },
         fileupload: {
             root: {
                 background: "{content.background}",
@@ -1698,7 +1540,6 @@ export const MyPreset = definePreset(Aura, {
                 }
             }
         },
-
         iconfield: {
             icon: {
                 color: "{form.field.icon.color}"
@@ -2022,7 +1863,6 @@ export const MyPreset = definePreset(Aura, {
                 }
             }
         },
-
         listbox: {
             root: {
                 background: "{form.field.background}",
@@ -2077,85 +1917,6 @@ export const MyPreset = definePreset(Aura, {
                     option: {
                         stripedBackground: "{surface.900}"
                     }
-                }
-            }
-        },
-        megamenu: {
-            root: {
-                background: "{content.background}",
-                borderColor: "{content.border.color}",
-                borderRadius: "{content.border.radius}",
-                color: "{content.color}",
-                gap: "0.5rem",
-                verticalOrientation: {
-                    padding: "{navigation.list.padding}",
-                    gap: "{navigation.list.gap}"
-                },
-                horizontalOrientation: {
-                    padding: "0.5rem 0.75rem",
-                    gap: "0.5rem"
-                },
-                transitionDuration: "{transition.duration}"
-            },
-            baseItem: {
-                borderRadius: "{content.border.radius}",
-                padding: "{navigation.item.padding}"
-            },
-            item: {
-                focusBackground: "{navigation.item.focus.background}",
-                activeBackground: "{navigation.item.active.background}",
-                color: "{navigation.item.color}",
-                focusColor: "{navigation.item.focus.color}",
-                activeColor: "{navigation.item.active.color}",
-                padding: "{navigation.item.padding}",
-                borderRadius: "{navigation.item.border.radius}",
-                gap: "{navigation.item.gap}",
-                icon: {
-                    color: "{navigation.item.icon.color}",
-                    focusColor: "{navigation.item.icon.focus.color}",
-                    activeColor: "{navigation.item.icon.active.color}"
-                }
-            },
-            overlay: {
-                padding: "0",
-                background: "{content.background}",
-                borderColor: "{content.border.color}",
-                borderRadius: "{content.border.radius}",
-                color: "{content.color}",
-                shadow: "{overlay.navigation.shadow}",
-                gap: "0.5rem"
-            },
-            submenu: {
-                padding: "{navigation.list.padding}",
-                gap: "{navigation.list.gap}"
-            },
-            submenuLabel: {
-                padding: "{navigation.submenu.label.padding}",
-                fontWeight: "{navigation.submenu.label.font.weight}",
-                background: "{navigation.submenu.label.background.}",
-                color: "{navigation.submenu.label.color}"
-            },
-            submenuIcon: {
-                size: "{navigation.submenu.icon.size}",
-                color: "{navigation.submenu.icon.color}",
-                focusColor: "{navigation.submenu.icon.focus.color}",
-                activeColor: "{navigation.submenu.icon.active.color}"
-            },
-            separator: {
-                borderColor: "{content.border.color}"
-            },
-            mobileButton: {
-                borderRadius: "50%",
-                size: "1.75rem",
-                color: "{text.muted.color}",
-                hoverColor: "{text.hover.muted.color}",
-                hoverBackground: "{content.hover.background}",
-                focusRing: {
-                    width: "{focus.ring.width}",
-                    style: "{focus.ring.style}",
-                    color: "{focus.ring.color}",
-                    offset: "{focus.ring.offset}",
-                    shadow: "{focus.ring.shadow}"
                 }
             }
         },
@@ -2442,31 +2203,7 @@ export const MyPreset = definePreset(Aura, {
                             color: "{surface.950}"
                         }
                     }
-                },
-
-            }
-        },
-        metergroup: {
-            root: {
-                borderRadius: "{content.border.radius}",
-                gap: "1rem"
-            },
-            meters: {
-                background: "{content.border.color}",
-                size: "0.5rem"
-            },
-            label: {
-                gap: "0.5rem"
-            },
-            labelMarker: {
-                size: "0.5rem"
-            },
-            labelIcon: {
-                size: "1rem"
-            },
-            labelList: {
-                verticalGap: "0.5rem",
-                horizontalGap: "1rem"
+                }
             }
         },
         multiselect: {
@@ -2559,45 +2296,6 @@ export const MyPreset = definePreset(Aura, {
             },
             controls: {
                 gap: "0.5rem"
-            }
-        },
-        organizationchart: {
-            root: {
-                gutter: "0.75rem",
-                transitionDuration: "{transition.duration}"
-            },
-            node: {
-                background: "{content.background}",
-                hoverBackground: "{content.hover.background}",
-                selectedBackground: "{highlight.background}",
-                borderColor: "{content.border.color}",
-                color: "{content.color}",
-                selectedColor: "{highlight.color}",
-                hoverColor: "{content.hover.color}",
-                padding: "0.75rem 1rem",
-                toggleablePadding: "0.75rem 1rem 1.25rem 1rem",
-                borderRadius: "{content.border.radius}"
-            },
-            nodeToggleButton: {
-                background: "{content.background}",
-                hoverBackground: "{content.hover.background}",
-                borderColor: "{content.border.color}",
-                color: "{text.muted.color}",
-                hoverColor: "{text.color}",
-                size: "1.5rem",
-                borderRadius: "50%",
-                focusRing: {
-                    width: "{focus.ring.width}",
-                    style: "{focus.ring.style}",
-                    color: "{focus.ring.color}",
-                    offset: "{focus.ring.offset}",
-                    shadow: "{focus.ring.shadow}"
-                }
-            },
-            connector: {
-                color: "{content.border.color}",
-                borderRadius: "{content.border.radius}",
-                height: "24px"
             }
         },
         overlaybadge: {
@@ -2721,70 +2419,6 @@ export const MyPreset = definePreset(Aura, {
                 padding: "0 1.125rem 1.125rem 1.125rem"
             }
         },
-        panelmenu: {
-            root: {
-                gap: "0.5rem",
-                transitionDuration: "{transition.duration}"
-            },
-            panel: {
-                background: "{content.background}",
-                borderColor: "{content.border.color}",
-                borderWidth: "1px",
-                color: "{content.color}",
-                padding: "0.25rem 0.25rem",
-                borderRadius: "{content.border.radius}",
-                first: {
-                    borderWidth: "1px",
-                    topBorderRadius: "{content.border.radius}"
-                },
-                last: {
-                    borderWidth: "1px",
-                    bottomBorderRadius: "{content.border.radius}"
-                }
-            },
-            item: {
-                focusBackground: "{navigation.item.focus.background}",
-                color: "{navigation.item.color}",
-                focusColor: "{navigation.item.focus.color}",
-                gap: "0.5rem",
-                padding: "{navigation.item.padding}",
-                borderRadius: "{content.border.radius}",
-                icon: {
-                    color: "{navigation.item.icon.color}",
-                    focusColor: "{navigation.item.icon.focus.color}"
-                }
-            },
-            submenu: {
-                indent: "1rem"
-            },
-            submenuIcon: {
-                color: "{navigation.submenu.icon.color}",
-                focusColor: "{navigation.submenu.icon.focus.color}"
-            }
-        },
-        picklist: {
-            root: {
-                gap: "1.125rem"
-            },
-            controls: {
-                gap: "0.5rem"
-            }
-        },
-        progressbar: {
-            root: {
-                background: "{content.border.color}",
-                borderRadius: "{content.border.radius}",
-                height: "1.25rem"
-            },
-            value: {
-                background: "{primary.color}"
-            },
-            label: {
-                color: "{primary.contrast.color}",
-                fontSize: "0.75rem",
-                fontWeight: "600"
-            }
-        },
         progressspinner: {
             colorScheme: {
                 light: {
@@ -2851,25 +2485,6 @@ export const MyPreset = definePreset(Aura, {
                 lg: {
                     size: "1rem"
                 }
-            }
-        },
-        rating: {
-            root: {
-                gap: "0.25rem",
-                transitionDuration: "{transition.duration}",
-                focusRing: {
-                    width: "{focus.ring.width}",
-                    style: "{focus.ring.style}",
-                    color: "{focus.ring.color}",
-                    offset: "{focus.ring.offset}",
-                    shadow: "{focus.ring.shadow}"
-                }
-            },
-            icon: {
-                size: "1rem",
-                color: "{text.muted.color}",
-                hoverColor: "{primary.color}",
-                activeColor: "{primary.color}"
             }
         },
         scrollpanel: {
@@ -3000,134 +2615,6 @@ export const MyPreset = definePreset(Aura, {
                         invalidBorderColor: "{form.field.invalid.border.color}"
                     }
                 }
-            }
-        },
-        skeleton: {
-            root: {
-                borderRadius: "{content.border.radius}"
-            },
-            colorScheme: {
-                light: {
-                    root: {
-                        background: "{surface.200}",
-                        animationBackground: "rgba(255,255,255,0.4)"
-                    }
-                },
-                dark: {
-                    root: {
-                        background: "rgba(255, 255, 255, 0.06)",
-                        animationBackground: "rgba(255, 255, 255, 0.04)"
-                    }
-                }
-            }
-        },
-        slider: {
-            root: {
-                transitionDuration: "{transition.duration}"
-            },
-            track: {
-                background: "{content.border.color}",
-                borderRadius: "{content.border.radius}",
-                size: "3px"
-            },
-            range: {
-                background: "{primary.color}"
-            },
-            handle: {
-                width: "20px",
-                height: "20px",
-                borderRadius: "50%",
-                background: "{content.border.color}",
-                hoverBackground: "{content.border.color}",
-                content: {
-                    borderRadius: "50%",
-                    hoverBackground: "{content.background}",
-                    width: "16px",
-                    height: "16px",
-                    shadow: "0px 0.5px 0px 0px rgba(0, 0, 0, 0.08), 0px 1px 1px 0px rgba(0, 0, 0, 0.14)"
-                },
-                focusRing: {
-                    width: "{focus.ring.width}",
-                    style: "{focus.ring.style}",
-                    color: "{focus.ring.color}",
-                    offset: "{focus.ring.offset}",
-                    shadow: "{focus.ring.shadow}"
-                }
-            },
-            colorScheme: {
-                light: {
-                    handle: {
-                        contentBackground: "{surface.0}"
-                    }
-                },
-                dark: {
-                    handle: {
-                        contentBackground: "{surface.950}"
-                    }
-                }
-            }
-        },
-
-        splitter: {
-            root: {
-                background: "{content.background}",
-                borderColor: "{content.border.color}",
-                color: "{content.color}",
-                transitionDuration: "{transition.duration}"
-            },
-            gutter: {
-                background: "{content.border.color}"
-            },
-            handle: {
-                size: "24px",
-                background: "transparent",
-                borderRadius: "{content.border.radius}",
-                focusRing: {
-                    width: "{focus.ring.width}",
-                    style: "{focus.ring.style}",
-                    color: "{focus.ring.color}",
-                    offset: "{focus.ring.offset}",
-                    shadow: "{focus.ring.shadow}"
-                }
-            }
-        },
-
-
-        steps: {
-            root: {
-                transitionDuration: "{transition.duration}"
-            },
-            separator: {
-                background: "{content.border.color}"
-            },
-            itemLink: {
-                borderRadius: "{content.border.radius}",
-                focusRing: {
-                    width: "{focus.ring.width}",
-                    style: "{focus.ring.style}",
-                    color: "{focus.ring.color}",
-                    offset: "{focus.ring.offset}",
-                    shadow: "{focus.ring.shadow}"
-                },
-                gap: "0.5rem"
-            },
-            itemLabel: {
-                color: "{text.muted.color}",
-                activeColor: "{primary.color}",
-                fontWeight: "500"
-            },
-            itemNumber: {
-                background: "{content.background}",
-                activeBackground: "{content.background}",
-                borderColor: "{content.border.color}",
-                activeBorderColor: "{content.border.color}",
-                color: "{text.muted.color}",
-                activeColor: "{primary.color}",
-                size: "2rem",
-                fontSize: "1.143rem",
-                fontWeight: "500",
-                borderRadius: "50%",
-                shadow: "0px 0.5px 0px 0px rgba(0, 0, 0, 0.06), 0px 1px 1px 0px rgba(0, 0, 0, 0.12)"
             }
         },
         tabmenu: {
@@ -3440,204 +2927,6 @@ export const MyPreset = definePreset(Aura, {
                 }
             }
         },
-        terminal: {
-            root: {
-                background: "{form.field.background}",
-                borderColor: "{form.field.border.color}",
-                color: "{form.field.color}",
-                height: "18rem",
-                padding: "{form.field.padding.y} {form.field.padding.x}",
-                borderRadius: "{form.field.border.radius}"
-            },
-            prompt: {
-                gap: "0.25rem"
-            },
-            commandResponse: {
-                margin: "2px 0"
-            }
-        },
-        timeline: {
-            event: {
-                minHeight: "5rem"
-            },
-            horizontal: {
-                eventContent: {
-                    padding: "1rem 0"
-                }
-            },
-            vertical: {
-                eventContent: {
-                    padding: "0 1rem"
-                }
-            },
-            eventMarker: {
-                size: "1.125rem",
-                borderRadius: "50%",
-                borderWidth: "2px",
-                background: "{content.background}",
-                borderColor: "{content.border.color}",
-                content: {
-                    borderRadius: "50%",
-                    size: "0.375rem",
-                    background: "{primary.color}",
-                    insetShadow: "0px 0.5px 0px 0px rgba(0, 0, 0, 0.06), 0px 1px 1px 0px rgba(0, 0, 0, 0.12)"
-                }
-            },
-            eventConnector: {
-                color: "{content.border.color}",
-                size: "2px"
-            }
-        },
-        togglebutton: {
-            root: {
-                padding: "0.5rem 1rem",
-                borderRadius: "{content.border.radius}",
-                gap: "0.5rem",
-                fontWeight: "500",
-                disabledBackground: "{form.field.disabled.background}",
-                disabledBorderColor: "{form.field.disabled.background}",
-                disabledColor: "{form.field.disabled.color}",
-                invalidBorderColor: "{form.field.invalid.border.color}",
-                focusRing: {
-                    width: "{focus.ring.width}",
-                    style: "{focus.ring.style}",
-                    color: "{focus.ring.color}",
-                    offset: "{focus.ring.offset}",
-                    shadow: "{focus.ring.shadow}"
-                },
-                transitionDuration: "{form.field.transition.duration}",
-                sm: {
-                    fontSize: "{form.field.sm.font.size}",
-                    padding: "0.375rem 0.75rem"
-                },
-                lg: {
-                    fontSize: "{form.field.lg.font.size}",
-                    padding: "0.625rem 1.25rem"
-                }
-            },
-            icon: {
-                disabledColor: "{form.field.disabled.color}"
-            },
-            content: {
-                left: "0.25rem",
-                top: "0.25rem",
-                checkedShadow: "0px 1px 2px 0px rgba(0, 0, 0, 0.02), 0px 1px 2px 0px rgba(0, 0, 0, 0.04)"
-            },
-            colorScheme: {
-                light: {
-                    root: {
-                        background: "{surface.100}",
-                        checkedBackground: "{surface.100}",
-                        hoverBackground: "{surface.100}",
-                        borderColor: "{surface.100}",
-                        color: "{surface.500}",
-                        hoverColor: "{surface.700}",
-                        checkedColor: "{surface.900}",
-                        checkedBorderColor: "{surface.100}"
-                    },
-                    content: {
-                        checkedBackground: "{surface.0}"
-                    },
-                    icon: {
-                        color: "{surface.500}",
-                        hoverColor: "{surface.700}",
-                        checkedColor: "{surface.900}"
-                    }
-                },
-                dark: {
-                    root: {
-                        background: "{surface.950}",
-                        checkedBackground: "{surface.950}",
-                        hoverBackground: "{surface.950}",
-                        borderColor: "{surface.950}",
-                        color: "{surface.400}",
-                        hoverColor: "{surface.300}",
-                        checkedColor: "{surface.0}",
-                        checkedBorderColor: "{surface.950}"
-                    },
-                    content: {
-                        checkedBackground: "{surface.800}"
-                    },
-                    icon: {
-                        color: "{surface.400}",
-                        hoverColor: "{surface.300}",
-                        checkedColor: "{surface.0}"
-                    }
-                }
-            }
-        },
-        toggleswitch: {
-            root: {
-                width: "2.5rem",
-                height: "1.5rem",
-                borderRadius: "30px",
-                gap: "0.25rem",
-                shadow: "{form.field.shadow}",
-                focusRing: {
-                    width: "{focus.ring.width}",
-                    style: "{focus.ring.style}",
-                    color: "{focus.ring.color}",
-                    offset: "{focus.ring.offset}",
-                    shadow: "{focus.ring.shadow}"
-                },
-                borderWidth: "1px",
-                borderColor: "transparent",
-                hoverBorderColor: "transparent",
-                checkedBorderColor: "transparent",
-                checkedHoverBorderColor: "transparent",
-                invalidBorderColor: "{form.field.invalid.border.color}",
-                transitionDuration: "{form.field.transition.duration}",
-                slideDuration: "0.2s"
-            },
-            handle: {
-                borderRadius: "50%",
-                size: "1rem"
-            },
-            colorScheme: {
-                light: {
-                    root: {
-                        background: "{surface.300}",
-                        disabledBackground: "{form.field.disabled.background}",
-                        hoverBackground: "{surface.400}",
-                        checkedBackground: "{primary.color}",
-                        checkedHoverBackground: "{primary.hover.color}"
-                    },
-                    handle: {
-                        background: "{surface.0}",
-                        disabledBackground: "{form.field.disabled.color}",
-                        hoverBackground: "{surface.0}",
-                        checkedBackground: "{surface.0}",
-                        checkedHoverBackground: "{surface.0}",
-                        color: "{text.muted.color}",
-                        hoverColor: "{text.color}",
-                        checkedColor: "{primary.color}",
-                        checkedHoverColor: "{primary.hover.color}"
-                    }
-                },
-                dark: {
-                    root: {
-                        background: "{surface.700}",
-                        disabledBackground: "{surface.600}",
-                        hoverBackground: "{surface.600}",
-                        checkedBackground: "{primary.color}",
-                        checkedHoverBackground: "{primary.hover.color}"
-                    },
-                    handle: {
-                        background: "{surface.400}",
-                        disabledBackground: "{surface.900}",
-                        hoverBackground: "{surface.300}",
-                        checkedBackground: "{surface.900}",
-                        checkedHoverBackground: "{surface.900}",
-                        color: "{surface.900}",
-                        hoverColor: "{surface.800}",
-                        checkedColor: "{primary.color}",
-                        checkedHoverColor: "{primary.hover.color}"
-                    }
-                }
-            }
-        },
-
-
         toast: {
             root: {
                 width: "25rem",
@@ -3871,29 +3160,6 @@ export const MyPreset = definePreset(Aura, {
                 },
                 icon: {
                     size: "2rem"
-                }
-            }
-        },
-        tooltip: {
-            root: {
-                maxWidth: "12.5rem",
-                gutter: "0.25rem",
-                shadow: "{overlay.popover.shadow}",
-                padding: "0.5rem 0.75rem",
-                borderRadius: "{overlay.popover.border.radius}"
-            },
-            colorScheme: {
-                light: {
-                    root: {
-                        background: "{surface.700}",
-                        color: "{surface.0}"
-                    }
-                },
-                dark: {
-                    root: {
-                        background: "{surface.700}",
-                        color: "{surface.0}"
-                    }
                 }
             }
         },

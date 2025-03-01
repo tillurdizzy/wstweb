@@ -15,31 +15,18 @@ p-card {
   border-radius: 4px;
 }
 
-
 .form-container {
   width: 260px; 
   margin: 0 auto;
 }
 
-
-
 .field {
   margin-bottom: 15px;
-}
-
-p-button {
-  margin-bottom: 8px;
 }
 
 .actions {
   text-align: center;
   margin-top: 8px;
-}
-
-.forgot-password {
-  cursor: pointer;
-  color: #007ad9;
-  text-decoration: underline;
 }
 
 .instructions {
@@ -57,10 +44,10 @@ p-button {
 
 .first-time-title {
   text-align: center;
-  font-size: 16px; /* Larger font for emphasis */
+  font-size: 16px; 
   font-weight: 500;
   margin: 10px 0;
-  color: #333; /* Stand out against instructions */
+  color: #333; 
 }
 
 @media (max-width: 400px) {
@@ -78,9 +65,3 @@ p-button {
   }
 }
 
-:host {
-  p-button {
-    border-radius: 4px;
-    box-sizing: border-box;
-  }
-}
