@@ -13,14 +13,15 @@ p {
   align-items: center;
   gap: 5px;
   padding: 5px;
-  max-width: 300px; /* Container max width */
-  width: 100%; /* Ensure it takes full width of container */
-  margin: 0 auto; /* Center the container */
+  max-width: 250px;
+  width: 100%; 
+  margin: 0 auto; 
 }
 
-p-button {
-  width: 100%; /* Stretch buttons to 100% of container */
-  background-color: #586a6a; /* Updated to new button color */
-  border-color: #586a6a;
-  color: white;
-}
+
+:host{
+  p-button {
+    width: 100%;
+  }
+} 
+

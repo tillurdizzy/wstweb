@@ -3,41 +3,33 @@
   justify-content: center;
   align-items: flex-start;
   min-height: 100vh;
-  background-color: #ffffff;
-  padding: 10px;
   overflow-x: hidden;
 }
 
 p-card {
   width: 100%;
   max-width: 300px;
-  padding: 12px 2px;
   box-sizing: border-box;
   overflow: hidden;
-  margin-top: 10px;
-  background-color: #EDF4F7; /* Updated to new card background */
+  margin-top: 20px;
+  border-radius: 4px;
 }
 
-.card-content {
-  padding: 10px;
+
+.form-container {
+  width: 260px; 
+  margin: 0 auto;
 }
+
+
 
 .field {
   margin-bottom: 15px;
 }
 
-:host ::ng-deep{
-  p-button {
-    width: 100%;
-    margin-bottom: 8px;
-    background-color: #586a6a; /* Updated to new button color */
-    border-color: #586a6a;
-    color: white;
-  }
-
+p-button {
+  margin-bottom: 8px;
 }
-
-
 
 .actions {
   text-align: center;
@@ -53,8 +45,22 @@ p-card {
 .instructions {
   margin-top: 10px;
   font-size: 11px;
-  color: #666;
+  color: #333;
   text-align: center;
+}
+
+.custom-divider {
+  border: 0;
+  border-top: 2px solid #333;
+  margin: 15px 0 8px 0;
+}
+
+.first-time-title {
+  text-align: center;
+  font-size: 16px; /* Larger font for emphasis */
+  font-weight: 500;
+  margin: 10px 0;
+  color: #333; /* Stand out against instructions */
 }
 
 @media (max-width: 400px) {
@@ -65,5 +71,16 @@ p-card {
 
   .instructions {
     font-size: 9px;
+  }
+
+  .form-container {
+    width: 240px; /* Adjust for smaller screens */
+  }
+}
+
+:host {
+  p-button {
+    border-radius: 4px;
+    box-sizing: border-box;
   }
 }

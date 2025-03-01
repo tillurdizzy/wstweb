@@ -2,23 +2,5 @@
   flex: 1 1 auto;
 }
 
-:host ::ng-deep{
-  .p-toolbar {
-    background-color: #586a6a; /* Updated to new color */
-    color: white;
-    padding: 10px;
-    toolbar.background{
-      color: #586a6a;
-    }
-  }
-  
-  .p-button-text {
-    color: white;
-  }
-  
-  .p-toolbar-group-center {
-    flex-grow: 1;
-    text-align: center;
-  }
-}
+
 

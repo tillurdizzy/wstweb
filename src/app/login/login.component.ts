@@ -5,8 +5,10 @@ import { SupabaseService } from '../services/supabase.service';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
+import { FloatLabelModule } from 'primeng/floatlabel';
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
+import { DividerModule } from 'primeng/divider';
 import { ToastModule } from 'primeng/toast'; // For snackbar-like feedback
 import { MessageService } from 'primeng/api';
 
@@ -21,6 +23,8 @@ import { MessageService } from 'primeng/api';
     ButtonModule,
     PasswordModule,
     ToastModule,
+    FloatLabelModule,
+    DividerModule
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],

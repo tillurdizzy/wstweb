@@ -1,41 +1,56 @@
 <div class="login-container">
   <p-card>
-    <ng-template pTemplate="header">
-      <h3>Log In</h3>
-    </ng-template>
-    <div class="card-content">
+    <ng-template #title> Log In</ng-template>
+
+
+    <div>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-        <div class="field">
-          <label for="email">Email</label>
-          <input pInputText id="email" formControlName="email" type="email" placeholder="your@email.com" />
-          <small *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched" class="p-error">
-            Email is required
-          </small>
-          <small *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched" class="p-error">
-            Please enter a valid email
-          </small>
-        </div>
+        <div class="form-container">
+          <div class="field">
+            <p-floatlabel variant="on">
+              <input pInputText id="email" formControlName="email" type="email" class="w-full"/>
+              <label for="email">Email</label>
+            </p-floatlabel>
+            <small *ngIf="loginForm.get('email')?.hasError('required') && loginForm.get('email')?.touched"
+              class="p-error">
+              Email is required
+            </small>
+            <small *ngIf="loginForm.get('email')?.hasError('email') && loginForm.get('email')?.touched" class="p-error">
+              Please enter a valid email
+            </small>
+          </div>
 
-        <div class="field">
-          <label for="password">Password</label>
-          <p-password id="password" formControlName="password" [toggleMask]="true" />
-          <small *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched" class="p-error">
-            Password is required
-          </small>
-        </div>
+          <div class="field">
+            <p-floatlabel variant="on">
+              <p-password id="password" formControlName="password" [toggleMask]="true" />
+              <label for="password">Password</label>
+            </p-floatlabel>
+            <small *ngIf="loginForm.get('password')?.hasError('required') && loginForm.get('password')?.touched"
+              class="p-error">
+              Password is required
+            </small>
+          </div>
+         
+            <div class="field" [style]="{ width: '80%'}">
+              <p-button label="Login" [style]="{ width: '100%', padding: '8px', fontSize: '14px' }"
+                [disabled]="loading || loginForm.invalid" (click)="onSubmit()" icon="pi pi-user"></p-button>
+            </div>
 
-        <p-button label="Login" [disabled]="loading || loginForm.invalid" (click)="onSubmit()"></p-button>
+            <div class="field">
+              <p-button label="Forgot Password?" [style]="{ width: '100%', padding: '8px', fontSize: '14px' }"
+                (click)="resetPassword()" severity="info"></p-button>
+            </div>
+      
+        </div>
       </form>
 
-      <div class="actions">
-        <a (click)="resetPassword()" class="forgot-password">Forgot Password?</a>
-      </div>
+      <hr class="custom-divider" />
+      <h4 class="first-time-title">First-time Users</h4>
 
       <p class="instructions">
-        First-time users: Enter your email, click "Forgot Password" to set up your account, then log in with your new
-        password.
+        Enter your email, click "Forgot Password" to set up your account, then log in with your new password.
       </p>
     </div>
   </p-card>
-  <p-toast></p-toast> <!-- Toast for feedback messages -->
+  <p-toast></p-toast>
 </div>

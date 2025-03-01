@@ -7,11 +7,11 @@
       <p *ngIf="userEmail">Welcome, {{ userEmail }}!<span *ngIf="isAdmin"> (Admin)</span></p>
       <p *ngIf="!userEmail">Not logged in.</p>
       <div class="button-container">
-        <p-button label="My Account" routerLink=""></p-button>
-        <p-button label="Management" routerLink=""></p-button>
-        <p-button label="Board of Directors" routerLink=""></p-button>
-        <p-button label="Committees" routerLink=""></p-button>
-        <p-button *ngIf="isAdmin" label="Admin View" routerLink=""></p-button>
+        <p-button label="My Account" [style]="{ width: '100%' }" routerLink=""></p-button>
+        <p-button label="Management" [style]="{ width: '100%' }" routerLink=""></p-button>
+        <p-button label="Board of Directors" [style]="{ width: '100%' }" routerLink=""></p-button>
+        <p-button label="Committees" [style]="{ width: '100%' }" routerLink=""></p-button>
+        <p-button *ngIf="isAdmin" label="Admin View" [style]="{ width: '100%' }" routerLink=""></p-button>
       </div>
     </div>
   </p-card>
