@@ -5,6 +5,7 @@ import { SelectModule } from 'primeng/select'; // For p-select
 import { ButtonModule } from 'primeng/button';
 import { FormsModule } from '@angular/forms'; // Added for ngModel support
 import { RouterModule } from '@angular/router'; // Added for routerLink
+import { MessageModule } from 'primeng/message'; // Added for p-message
 import { SupabaseService } from '../../services/supabase.service';
 import { UnitService } from '../../services/unit.service';
 import { ActivatedRoute } from '@angular/router';
@@ -19,7 +20,8 @@ import { FluidModule } from 'primeng/fluid';
     SelectModule,
     ButtonModule,
     FormsModule,
-    RouterModule, // Ensure RouterModule is imported
+    RouterModule,
+    MessageModule, // Import MessageModule for p-message
     FluidModule,
   ],
   templateUrl: './units.component.html',

@@ -1,10 +1,16 @@
+/* reports.component.scss */
+.form-container {
+  width: 260px;
+  margin: 0 auto;
+}
+
 .pdf-container {
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  
-  iframe {
-    border: none;
-  }
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+iframe {
+  border: none;
+}

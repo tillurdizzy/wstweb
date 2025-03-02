@@ -1,15 +1,31 @@
-import { Component } from '@angular/core';
-import {MatIconModule} from '@angular/material/icon';
-import {MatMenuModule} from '@angular/material/menu';
-import {MatButtonModule} from '@angular/material/button';
-import { RouterModule } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CardModule } from 'primeng/card';
+import { ButtonModule } from 'primeng/button';
+import { RouterModule } from '@angular/router'; // For navigation
+import { SupabaseService } from '../../services/supabase.service';
+import { FluidModule } from 'primeng/fluid';
 
 @Component({
   selector: 'app-forms-list',
-  imports: [RouterModule,MatIconModule,MatMenuModule,MatButtonModule],
+  standalone: true,
+  imports: [CommonModule, CardModule, ButtonModule, RouterModule, FluidModule],
   templateUrl: './forms-list.component.html',
-  styleUrl: './forms-list.component.scss'
+  styleUrls: ['./forms-list.component.scss'],
 })
-export class FormsListComponent {
+export class FormsListComponent implements OnInit {
+  forms: any[] = [];
 
+  constructor(private supabaseService: SupabaseService) {}
+
+  async ngOnInit() {
+    const { data, error } = await this.supabaseService.client
+      .from('forms')
+      .select('*');
+    if (error) {
+      console.error('Error fetching forms:', error.message);
+    } else {
+      this.forms = data || [];
+    }
+  }
 }

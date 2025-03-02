@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
+import { CardModule } from 'primeng/card';
 
 @Component({
   selector: 'app-information',
   standalone: true,
-  imports: [CommonModule, MatCardModule],
+  imports: [CommonModule, CardModule],
   templateUrl: './information.component.html',
   styleUrls: ['./information.component.scss'],
 })

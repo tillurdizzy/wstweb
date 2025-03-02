@@ -2,12 +2,12 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
 import { SupabaseService } from '../services/supabase.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
 import { FormsModule } from '@angular/forms';
+import { MessageService } from 'primeng/api';
 import { PostgrestError } from '@supabase/supabase-js';
 
 @Component({
@@ -15,15 +15,15 @@ import { PostgrestError } from '@supabase/supabase-js';
   standalone: true,
   imports: [
     CommonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
+    CardModule,
+    InputTextModule,
+    ButtonModule,
+    ToastModule,
     FormsModule,
   ],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.scss'],
+  providers: [MessageService],
 })
 export class AdminComponent {
   unitNumber: number | null = null;
@@ -49,7 +49,8 @@ export class AdminComponent {
 
   constructor(
     private supabaseService: SupabaseService,
-    private router: Router
+    private router: Router,
+    private messageService: MessageService
   ) {}
 
   checkUnitNumber() {
@@ -65,7 +66,7 @@ export class AdminComponent {
     if (this.unitNumber !== null && this.allUnits.includes(this.unitNumber)) {
       this.router.navigate(['/units'], { queryParams: { unit: this.unitNumber } });
     } else {
-      alert('Please enter a valid unit number.');
+      this.messageService.add({ severity: 'warn', summary: 'Invalid Unit', detail: 'Please enter a valid unit number.' });
     }
   }
 
@@ -122,9 +123,10 @@ export class AdminComponent {
       .insert({ unit, owner_id: ownerId });
     if (insertError) {
       console.error('Error updating unit ownership:', (insertError as PostgrestError).message);
-      alert('Failed to update unit ownership: ' + (insertError.message ?? 'An unknown error occurred'));
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to update unit ownership: ' + insertError.message });
     } else {
       console.log('Unit ownership updated successfully');
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Unit ownership updated successfully!' });
       this.router.navigate(['/units'], { queryParams: { ownerId } });
     }
   }
@@ -141,7 +143,7 @@ export class AdminComponent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.fileNewsletter = input.files[0];
-      this.uploadNewsletter(); // Automatically upload after selection
+      this.uploadNewsletter();
     }
   }
 
@@ -149,17 +151,17 @@ export class AdminComponent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       this.fileReport = input.files[0];
-      this.uploadReport(); // Automatically upload after selection
+      this.uploadReport();
     }
   }
 
   async uploadNewsletter() {
     if (!this.fileNewsletter) {
-      alert('Please select a PDF file to upload.');
+      this.messageService.add({ severity: 'warn', summary: 'No File', detail: 'Please select a PDF file to upload.' });
       return;
     }
     if (window.innerWidth < 768) {
-      alert('PDF uploads are only available on desktop due to mobile security restrictions.');
+      this.messageService.add({ severity: 'warn', summary: 'Mobile Restriction', detail: 'PDF uploads are only available on desktop due to mobile security restrictions.' });
       return;
     }
 
@@ -169,27 +171,27 @@ export class AdminComponent {
       const { data, error } = await this.supabaseService.uploadFile('newsletters', fileName, this.fileNewsletter);
       if (error) {
         console.error('Error uploading newsletter PDF:', (error as PostgrestError).message, error);
-        alert('Failed to upload newsletter: ' + (error.message ?? 'An unknown error occurred'));
+        this.messageService.add({ severity: 'error', summary: 'Upload Failed', detail: 'Failed to upload newsletter: ' + (error.message ?? 'An unknown error occurred') });
       } else {
         console.log('Upload response:', data);
         await this.supabaseService.updatePdfPath('newsletters', fileName);
         console.log('Newsletter PDF uploaded successfully to:', fileName);
-        alert('Newsletter uploaded successfully');
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Newsletter uploaded successfully!' });
       }
     } catch (error) {
       console.error('Error uploading newsletter PDF:', (error as Error).message, error);
-      alert('Failed to upload newsletter: ' + (error as Error).message);
+      this.messageService.add({ severity: 'error', summary: 'Upload Failed', detail: 'Failed to upload newsletter: ' + (error as Error).message });
     }
-    this.fileNewsletter = null; // Reset file
+    this.fileNewsletter = null;
   }
 
   async uploadReport() {
     if (!this.fileReport) {
-      alert('Please select a PDF file to upload.');
+      this.messageService.add({ severity: 'warn', summary: 'No File', detail: 'Please select a PDF file to upload.' });
       return;
     }
     if (window.innerWidth < 768) {
-      alert('PDF uploads are only available on desktop due to mobile security restrictions.');
+      this.messageService.add({ severity: 'warn', summary: 'Mobile Restriction', detail: 'PDF uploads are only available on desktop due to mobile security restrictions.' });
       return;
     }
 
@@ -199,17 +201,17 @@ export class AdminComponent {
       const { data, error } = await this.supabaseService.uploadFile('reports', fileName, this.fileReport);
       if (error) {
         console.error('Error uploading financial report PDF:', (error as PostgrestError).message, error);
-        alert('Failed to upload financial report: ' + (error.message ?? 'An unknown error occurred'));
+        this.messageService.add({ severity: 'error', summary: 'Upload Failed', detail: 'Failed to upload financial report: ' + (error.message ?? 'An unknown error occurred') });
       } else {
         console.log('Upload response:', data);
         await this.supabaseService.updatePdfPath('reports', fileName);
         console.log('Financial report PDF uploaded successfully to:', fileName);
-        alert('Financial report uploaded successfully');
+        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Financial report uploaded successfully!' });
       }
     } catch (error) {
       console.error('Error uploading financial report PDF:', (error as Error).message, error);
-      alert('Failed to upload financial report: ' + (error as Error).message);
+      this.messageService.add({ severity: 'error', summary: 'Upload Failed', detail: 'Failed to upload financial report: ' + (error as Error).message });
     }
-    this.fileReport = null; // Reset file
+    this.fileReport = null;
   }
 }

@@ -1,23 +1,38 @@
-import { Component } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatButtonModule } from '@angular/material/button';
+import { Component, ViewChild } from '@angular/core';
+import { MenuModule } from 'primeng/menu';
+import { ButtonModule } from 'primeng/button';
 import { RouterModule } from '@angular/router';
-import { NewsletterComponent } from './newsletter/newsletter.component';
-import { ReportsComponent } from './reports/reports.component';
+
+import { Menu } from 'primeng/menu';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-board',
   standalone: true,
   imports: [
     RouterModule,
-    MatIconModule,
-    MatMenuModule,
-    MatButtonModule,
-    NewsletterComponent,
-    ReportsComponent,
+    MenuModule,
+    ButtonModule,
+
   ],
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
 })
-export class BoardComponent {}
+export class BoardComponent {
+  items: MenuItem[] = [
+    {
+      label: 'Newsletter',
+      routerLink: '/board/newsletter',
+    },
+    {
+      label: 'Financial Report',
+      routerLink: '/board/reports',
+    },
+  ];
+
+  @ViewChild('menu') menu!: Menu;
+
+  toggleMenu(event: Event) {
+    this.menu.toggle(event);
+  }
+}

@@ -1,22 +1,8 @@
 <div class="menu-container">
-    <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
-      <mat-icon>more_vert</mat-icon>
-    </button>
-    <button mat-button [matMenuTriggerFor]="menu">Management Menu</button>
-  </div>
-  <hr class="divider" />
-  <mat-menu #menu="matMenu">
-    <button mat-menu-item routerLink="/management/information">Information</button>
-    <button mat-menu-item routerLink="/management/hoa-dues">HOA Dues</button>
-    <button mat-menu-item [matMenuTriggerFor]="formsMenu">Forms</button>
-    <mat-menu #formsMenu="matMenu">
-      <button mat-menu-item routerLink="/management/forms/work-order">Work Order</button>
-      <button mat-menu-item routerLink="/management/forms/resident-feedback">Resident Feedback</button>
-      <button mat-menu-item routerLink="/management/forms/billing-inquiry">Billing Inquiry</button>
-      <button mat-menu-item routerLink="/management/forms/violation-report">Violation Report</button>
-      <button mat-menu-item routerLink="/management/forms/crime-report">Crime Report</button>
-      <button mat-menu-item routerLink="/management/forms/arch-request">Architectural Request</button>
-      <button mat-menu-item routerLink="/management/forms/message-board">Resident Feedback</button>
-    </mat-menu>
-  </mat-menu>
-  <div class="router-outlet"><router-outlet></router-outlet></div>
+  <p-button (click)="toggleMenu($event)" icon="pi pi-ellipsis-v" label="Management Menu" severity="secondary"></p-button>
+  <p-menu #menu [model]="items" [popup]="true"></p-menu>
+</div>
+<hr class="divider" />
+<div class="router-outlet">
+  <router-outlet></router-outlet>
+</div>

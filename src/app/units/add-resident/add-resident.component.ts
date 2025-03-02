@@ -1,18 +1,19 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { FormsModule } from '@angular/forms'; // For ngModel
+import { RouterModule } from '@angular/router'; // For consistency
 import { SupabaseService } from '../../services/supabase.service';
 import { UnitService } from '../../services/unit.service';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { FormsModule } from '@angular/forms';
+import { FluidModule } from 'primeng/fluid';
 
 @Component({
   selector: 'app-add-resident',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, FormsModule],
+  imports: [CommonModule, CardModule, InputTextModule, ButtonModule, FormsModule, RouterModule, FluidModule],
   templateUrl: './add-resident.component.html',
   styleUrls: ['./add-resident.component.scss'],
 })

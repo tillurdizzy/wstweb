@@ -1,33 +1,24 @@
 import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast'; // Replaced MatDialogModule
+import { MessageService } from 'primeng/api'; // For toast messages
+import { FormsModule } from '@angular/forms'; // For ngModel
+import { RouterModule } from '@angular/router'; // For navigation
 import { SupabaseService } from '../../services/supabase.service';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { DialogComponent } from '../../dialog/dialog.component'; // Import the new dialog component
+import { FluidModule } from 'primeng/fluid';
 
 @Component({
   selector: 'app-work-order',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    FormsModule,
-    MatDialogModule,
-    DialogComponent, // Use the reusable dialog
-  ],
+  imports: [CommonModule, CardModule, InputTextModule, ButtonModule, ToastModule, FormsModule, RouterModule, FluidModule, TextareaModule],
   templateUrl: './work-order.component.html',
   styleUrls: ['./work-order.component.scss'],
+  providers: [MessageService], // Provide MessageService for toast
 })
 export class WorkOrderComponent implements OnInit {
   workOrder: any = {
@@ -44,9 +35,8 @@ export class WorkOrderComponent implements OnInit {
 
   @ViewChild('photoFile') photoFileInput!: ElementRef<HTMLInputElement>;
 
-  private dialog = inject(MatDialog);
+  private messageService = inject(MessageService); // Inject MessageService for toast
   private router = inject(Router);
-  private snackBar = inject(MatSnackBar);
 
   constructor(private supabaseService: SupabaseService) {}
 
@@ -139,12 +129,7 @@ export class WorkOrderComponent implements OnInit {
       alert('Failed to submit work order: ' + error.message);
     } else {
       console.log('Work order submitted successfully');
-      // Open reusable dialog
-      this.dialog.open(DialogComponent, {
-        width: '300px',
-        data: { message: 'Work order submitted successfully!' },
-      });
-      // Auto-return after 2 seconds (handled by DialogComponent now)
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Work order submitted successfully!' });
     }
   }
 

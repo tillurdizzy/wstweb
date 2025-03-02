@@ -1,36 +1,40 @@
 <div class="content-container">
-  <mat-card>
-    <mat-card-title>Add Vehicle</mat-card-title>
-    <mat-card-content>
-      <form (ngSubmit)="save()">
-        <mat-form-field appearance="outline">
-          <mat-label>Make</mat-label>
-          <input matInput [(ngModel)]="vehicle.make" name="make" required>
-          <mat-error *ngIf="!vehicle.make">Make is required</mat-error>
-        </mat-form-field>
+  <p-card>
+    <ng-template #title>Add Vehicle</ng-template>
+    <div class="card-content">
+      <p-fluid>
+        <div class="form-container">
+          <div class="field">
+            <label for="make">Make</label>
+            <input pInputText id="make" [(ngModel)]="vehicle.make" required />
+            <small *ngIf="!vehicle.make" class="p-error">Make is required</small>
+          </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Model</mat-label>
-          <input matInput [(ngModel)]="vehicle.model" name="model" required>
-          <mat-error *ngIf="!vehicle.model">Model is required</mat-error>
-        </mat-form-field>
+          <div class="field">
+            <label for="model">Model</label>
+            <input pInputText id="model" [(ngModel)]="vehicle.model" required />
+            <small *ngIf="!vehicle.model" class="p-error">Model is required</small>
+          </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Color</mat-label>
-          <input matInput [(ngModel)]="vehicle.color" name="color">
-        </mat-form-field>
+          <div class="field">
+            <label for="color">Color</label>
+            <input pInputText id="color" [(ngModel)]="vehicle.color" />
+          </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>License</mat-label>
-          <input matInput [(ngModel)]="vehicle.tag" name="tag" required>
-          <mat-error *ngIf="!vehicle.tag">License is required</mat-error>
-        </mat-form-field>
+          <div class="field">
+            <label for="tag">License</label>
+            <input pInputText id="tag" [(ngModel)]="vehicle.tag" required />
+            <small *ngIf="!vehicle.tag" class="p-error">License is required</small>
+          </div>
 
-        <div class="button-container">
-          <button mat-raised-button color="primary" type="submit">Save</button>
-          <button mat-raised-button color="warn" type="button" (click)="cancel()">Cancel</button>
+          <div class="field">
+            <p-button label="Save" (click)="save()"></p-button>
+          </div>
+          <div class="field">
+            <p-button label="Cancel" (click)="cancel()" severity="secondary"></p-button>
+          </div>
         </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+      </p-fluid>
+    </div>
+  </p-card>
 </div>

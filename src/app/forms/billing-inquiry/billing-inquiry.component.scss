@@ -1,13 +1,29 @@
+
+
+.form-container {
+  width: 260px;
+  margin: 0 auto;
+}
+
+.field {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column; /* Stack label and input vertically */
+}
+
+p-button {
+  width: 100%; /* FluidModule ensures this */
+  padding: 8px;
+  font-size: 14px;
+}
+
+p-error {
+  color: #dc2626; /* Red color for errors, adjust as needed */
+  font-size: 12px;
+}
+
 .file-upload {
-    margin: 15px 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .button-container {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 15px;
-  }
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}

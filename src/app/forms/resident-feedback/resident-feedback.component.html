@@ -1,47 +1,49 @@
 <div class="content-container">
-    <mat-card>
-      <mat-card-title>Submit Resident Feedback</mat-card-title>
-      <mat-card-content>
-        <form (ngSubmit)="submit()">
-          <mat-form-field appearance="outline">
-            <mat-label>Name</mat-label>
-            <input matInput [(ngModel)]="formData.name" name="name" readonly>
-          </mat-form-field>
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Phone</mat-label>
-            <input matInput [(ngModel)]="formData.phone" name="phone" type="tel" readonly>
-          </mat-form-field>
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Email</mat-label>
-            <input matInput [(ngModel)]="formData.email" name="email" type="email" readonly>
-          </mat-form-field>
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Unit #</mat-label>
-            <input matInput [(ngModel)]="formData.unit" name="unit" type="number" readonly>
-          </mat-form-field>
-  
-          <mat-form-field appearance="outline">
-            <mat-label>Description</mat-label>
-            <textarea matInput [(ngModel)]="formData.description" name="description" rows="5" required></textarea>
-            <mat-error *ngIf="!formData.description">Description is required</mat-error>
-          </mat-form-field>
-  
-          <div class="file-upload">
-            <button mat-raised-button color="primary" type="button" (click)="openPhotoFileDialog()">
-              Upload Photo
-            </button>
-            <input #photoFile type="file" accept="image/*" (change)="onFileChangePhoto($event)" style="display: none;">
+  <p-card>
+    <ng-template #title>Submit Resident Feedback</ng-template>
+    <div class="card-content">
+      <p-fluid>
+        <div class="form-container">
+          <div class="field">
+            <label for="name">Name</label>
+            <input pInputText id="name" [(ngModel)]="formData.name" readonly />
+          </div>
+
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input pInputText id="phone" [(ngModel)]="formData.phone" type="tel" readonly />
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input pInputText id="email" [(ngModel)]="formData.email" type="email" readonly />
+          </div>
+
+          <div class="field">
+            <label for="unit">Unit #</label>
+            <input pInputText id="unit" [(ngModel)]="formData.unit" type="number" readonly />
+          </div>
+
+          <div class="field">
+            <label for="description">Description</label>
+            <textarea pInputTextarea id="description" [(ngModel)]="formData.description" rows="5" required style="display: block; width: 100%;"></textarea>
+            <small *ngIf="!formData.description" class="p-error">Description is required</small>
+          </div>
+
+          <div class="field file-upload">
+            <p-button label="Upload Photo" (click)="openPhotoFileDialog()"></p-button>
+            <input #photoFile type="file" accept="image/*" (change)="onFileChangePhoto($event)" style="display: none;" />
             <span *ngIf="filePhoto">{{ filePhoto.name }}</span>
           </div>
-  
-          <div class="button-container">
-            <button mat-raised-button color="primary" type="submit">Submit</button>
-            <button mat-raised-button color="warn" type="button" (click)="cancel()">Cancel</button>
+
+          <div class="field">
+            <p-button label="Submit" (click)="submit()"></p-button>
           </div>
-        </form>
-      </mat-card-content>
-    </mat-card>
-  </div>
+          <div class="field">
+            <p-button label="Cancel" (click)="cancel()" severity="secondary"></p-button>
+          </div>
+        </div>
+      </p-fluid>
+    </div>
+  </p-card>
+</div>

@@ -1,19 +1,21 @@
-mat-card {
-    margin: 10px;
-  }
-  
-  mat-form-field {
-    width: 100%;
-    margin-bottom: 15px;
-  }
-  
-  .button-container {
-    display: flex;
-    gap: 10px;
-    justify-content: flex-end;
-    margin-top: 15px;
-  }
-  
-  button {
-    width: auto;
-  }
+
+
+.form-container {
+  width: 260px;
+  margin: 0 auto;
+}
+
+.field {
+  margin-bottom: 15px;
+}
+
+p-button {
+  width: 100%; /* FluidModule ensures this */
+  padding: 8px;
+  font-size: 14px;
+}
+
+p-error {
+  color: #dc2626; /* Red color for errors, adjust as needed */
+  font-size: 12px;
+}

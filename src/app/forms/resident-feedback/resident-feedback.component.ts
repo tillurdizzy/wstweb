@@ -1,33 +1,24 @@
 import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast'; // Replaced MatDialogModule
+import { MessageService } from 'primeng/api'; // For toast messages
+import { FormsModule } from '@angular/forms'; // For ngModel
+import { RouterModule } from '@angular/router'; // For navigation
 import { SupabaseService } from '../../services/supabase.service';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { DialogComponent } from '../../dialog/dialog.component';
+import { FluidModule } from 'primeng/fluid';
 
 @Component({
   selector: 'app-resident-feedback',
   standalone: true,
-  imports: [
-    CommonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
-    FormsModule,
-    MatDialogModule,
-    DialogComponent,
-  ],
+  imports: [CommonModule, CardModule, InputTextModule, ButtonModule, ToastModule, FormsModule, RouterModule, FluidModule, TextareaModule],
   templateUrl: './resident-feedback.component.html',
   styleUrls: ['./resident-feedback.component.scss'],
+  providers: [MessageService], // Provide MessageService for toast
 })
 export class ResidentFeedbackComponent implements OnInit {
   formData: any = {
@@ -44,9 +35,8 @@ export class ResidentFeedbackComponent implements OnInit {
 
   @ViewChild('photoFile') photoFileInput!: ElementRef<HTMLInputElement>;
 
-  private dialog = inject(MatDialog);
+  private messageService = inject(MessageService); // Inject MessageService for toast
   private router = inject(Router);
-  private snackBar = inject(MatSnackBar);
 
   constructor(private supabaseService: SupabaseService) {}
 
@@ -133,7 +123,7 @@ export class ResidentFeedbackComponent implements OnInit {
         description: this.formData.description,
         photo: photoUrl,
         owner_id: this.formData.owner_id,
-        type: 'ResidentFeedback', // Set form type
+        type: 'ResidentFeedback',
         category: null,
       });
     if (error) {
@@ -141,10 +131,7 @@ export class ResidentFeedbackComponent implements OnInit {
       alert('Failed to submit resident feedback: ' + error.message);
     } else {
       console.log('Resident feedback submitted successfully');
-      this.dialog.open(DialogComponent, {
-        width: '300px',
-        data: { message: 'Resident feedback submitted successfully!' },
-      });
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Resident feedback submitted successfully!' });
       this.formData.description = ''; // Clear description
     }
   }

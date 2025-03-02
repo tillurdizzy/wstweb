@@ -1,37 +1,39 @@
+<!-- hoa-dues.component.html -->
 <div class="content-container">
-    <mat-card>
-      <mat-card-title>How to Pay Your HOA Dues</mat-card-title>
-      <mat-card-content>
-        <p>
-          Your first step should be creating your login with our management company. Please follow the link provided below:
-        </p>
-        <p>
-          <a href="https://frontsteps.cloud/CaliberWeb2_MarshallMgmt#!#/" target="_blank" rel="noopener noreferrer">
-            Create Login
-          </a>
-        </p>
-  
-        <p>
-          After you have completed your first step and you are aware of your HOA dues amount, the second step is accessing
-          the payment platform: <strong>CIT</strong> as the payment platform.
-        </p>
-  
-        <p>
-          You may pay online via ACH (bank account) with no additional fees. Follow these steps:
-        </p>
+  <p-card>
+    <ng-template #title>How to Pay Your HOA Dues</ng-template>
+    <div class="card-content">
+      <p>
+        Your first step should be creating your login with our management company. Please follow the link provided below:
+      </p>
+      <p>
+        <a href="https://frontsteps.cloud/CaliberWeb2_MarshallMgmt#!#/" target="_blank" rel="noopener noreferrer">
+          Create Login
+        </a>
+      </p>
+
+      <h3>Payment Instructions</h3>
+      <p>
+        After you have completed your first step and you are aware of your HOA dues amount, the second step is accessing
+        the payment platform: <strong>CIT</strong> as the payment platform.
+      </p>
+
+      <p>
+        You may pay online via ACH (bank account) with no additional fees. Follow these steps:
+      </p>
+      <ul>
+        <li>
+          Click here to pay online:
+          <a href="https://propertypay.cit.com/" target="_blank" rel="noopener noreferrer">Pay Now</a>
+        </li>
+        <li>Fill in the short form to include the following:</li>
         <ul>
-          <li>
-            Click here to pay online:
-            <a href="https://propertypay.cit.com/" target="_blank" rel="noopener noreferrer">Pay Now</a>
-          </li>
-          <li>Fill in the short form to include the following:</li>
-          <ul>
-            <li>Property mailing address</li>
-            <li>Management Company ID: 3101 (“Marshall Management Group, Inc. TX” will appear underneath)</li>
-            <li>Association ID: WESQ (“Westbury Square Townhomes, Inc.” will appear underneath)</li>
-            <li>Property Account Number: enter your mailing address</li>
-          </ul>
+          <li>Property mailing address</li>
+          <li>Management Company ID: 3101 (“Marshall Management Group, Inc. TX” will appear underneath)</li>
+          <li>Association ID: WESQ (“Westbury Square Townhomes, Inc.” will appear underneath)</li>
+          <li>Property Account Number: enter your mailing address</li>
         </ul>
-      </mat-card-content>
-    </mat-card>
-  </div>
+      </ul>
+    </div>
+  </p-card>
+</div>

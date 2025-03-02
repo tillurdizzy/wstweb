@@ -1,33 +1,39 @@
-<mat-card>
-    <mat-card-title>Edit Resident</mat-card-title>
-    <mat-card-content>
-      <form (ngSubmit)="save()">
-        <mat-form-field appearance="outline">
-          <mat-label>First Name</mat-label>
-          <input matInput [(ngModel)]="resident.firstname" name="firstname" required>
-          <mat-error *ngIf="!resident.firstname">First Name is required</mat-error>
-        </mat-form-field>
-  
-        <mat-form-field appearance="outline">
-          <mat-label>Last Name</mat-label>
-          <input matInput [(ngModel)]="resident.lastname" name="lastname" required>
-          <mat-error *ngIf="!resident.lastname">Last Name is required</mat-error>
-        </mat-form-field>
-  
-        <mat-form-field appearance="outline">
-          <mat-label>Phone</mat-label>
-          <input matInput [(ngModel)]="resident.cell" name="cell" type="tel">
-        </mat-form-field>
-  
-        <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
-          <input matInput [(ngModel)]="resident.email" name="email" type="email">
-        </mat-form-field>
-  
-        <div class="button-container">
-          <button mat-raised-button color="primary" type="submit">Save</button>
-          <button mat-raised-button color="warn" type="button" (click)="cancel()">Cancel</button>
+<div class="content-container">
+  <p-card>
+    <ng-template #title>Edit Resident</ng-template>
+    <div class="card-content">
+      <p-fluid>
+        <div class="form-container">
+          <div class="field">
+            <label for="firstname">First Name</label>
+            <input pInputText id="firstname" [(ngModel)]="resident.firstname" required />
+            <small *ngIf="!resident.firstname" class="p-error">First Name is required</small>
+          </div>
+
+          <div class="field">
+            <label for="lastname">Last Name</label>
+            <input pInputText id="lastname" [(ngModel)]="resident.lastname" required />
+            <small *ngIf="!resident.lastname" class="p-error">Last Name is required</small>
+          </div>
+
+          <div class="field">
+            <label for="cell">Phone</label>
+            <input pInputText id="cell" [(ngModel)]="resident.cell" type="tel" />
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input pInputText id="email" [(ngModel)]="resident.email" type="email" />
+          </div>
+
+          <div class="field">
+            <p-button label="Save" (click)="save()"></p-button>
+          </div>
+          <div class="field">
+            <p-button label="Cancel" (click)="cancel()" severity="secondary"></p-button>
+          </div>
         </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+      </p-fluid>
+    </div>
+  </p-card>
+</div>

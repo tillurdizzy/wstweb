@@ -13,7 +13,7 @@
         </p-select>
       </p-fluid>
 
-      <p-fluid *ngIf="units.length > 0; else noUnits">
+      <p-fluid *ngIf="units.length > 0; else loading">
         <div class="details-section">
           <h3>Owner</h3>
           <ul *ngIf="owner">
@@ -72,8 +72,8 @@
           <p-button [routerLink]="['/add-vehicle']" label="Add Vehicle"></p-button>
         </div>
       </p-fluid>
-      <ng-template #noUnits>
-        <p>No units assigned.</p>
+      <ng-template #loading>
+        <p-message severity="info" [closable]="false" text="Fetching data..." icon="pi pi-download"></p-message>
       </ng-template>
     </div>
   </p-card>

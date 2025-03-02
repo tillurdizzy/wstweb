@@ -1,42 +1,58 @@
+<!-- admin.component.html -->
 <div class="content-container">
-  <mat-card>
-    <mat-card-title>Admin Dashboard</mat-card-title>
-    <mat-card-content>
+  <p-card>
+    <ng-template #title>Admin Dashboard</ng-template>
+    <div class="card-content">
       <div class="search-input">
         <div class="search-section">
-          <mat-form-field appearance="outline">
-            <mat-label>Unit Number</mat-label>
-            <input matInput type="number" [(ngModel)]="unitNumber" (keyup)="checkUnitNumber()">
-            <hr class="divider" />
-            <button mat-raised-button color="primary" [disabled]="!this.checkUnitNumber()"
-              (click)="goToUnit()">Search</button>
-          </mat-form-field>
+          <label for="unitNumber">Unit Number</label>
+          <input pInputText id="unitNumber" type="number" [(ngModel)]="unitNumber" (keyup)="checkUnitNumber()" />
+          <hr class="divider" />
+          <p-button 
+            label="Search" 
+            [disabled]="!this.checkUnitNumber()" 
+            (click)="goToUnit()">
+          </p-button>
         </div>
 
         <div class="search-section">
-          <mat-form-field appearance="outline">
-            <mat-label>Search Owner by Name</mat-label>
-            <input matInput [(ngModel)]="searchName" (keyup)="searchOwners()">
-          </mat-form-field>
+          <label for="searchName">Search Owner by Name</label>
+          <input pInputText id="searchName" [(ngModel)]="searchName" (keyup)="searchOwners()" />
         </div>
       </div>
-
 
       <div class="search-section">
         <ul *ngIf="searchResults.length > 0">
           <li *ngFor="let owner of searchResults">
-            <button mat-icon-button color="primary" (click)="viewOwnerUnits(owner.owner_id)">
-              <mat-icon>visibility</mat-icon>
-            </button>
+            <p-button 
+              icon="pi pi-eye" 
+              styleClass="p-button-text" 
+              (click)="viewOwnerUnits(owner.owner_id)">
+            </p-button>
             {{ owner.firstname }} {{ owner.lastname }} ({{ owner.unitCount }} units)
-            <button *ngIf="unitNumber && allUnits.includes(unitNumber)" mat-icon-button color="accent"
+            <p-button 
+              *ngIf="unitNumber && allUnits.includes(unitNumber)" 
+              icon="pi pi-link" 
+              styleClass="p-button-text p-button-secondary" 
               (click)="updateOwnerUnit(owner.owner_id, unitNumber)">
-              <mat-icon>link</mat-icon>
-            </button>
+            </p-button>
           </li>
         </ul>
         <p *ngIf="searchName && searchResults.length === 0">No matches found.</p>
       </div>
-    </mat-card-content>
-  </mat-card>
+
+      <div class="upload-section">
+        <p-button label="Upload Newsletter" (click)="openNewsletterFileDialog()"></p-button>
+        <input #newsletterFile type="file" accept="application/pdf" (change)="onFileChangeNewsletter($event)" style="display: none;" />
+        <span *ngIf="fileNewsletter">{{ fileNewsletter.name }}</span>
+      </div>
+
+      <div class="upload-section">
+        <p-button label="Upload Report" (click)="openReportFileDialog()"></p-button>
+        <input #reportFile type="file" accept="application/pdf" (change)="onFileChangeReport($event)" style="display: none;" />
+        <span *ngIf="fileReport">{{ fileReport.name }}</span>
+      </div>
+    </div>
+  </p-card>
 </div>
+<p-toast></p-toast>

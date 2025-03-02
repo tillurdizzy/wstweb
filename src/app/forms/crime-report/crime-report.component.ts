@@ -1,33 +1,34 @@
 import { Component, OnInit, ViewChild, ElementRef, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { TextareaModule } from 'primeng/textarea';
+import { ButtonModule } from 'primeng/button';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { FormsModule } from '@angular/forms';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { DialogComponent } from '../../dialog/dialog.component';
+import { FluidModule } from 'primeng/fluid';
 
 @Component({
   selector: 'app-crime-report',
   standalone: true,
   imports: [
     CommonModule,
-    MatCardModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatIconModule,
+    CardModule,
+    InputTextModule,
+    TextareaModule,
+    ButtonModule,
+    ToastModule,
     FormsModule,
-    MatDialogModule,
-    DialogComponent,
+    RouterModule,
+    FluidModule
   ],
   templateUrl: './crime-report.component.html',
   styleUrls: ['./crime-report.component.scss'],
+  providers: [MessageService]
 })
 export class CrimeReportComponent implements OnInit {
   formData: any = {
@@ -44,9 +45,8 @@ export class CrimeReportComponent implements OnInit {
 
   @ViewChild('photoFile') photoFileInput!: ElementRef<HTMLInputElement>;
 
-  private dialog = inject(MatDialog);
+  private messageService = inject(MessageService);
   private router = inject(Router);
-  private snackBar = inject(MatSnackBar);
 
   constructor(private supabaseService: SupabaseService) {}
 
@@ -133,7 +133,7 @@ export class CrimeReportComponent implements OnInit {
         description: this.formData.description,
         photo: photoUrl,
         owner_id: this.formData.owner_id,
-        type: 'Crime', // Set form type
+        type: 'Crime',
         category: null,
       });
     if (error) {
@@ -141,11 +141,12 @@ export class CrimeReportComponent implements OnInit {
       alert('Failed to submit crime report: ' + error.message);
     } else {
       console.log('Crime report submitted successfully');
-      this.dialog.open(DialogComponent, {
-        width: '300px',
-        data: { message: 'Crime report submitted successfully!' },
+      this.messageService.add({ 
+        severity: 'success', 
+        summary: 'Success', 
+        detail: 'Crime report submitted successfully!' 
       });
-      this.formData.description = ''; // Clear description
+      this.formData.description = '';
     }
   }
 
