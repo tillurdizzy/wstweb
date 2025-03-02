@@ -1,8 +1,6 @@
 <div class="login-container">
   <p-card>
     <ng-template #title>Log In</ng-template>
-
-
     <div>
       <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
         <p-fluid>
@@ -38,19 +36,17 @@
             </div>
 
             <div class="field">
-              <p-button label="Forgot Password?"
+              <p-button label="Reset Password"
                 (click)="resetPassword()" severity="info"></p-button>
             </div>
-      
         </div>
       </p-fluid>
       </form>
 
       <hr class="custom-divider" />
       <h4 class="first-time-title">First-time Users</h4>
-
       <p class="instructions">
-        Enter your email, click "Forgot Password" to set up your account, then log in with your new password.
+        If you are a first-time user, please enter your email and click "Reset Password" to set up your account.
       </p>
     </div>
   </p-card>

@@ -1152,7 +1152,7 @@ export const MyPreset = definePreset(Aura, {
                 width: "1.25rem",
                 height: "1.25rem",
                 background: "{form.field.background}",
-                checkedBackground: "{primary.color}",
+                checkedBackground: "{primary.100}",
                 checkedHoverBackground: "{primary.hover.color}",
                 disabledBackground: "{form.field.disabled.background}",
                 filledBackground: "{form.field.filled.background}",
@@ -1182,10 +1182,13 @@ export const MyPreset = definePreset(Aura, {
                     height: "1.5rem"
                 }
             },
+            label: {
+                color: '#333', // Customize label color globally
+              },
             icon: {
                 size: "0.875rem",
                 color: "{form.field.color}",
-                checkedColor: "{primary.contrast.color}",
+                checkedColor: "{primary.800}",
                 checkedHoverColor: "{primary.contrast.color}",
                 disabledColor: "{form.field.disabled.color}",
                 sm: {

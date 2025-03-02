@@ -1,22 +1,26 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CardModule } from 'primeng/card';
+import { SelectModule } from 'primeng/select'; // For p-select
+import { ButtonModule } from 'primeng/button';
+import { FormsModule } from '@angular/forms'; // Added for ngModel support
+import { RouterModule } from '@angular/router'; // Added for routerLink
 import { SupabaseService } from '../../services/supabase.service';
 import { UnitService } from '../../services/unit.service';
 import { ActivatedRoute } from '@angular/router';
-import { CommonModule } from '@angular/common';
-
-import { FormsModule } from '@angular/forms';
-
-import { RouterModule } from '@angular/router';
+import { FluidModule } from 'primeng/fluid';
 
 @Component({
   selector: 'app-units',
   standalone: true,
   imports: [
     CommonModule,
-
+    CardModule,
+    SelectModule,
+    ButtonModule,
     FormsModule,
-
-    RouterModule,
+    RouterModule, // Ensure RouterModule is imported
+    FluidModule,
   ],
   templateUrl: './units.component.html',
   styleUrls: ['./units.component.scss'],
@@ -74,7 +78,7 @@ export class UnitsComponent implements OnInit {
         if (unitDataError) {
           console.error('Error fetching unit data:', unitDataError.message);
         } else {
-          this.units = [unitData];
+          this.units = [{ unit: unitData.unit, owner_occupied: unitData.owner_occupied }];
           this.ownerOccupied = unitData.owner_occupied;
         }
       }
@@ -100,7 +104,7 @@ export class UnitsComponent implements OnInit {
         if (error) {
           console.error('Error fetching units:', error.message);
         } else {
-          this.units = data.map((uo: any) => uo.units) || [];
+          this.units = data.map((uo: any) => ({ unit: uo.units.unit, owner_occupied: uo.units.owner_occupied })) || [];
         }
       }
     }
@@ -115,7 +119,7 @@ export class UnitsComponent implements OnInit {
     }
   }
 
-  async loadUnitDetails(unit: number) {
+  async loadUnitDetails(unit: number | null) {
     const { data: resData, error: resError } = await this.supabaseService.client
       .from('residents')
       .select('id, firstname, lastname, cell, email')
@@ -137,8 +141,10 @@ export class UnitsComponent implements OnInit {
     }
   }
 
-  async onUnitChange() {
-    if (this.selectedUnit !== null) {
+  async onUnitChange(event: any) {
+    const newUnit = event.value; // Get the selected unit value from the event
+    if (newUnit !== null) {
+      this.selectedUnit = newUnit;
       this.unitService.setSelectedUnit(this.selectedUnit);
       await this.loadUnitDetails(this.selectedUnit);
     }

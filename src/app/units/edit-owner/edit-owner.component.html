@@ -1,49 +1,55 @@
 <div class="content-container">
+  <p-card>
+    <ng-template #title>Edit Owner</ng-template>
+    <div class="card-content">
+      <p-fluid>
+        <div class="form-container">
+          <div class="field">
+            <label for="firstname">First Name</label>
+            <input pInputText id="firstname" [(ngModel)]="owner.firstname" required />
+            <small *ngIf="!owner.firstname" class="p-error">First Name is required</small>
+          </div>
 
-  <mat-card>
-    <mat-card-title>Edit Owner</mat-card-title>
-    <mat-card-content>
-      <form (ngSubmit)="save()">
-        <mat-form-field appearance="outline">
-          <mat-label>First Name</mat-label>
-          <input matInput [(ngModel)]="owner.firstname" name="firstname" required>
-          <mat-error *ngIf="!owner.firstname">First Name is required</mat-error>
-        </mat-form-field>
+          <div class="field">
+            <label for="lastname">Last Name</label>
+            <input pInputText id="lastname" [(ngModel)]="owner.lastname" required />
+            <small *ngIf="!owner.lastname" class="p-error">Last Name is required</small>
+          </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Last Name</mat-label>
-          <input matInput [(ngModel)]="owner.lastname" name="lastname" required>
-          <mat-error *ngIf="!owner.lastname">Last Name is required</mat-error>
-        </mat-form-field>
+          <div class="field">
+            <label for="email">Email</label>
+            <input pInputText id="email" [(ngModel)]="owner.email" type="email" required />
+            <small *ngIf="!owner.email" class="p-error">Email is required</small>
+          </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Email</mat-label>
-          <input matInput [(ngModel)]="owner.email" name="email" type="email" required>
-          <mat-error *ngIf="!owner.email">Email is required</mat-error>
-        </mat-form-field>
+          <div class="field">
+            <label for="cell">Phone</label>
+            <input pInputText id="cell" [(ngModel)]="owner.cell" type="tel" />
+          </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Phone</mat-label>
-          <input matInput [(ngModel)]="owner.cell" name="cell" type="tel">
-        </mat-form-field>
+          <div class="field">
+            <label for="street">Street</label>
+            <input pInputText id="street" [(ngModel)]="owner.street" />
+          </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Street</mat-label>
-          <input matInput [(ngModel)]="owner.street" name="street">
-        </mat-form-field>
+          <div class="field">
+            <label for="csz">City, State, Zip</label>
+            <input pInputText id="csz" [(ngModel)]="owner.csz" />
+          </div>
 
-        <mat-form-field appearance="outline">
-          <mat-label>City, State, Zip</mat-label>
-          <input matInput [(ngModel)]="owner.csz" name="csz">
-        </mat-form-field>
+          <div class="field">
+            <p-checkbox [(ngModel)]="owner.is_admin" binary="true"></p-checkbox>
+            <label for="is_admin" class="checkbox-label">Is Admin</label>
+          </div>
 
-        <mat-checkbox [(ngModel)]="owner.is_admin" name="is_admin">Is Admin</mat-checkbox>
-
-        <div class="button-container">
-          <button mat-raised-button color="primary" type="submit">Save</button>
-          <button mat-raised-button color="warn" type="button" (click)="cancel()">Cancel</button>
+          <div class="field">
+            <p-button label="Save" (click)="save()"></p-button>
+          </div>
+          <div class="field">
+            <p-button label="Cancel" (click)="cancel()" severity="secondary"></p-button>
+          </div>
         </div>
-      </form>
-    </mat-card-content>
-  </mat-card>
+      </p-fluid>
+    </div>
+  </p-card>
 </div>

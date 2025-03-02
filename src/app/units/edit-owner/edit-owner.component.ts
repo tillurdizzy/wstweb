@@ -1,18 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { CardModule } from 'primeng/card';
+import { InputTextModule } from 'primeng/inputtext';
+import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
+import { FormsModule } from '@angular/forms'; // For ngModel
 import { SupabaseService } from '../../services/supabase.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
-import { MatCardModule } from '@angular/material/card';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
-import { FormsModule } from '@angular/forms';
+import { FluidModule } from 'primeng/fluid';
 
 @Component({
   selector: 'app-edit-owner',
   standalone: true,
-  imports: [CommonModule, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatCheckboxModule, FormsModule],
+  imports: [CommonModule, CardModule, InputTextModule, ButtonModule, CheckboxModule, FormsModule, FluidModule],
   templateUrl: './edit-owner.component.html',
   styleUrls: ['./edit-owner.component.scss'],
 })
@@ -64,7 +64,6 @@ export class EditOwnerComponent implements OnInit {
       alert('Failed to update owner: ' + error.message);
     } else {
       console.log('Owner updated successfully');
-      // Find the unit this owner is editing (assuming one unit for simplicity)
       const { data: unitData, error: unitError } = await this.supabaseService.client
         .from('unit_owners')
         .select('unit')
@@ -73,7 +72,7 @@ export class EditOwnerComponent implements OnInit {
         .single();
       if (unitError) {
         console.error('Error fetching unit:', unitError.message);
-        this.router.navigate(['/units']); // Fallback
+        this.router.navigate(['/units']);
       } else {
         this.router.navigate(['/units'], { queryParams: { unit: unitData.unit } });
       }
@@ -81,7 +80,6 @@ export class EditOwnerComponent implements OnInit {
   }
 
   async cancel() {
-    // Find the unit this owner is editing when canceling
     const { data: unitData, error: unitError } = await this.supabaseService.client
       .from('unit_owners')
       .select('unit')
@@ -90,7 +88,7 @@ export class EditOwnerComponent implements OnInit {
       .single();
     if (unitError) {
       console.error('Error fetching unit:', unitError.message);
-      this.router.navigate(['/units']); // Fallback
+      this.router.navigate(['/units']);
     } else {
       this.router.navigate(['/units'], { queryParams: { unit: unitData.unit } });
     }

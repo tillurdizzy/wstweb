@@ -8,7 +8,6 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
-import { DividerModule } from 'primeng/divider';
 import { ToastModule } from 'primeng/toast'; // For snackbar-like feedback
 import { MessageService } from 'primeng/api';
 import { FluidModule } from 'primeng/fluid';
@@ -25,7 +24,6 @@ import { FluidModule } from 'primeng/fluid';
     PasswordModule,
     ToastModule,
     FloatLabelModule,
-    DividerModule,
     FluidModule
   ],
   templateUrl: './login.component.html',
@@ -60,7 +58,6 @@ export class LoginComponent {
       if (error) {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message ?? 'An unknown error occurred' });
       } else if (data.user) {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Login successful!' });
         this.router.navigate(['/home']);
       }
     } catch (error) {

@@ -5,11 +5,12 @@ import { ButtonModule } from 'primeng/button';
 import { SupabaseService } from '../services/supabase.service';
 import { Router } from '@angular/router';
 import { FluidModule } from 'primeng/fluid';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, CardModule, ButtonModule,FluidModule], 
+  imports: [CommonModule, CardModule, ButtonModule,FluidModule,RouterModule], 
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss'],
 })
