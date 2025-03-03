@@ -50,25 +50,67 @@ export const routes: Routes = [
           { path: 'hoa-dues', component: HoaDuesComponent, title: 'HOA Dues' },
           {
             path: 'forms',
-            component: FormsListComponent,
+            loadComponent: () => import('./forms/forms-list/forms-list.component').then(m => m.FormsListComponent),
             children: [
               { path: '', redirectTo: 'work-order', pathMatch: 'full' },
-              { path: 'work-order', component: WorkOrderComponent, title: 'Work Order' },
-              { path: 'violation-report', component: ViolationReportComponent, title: 'Violation Report' },
-              { path: 'crime-report', component: CrimeReportComponent, title: 'Crime Report' },
-              { path: 'arch-request', component: ArchRequestComponent, title: 'Architectural Request' },
-              { path: 'billing-inquiry', component: BillingInquiryComponent, title: 'Billing Inquiry' },
-              { path: 'resident-feedback', component: ResidentFeedbackComponent, title: 'Resident Feedback' },
+              { 
+                path: 'work-order', 
+                loadComponent: () => import('./forms/work-order/work-order.component').then(m => m.WorkOrderComponent),
+                title: 'Work Order' 
+              },
+              { 
+                path: 'violation-report', 
+                loadComponent: () => import('./forms/violation-report/violation-report.component').then(m => m.ViolationReportComponent),
+                title: 'Violation Report' 
+              },
+              { 
+                path: 'crime-report', 
+                loadComponent: () => import('./forms/crime-report/crime-report.component').then(m => m.CrimeReportComponent),
+                title: 'Crime Report' 
+              },
+              { 
+                path: 'arch-request', 
+                loadComponent: () => import('./forms/arch-request/arch-request.component').then(m => m.ArchRequestComponent),
+                title: 'Architectural Request' 
+              },
+              { 
+                path: 'billing-inquiry', 
+                loadComponent: () => import('./forms/billing-inquiry/billing-inquiry.component').then(m => m.BillingInquiryComponent),
+                title: 'Billing Inquiry' 
+              },
+              { 
+                path: 'resident-feedback', 
+                loadComponent: () => import('./forms/resident-feedback/resident-feedback.component').then(m => m.ResidentFeedbackComponent),
+                title: 'Resident Feedback' 
+              },
             ],
+          },
+
+        ],
+      },
+      { path: 'board',
+        loadComponent: () => import('./board/board.component').then(m => m.BoardComponent),
+        canActivate: [authGuard],
+        children: [
+          { path: '', redirectTo: 'home', pathMatch: 'full' },
+          { 
+            path: 'home', 
+            loadComponent: () => import('./board/board-home/board-home.component').then(m => m.BoardHomeComponent),
+            title: 'Board Home' 
+          },
+          { 
+            path: 'newsletter', 
+            loadComponent: () => import('./board/newsletter/newsletter.component').then(m => m.NewsletterComponent),
+            title: 'Newsletter' 
+          },
+          { 
+            path: 'reports', 
+            loadComponent: () => import('./board/reports/reports.component').then(m => m.ReportsComponent),
+            title: 'Financial' 
           },
         ],
       },
-      { path: 'board', component: BoardComponent, canActivate: [authGuard], children: [
-        { path: '', redirectTo: 'home', pathMatch: 'full' },
-        { path: 'home', component: BoardHomeComponent, title: 'Board Home' },
-        { path: 'newsletter', component: NewsletterComponent, title: 'Newsletter' },
-        { path: 'reports', component: ReportsComponent, title: 'Financial' },
-      ]},
+
       { path: 'committees',
         component: CommitteesComponent,
         canActivate: [authGuard],
