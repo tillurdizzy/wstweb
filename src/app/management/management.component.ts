@@ -1,33 +1,37 @@
-import { Component, OnInit, AfterViewInit, ViewChild, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { CardModule } from 'primeng/card';
-import { ButtonModule } from 'primeng/button';
-import { MenuModule } from 'primeng/menu'; // For p-menu
+import { Component } from '@angular/core';
+import { MenubarModule } from 'primeng/menubar'; // Replace MenuModule with MenubarModule
 import { RouterModule } from '@angular/router';
-import { Menu } from 'primeng/menu'; // Import the Menu component type
-import { MenuItem } from 'primeng/api'; // For menu items
-import { FluidModule } from 'primeng/fluid';
+import { MenuItem } from 'primeng/api';
 
 @Component({
   selector: 'app-management',
   standalone: true,
   imports: [
-    CommonModule,
-    CardModule,
-    ButtonModule,
-    MenuModule,
     RouterModule,
-    FluidModule,
+    MenubarModule,
   ],
   templateUrl: './management.component.html',
   styleUrls: ['./management.component.scss'],
 })
-export class ManagementComponent implements OnInit, AfterViewInit {
+export class ManagementComponent {
   items: MenuItem[] = [
-    { label: 'Information', routerLink: '/management/information' },
-    { label: 'HOA Dues', routerLink: '/management/hoa-dues' },
+    {
+      label: 'Management',
+      icon: 'pi pi-home', 
+      items: [
+        { 
+          label: 'Information',       
+          routerLink: '/management/information' 
+        },
+        { 
+          label: 'HOA Dues', 
+          routerLink: '/management/hoa-dues' 
+        },
+      ],
+    },
     {
       label: 'Forms',
+      icon: 'pi pi-file-arrow-up', 
       items: [
         { label: 'Work Order', routerLink: '/management/forms/work-order' },
         { label: 'Resident Feedback', routerLink: '/management/forms/resident-feedback' },
@@ -38,19 +42,4 @@ export class ManagementComponent implements OnInit, AfterViewInit {
       ],
     },
   ];
-
-  @ViewChild('menu') menu!: Menu; // Use the Menu type from primeng/menu
-
-  constructor() {}
-
-  ngOnInit() {}
-
-  ngAfterViewInit() {
-    // Ensure the menu is available after the view is initialized
-    console.log('Menu instance:', this.menu); // Debug to confirm
-  }
-
-  toggleMenu(event: Event) {
-    this.menu.toggle(event); // Use the built-in toggle method
-  }
 }

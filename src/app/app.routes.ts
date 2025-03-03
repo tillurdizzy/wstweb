@@ -25,6 +25,7 @@ import { EditVehicleComponent } from './units/edit-vehicle/edit-vehicle.componen
 import { AddVehicleComponent } from './units/add-vehicle/add-vehicle.component';
 import { EditOwnerComponent } from './units/edit-owner/edit-owner.component';
 import { BoardComponent } from './board/board.component';
+import { BoardHomeComponent } from './board/board-home/board-home.component';
 
 export const routes: Routes = [
   {
@@ -51,14 +52,15 @@ export const routes: Routes = [
               { path: 'violation-report', component: ViolationReportComponent, title: 'Violation Report' },
               { path: 'crime-report', component: CrimeReportComponent, title: 'Crime Report' },
               { path: 'arch-request', component: ArchRequestComponent, title: 'Architectural Request' },
-              { path: 'billing-inquiry', component: BillingInquiryComponent, title: 'Billing Inquiry' }, // New
-              { path: 'resident-feedback', component: ResidentFeedbackComponent, title: 'Resident Feedback' }, // Renamed
+              { path: 'billing-inquiry', component: BillingInquiryComponent, title: 'Billing Inquiry' },
+              { path: 'resident-feedback', component: ResidentFeedbackComponent, title: 'Resident Feedback' },
             ],
           },
         ],
       },
       { path: 'board', component: BoardComponent, canActivate: [authGuard], children: [
-        { path: '', redirectTo: 'board', pathMatch: 'full' },
+        { path: '', redirectTo: 'home', pathMatch: 'full' },
+        { path: 'home', component: BoardHomeComponent, title: 'Board Home' },
         { path: 'newsletter', component: NewsletterComponent, title: 'Newsletter' },
         { path: 'reports', component: ReportsComponent, title: 'Financial' },
       ]},

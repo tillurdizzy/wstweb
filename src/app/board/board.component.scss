@@ -1,10 +1,7 @@
 /* board.component.scss */
-.menu-container {
+.content-container {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0;
-  padding: 0;
+  flex-direction: column;
 }
 
 .router-outlet {
@@ -15,4 +12,9 @@
   margin: 5px 0;
   border: 0;
   border-top: 1px solid #ccc;
+}
+
+/* Optional: Customize menubar styling if needed */
+:host ::ng-deep .p-menubar {
+  padding: 0;
 }

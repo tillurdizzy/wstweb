@@ -70,4 +70,10 @@ export class SupabaseService {
       .upsert({ pdf_path: fileName }, { onConflict: 'pdf_path' });
     if (error) throw error;
   }
+
+  async updateUser(updates: { password: string }) {
+    const { data, error } = await this.client.auth.updateUser(updates);
+    if (error) throw error;
+    return { data, error } as { data: any; error: AuthError | null };
+  }
 }

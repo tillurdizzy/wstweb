@@ -1,15 +1,20 @@
-.menu-container {
+/* management.component.scss */
+.content-container {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0; /* Adjust gap between icon and text */
-  padding: 0;
+  flex-direction: column;
 }
 
-
+.router-outlet {
+  padding: 10px;
+}
 
 .divider {
-  margin: 5px 0; /* Consistent spacing for hr */
+  margin: 5px 0;
   border: 0;
-  border-top: 1px solid #ccc; /* Optional: Customize divider style */
+  border-top: 1px solid #ccc;
+}
+
+/* Optional: Customize menubar styling if needed */
+:host ::ng-deep .p-menubar {
+  padding: 0;
 }

@@ -1,9 +1,6 @@
-import { Component, ViewChild } from '@angular/core';
-import { MenuModule } from 'primeng/menu';
-import { ButtonModule } from 'primeng/button';
+import { Component } from '@angular/core';
+import { MenubarModule } from 'primeng/menubar'; // Replace MenuModule with MenubarModule
 import { RouterModule } from '@angular/router';
-
-import { Menu } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 
 @Component({
@@ -11,9 +8,7 @@ import { MenuItem } from 'primeng/api';
   standalone: true,
   imports: [
     RouterModule,
-    MenuModule,
-    ButtonModule,
-
+    MenubarModule,
   ],
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
@@ -29,10 +24,4 @@ export class BoardComponent {
       routerLink: '/board/reports',
     },
   ];
-
-  @ViewChild('menu') menu!: Menu;
-
-  toggleMenu(event: Event) {
-    this.menu.toggle(event);
-  }
 }
