@@ -26,6 +26,11 @@ import { AddVehicleComponent } from './units/add-vehicle/add-vehicle.component';
 import { EditOwnerComponent } from './units/edit-owner/edit-owner.component';
 import { BoardComponent } from './board/board.component';
 import { BoardHomeComponent } from './board/board-home/board-home.component';
+import { CommitteesHomeComponent } from './committees/committees-home/committees-home.component';
+import { LandscapeComponent } from './committees/committees-landscape/committees-landscape.component';
+import { WelcomeCommitteeComponent } from './committees/committees-welcome/committees-welcome.component';
+import { LegalCommitteeComponent } from './committees/committees-legal/committees-legal.component';
+import { ViolationsAndParkingComponent } from './committees/committees-violations/committees-violations.component';
 
 export const routes: Routes = [
   {
@@ -64,7 +69,17 @@ export const routes: Routes = [
         { path: 'newsletter', component: NewsletterComponent, title: 'Newsletter' },
         { path: 'reports', component: ReportsComponent, title: 'Financial' },
       ]},
-      { path: 'committees', component: CommitteesComponent, canActivate: [authGuard] },
+      { path: 'committees',
+        component: CommitteesComponent,
+        canActivate: [authGuard],
+        children: [
+          { path: '', redirectTo: 'home', pathMatch: 'full' },
+          { path: 'home', component: CommitteesHomeComponent, title: 'Committees Home' },
+          { path: 'landscape', component: LandscapeComponent, title: 'Landscape Committee' },
+          { path: 'welcome', component: WelcomeCommitteeComponent, title: 'Welcome Committee' },
+          { path: 'legal', component: LegalCommitteeComponent, title: 'Legal Committee' },
+          { path: 'violations-parking', component: ViolationsAndParkingComponent, title: 'Violations and Parking' },
+        ],},
       { path: 'password-reset', title: 'Reset Password', component: PasswordResetComponent },
       { path: 'units', component: UnitsComponent, canActivate: [authGuard] },
       { path: 'edit-resident/:id', component: EditResidentComponent, canActivate: [authGuard] },

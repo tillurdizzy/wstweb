@@ -1,1 +1,17 @@
-<p>nav-error works!</p>
+<!-- nav-error.component.html -->
+<div class="error-container">
+    <p-card>
+      <ng-template #title>404 - Page Not Found</ng-template>
+      <div class="card-content">
+        <p>Oops! It looks like the page you're looking for doesn’t exist or has been moved.</p>
+        <p>Please check the URL or return to the homepage.</p>
+        <div class="field">
+          <p-button 
+            label="Back to Home" 
+            icon="pi pi-home" 
+            (click)="goHome()">
+          </p-button>
+        </div>
+      </div>
+    </p-card>
+  </div>

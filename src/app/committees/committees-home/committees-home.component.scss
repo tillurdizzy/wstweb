@@ -1,10 +1,7 @@
-/* nav-error.component.scss */
-.error-container {
+/* committees-home.component.scss */
+.content-container {
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    min-height: 100vh;
-    overflow-x: hidden;
   }
   
   p-card {
@@ -19,11 +16,6 @@
   .card-content {
     p {
       margin: 5px 0;
-    }
-  
-    .field {
-      margin-top: 15px;
-      text-align: center;
     }
   }
   
