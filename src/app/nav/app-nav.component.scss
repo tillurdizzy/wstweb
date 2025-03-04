@@ -2,8 +2,6 @@
   flex: 1 1 auto;
 }
 
-
-
 .p-button-text {
   color: white;
 }
@@ -11,4 +9,71 @@
 .p-toolbar-group-center {
   flex-grow: 1;
   text-align: center;
+}
+
+:host ::ng-deep .p-toolbar {
+  padding: 0.5rem 1rem;
+}
+
+.content-container {
+  padding-top: 1rem;
+}
+
+/* Menu Styling */
+.menu-container {
+  background-color: #f8f9fa; /* Light gray background like the example */
+  border-right: 1px solid #dee2e6; /* Subtle border */
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  color: #495057; /* Dark gray text like the example */
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+
+  &:hover {
+    background-color: #e9ecef; /* Light hover effect */
+    color: #212529; /* Darker text on hover */
+  }
+
+  &.menu-parent {
+    justify-content: space-between; /* Space between text and chevron */
+  }
+
+  i {
+    margin-right: 0.5rem; /* Space between icon and text */
+  }
+
+  &.active {
+    background-color: #dee2e6; /* Pressed/down state */
+    color: #212529;
+  }
+}
+
+.submenu {
+  list-style-type: none; /* Explicitly remove bullets */
+  &.hidden {
+    display: none; /* Hide submenus by default */
+  }
+
+  .menu-item {
+    padding-left: 2rem; /* Indent subitems */
+    background-color: #fff; /* White background for subitems */
+  }
+}
+
+/* Ensure all ul elements have no bullets or padding */
+ul {
+  list-style-type: none; /* Remove bullets globally for ul */
+  padding: 0; /* Remove default padding */
+  margin: 0; /* Remove default margin */
+}
+
+/* Ensure PrimeNG ripple works with custom styling */
+:host ::ng-deep .p-ripple {
+  overflow: hidden;
 }

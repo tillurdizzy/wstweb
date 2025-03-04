@@ -1,6 +1,263 @@
+<!-- Drawer Component -->
+<p-drawer [(visible)]="visible" [style]="{ width: '300px' }" position="left">
+  <div class="flex flex-col h-full">
+    <!-- Menu Content -->
+    <div class="overflow-y-auto">
+      <ul class="list-none p-4 m-0 menu-container">
+        <!-- Home -->
+        <li>
+          <a
+            pRipple
+            [routerLink]="['/home']"
+            class="menu-item"
+            (click)="visible = false"
+          >
+            <i class="pi pi-home"></i>
+            <span>Home</span>
+          </a>
+        </li>
+
+        <!-- My Account -->
+        <li>
+          <a
+            pRipple
+            [routerLink]="['/units']"
+            class="menu-item"
+            (click)="visible = false"
+          >
+            <i class="pi pi-user"></i>
+            <span>My Account</span>
+          </a>
+        </li>
+
+        <!-- Management -->
+        <li>
+          <div
+            pRipple
+            class="menu-item menu-parent"
+            (click)="toggleSubmenu('management')"
+          >
+            <span>Management</span>
+            <i class="pi pi-chevron-down"></i>
+          </div>
+          <ul
+            class="list-none p-0 m-0 submenu"
+            [class.hidden]="!expandedSubmenus['management']"
+          >
+            <li>
+              <a
+                pRipple
+                [routerLink]="['/management/information']"
+                class="menu-item"
+                (click)="visible = false"
+              >
+                <i class="pi pi-info-circle"></i>
+                <span>Information</span>
+              </a>
+            </li>
+            <li>
+              <div
+                pRipple
+                class="menu-item menu-parent"
+                (click)="toggleSubmenu('forms')"
+              >
+                <span>Forms</span>
+                <i class="pi pi-chevron-down"></i>
+              </div>
+              <ul
+                class="list-none p-0 m-0 submenu"
+                [class.hidden]="!expandedSubmenus['forms']"
+              >
+                <li>
+                  <a
+                    pRipple
+                    [routerLink]="['/management/forms/work-order']"
+                    class="menu-item"
+                    (click)="visible = false"
+                  >
+                    <i class="pi pi-wrench"></i>
+                    <span>Work Order</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    pRipple
+                    [routerLink]="['/management/forms/resident-feedback']"
+                    class="menu-item"
+                    (click)="visible = false"
+                  >
+                    <i class="pi pi-comments"></i>
+                    <span>Resident Feedback</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    pRipple
+                    [routerLink]="['/management/forms/billing-inquiry']"
+                    class="menu-item"
+                    (click)="visible = false"
+                  >
+                    <i class="pi pi-dollar"></i>
+                    <span>Billing Inquiry</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    pRipple
+                    [routerLink]="['/management/forms/violation-report']"
+                    class="menu-item"
+                    (click)="visible = false"
+                  >
+                    <i class="pi pi-exclamation-triangle"></i>
+                    <span>Violation Report</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    pRipple
+                    [routerLink]="['/management/forms/crime-report']"
+                    class="menu-item"
+                    (click)="visible = false"
+                  >
+                    <i class="pi pi-shield"></i>
+                    <span>Crime Report</span>
+                  </a>
+                </li>
+                <li>
+                  <a
+                    pRipple
+                    [routerLink]="['/management/forms/arch-request']"
+                    class="menu-item"
+                    (click)="visible = false"
+                  >
+                    <i class="pi pi-pencil"></i>
+                    <span>Architectural Request</span>
+                  </a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a
+                pRipple
+                [routerLink]="['/management/hoa-dues']"
+                class="menu-item"
+                (click)="visible = false"
+              >
+                <i class="pi pi-money-bill"></i>
+                <span>HOA Dues</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Board of Directors -->
+        <li>
+          <div
+            pRipple
+            class="menu-item menu-parent"
+            (click)="toggleSubmenu('board')"
+          >
+            <span>Board of Directors</span>
+            <i class="pi pi-chevron-down"></i>
+          </div>
+          <ul
+            class="list-none p-0 m-0 submenu"
+            [class.hidden]="!expandedSubmenus['board']"
+          >
+            <li>
+              <a
+                pRipple
+                [routerLink]="['/board/newsletter']"
+                class="menu-item"
+                (click)="visible = false"
+              >
+                <i class="pi pi-book"></i>
+                <span>Newsletter</span>
+              </a>
+            </li>
+            <li>
+              <a
+                pRipple
+                [routerLink]="['/board/reports']"
+                class="menu-item"
+                (click)="visible = false"
+              >
+                <i class="pi pi-chart-bar"></i>
+                <span>Financial Reports</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+
+        <!-- Committees -->
+        <li>
+          <div
+            pRipple
+            class="menu-item menu-parent"
+            (click)="toggleSubmenu('committees')"
+          >
+            <span>Committees</span>
+            <i class="pi pi-chevron-down"></i>
+          </div>
+          <ul
+            class="list-none p-0 m-0 submenu"
+            [class.hidden]="!expandedSubmenus['committees']"
+          >
+            <li>
+              <a
+                pRipple
+                [routerLink]="['/committees/landscape']"
+                class="menu-item"
+                (click)="visible = false"
+              >
+                <i class="pi pi-leaf"></i>
+                <span>Landscape</span>
+              </a>
+            </li>
+            <li>
+              <a
+                pRipple
+                [routerLink]="['/committees/welcome']"
+                class="menu-item"
+                (click)="visible = false"
+              >
+                <i class="pi pi-users"></i>
+                <span>Welcome</span>
+              </a>
+            </li>
+            <li>
+              <a
+                pRipple
+                [routerLink]="['/committees/legal']"
+                class="menu-item"
+                (click)="visible = false"
+              >
+                <i class="pi pi-gavel"></i>
+                <span>Legal</span>
+              </a>
+            </li>
+            <li>
+              <a
+                pRipple
+                [routerLink]="['/committees/violations-parking']"
+                class="menu-item"
+                (click)="visible = false"
+              >
+                <i class="pi pi-car"></i>
+                <span>Parking & Violations</span>
+              </a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</p-drawer>
+
+<!-- Toolbar -->
 <p-toolbar>
   <div class="p-toolbar-group-start">
-    <p-button icon="pi pi-home" (click)="goHome()" severity="secondary"></p-button>
+    <p-button icon="pi pi-bars" (click)="toggleDrawer()" severity="secondary"></p-button>
   </div>
   <div class="p-toolbar-group-center">
     <span>WST Owners Portal</span>
@@ -9,6 +266,8 @@
     <p-button icon="pi pi-sign-out" (click)="logout()" severity="secondary"></p-button>
   </div>
 </p-toolbar>
+
+<!-- Content Area -->
 <div class="content-container">
   <router-outlet></router-outlet>
 </div>

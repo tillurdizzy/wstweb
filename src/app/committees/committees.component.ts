@@ -6,22 +6,21 @@ import { MenuItem } from 'primeng/api';
 @Component({
   selector: 'app-committees',
   standalone: true,
-  imports: [
-    RouterModule,
-    MenubarModule,
-  ],
+  imports: [RouterModule, MenubarModule],
   templateUrl: './committees.component.html',
   styleUrls: ['./committees.component.scss'],
 })
 export class CommitteesComponent {
   items: MenuItem[] = [
-    {
-      label: 'Committees List',
+    { 
+      label: 'Committees', 
+      icon: 'pi pi-users', // Icon for Committees
       items: [
-        { label: 'Landscape', routerLink: '/committees/landscape' },
-        { label: 'Welcome Committee', routerLink: '/committees/welcome' },
-        { label: 'Legal Committee', routerLink: '/committees/legal' },
-        { label: 'Violations and Parking', routerLink: '/committees/violations-parking' },
+        { label: 'About', icon: 'pi pi-info-circle', routerLink: '/committees/home' },
+        { label: 'Landscape Committee', icon: 'pi pi-leaf', routerLink: '/committees/landscape' },
+        { label: 'Welcome Committee', icon: 'pi pi-users', routerLink: '/committees/welcome' },
+        { label: 'Legal Committee', icon: 'pi pi-gavel', routerLink: '/committees/legal' },
+        { label: 'Violations and Parking', icon: 'pi pi-car', routerLink: '/committees/violations-parking' },
       ],
     },
   ];

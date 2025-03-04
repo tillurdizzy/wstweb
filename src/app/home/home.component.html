@@ -2,7 +2,7 @@
   <p-card>
     <ng-template #title>Welcome</ng-template>
     <div class="card-content">
-      <p *ngIf="userEmail">Welcome, {{ userEmail }}!<span *ngIf="isAdmin"> (Admin)</span></p>
+      <p *ngIf="userEmail">{{ userEmail }}</p>
       <p *ngIf="!userEmail">Not logged in.</p>
       <div class="buttons-container">
         <p-fluid>
