@@ -14,18 +14,23 @@ export class BoardComponent {
   items: MenuItem[] = [
     { 
       label: 'WST Board', 
-      icon: 'pi pi-home', // Added icon for consistency
+      icon: 'pi pi-home', 
       routerLink: '/board/home' 
     },
     { 
       label: 'Newsletter', 
-      icon: 'pi pi-book', // Added icon for consistency
+      icon: 'pi pi-book', 
       routerLink: '/board/newsletter' 
     },
     { 
       label: 'Financial Reports', 
-      icon: 'pi pi-chart-bar', // Added icon for consistency
+      icon: 'pi pi-chart-bar', 
       routerLink: '/board/reports' 
     },
   ];
+
+  // Disable default mobile collapse by setting a high breakpoint
+  breakpoint: string = '9999px';
+
+  constructor() {}
 }

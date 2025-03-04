@@ -15,7 +15,7 @@ export class ManagementComponent {
   items: MenuItem[] = [
     { 
       label: 'Management', 
-      icon: 'pi pi-cog', // Icon for Management
+      icon: 'pi pi-cog',
       items: [
         { label: 'About', icon: 'pi pi-info-circle', routerLink: '/management/information' },
         { label: 'HOA Dues', icon: 'pi pi-money-bill', routerLink: '/management/hoa-dues' },
@@ -34,6 +34,9 @@ export class ManagementComponent {
       ]
     },
   ];
+
+  // Disable default mobile collapse by setting a high breakpoint
+  breakpoint: string = '9999px';
 
   constructor() {}
 }

@@ -20,9 +20,6 @@
   padding: 0.5rem 0;
 
   .p-menubar-root-list {
-    display: flex;
-    flex-wrap: nowrap; /* Prevent wrapping on mobile */
-    justify-content: flex-start;
     margin: 0;
     padding: 0;
 
@@ -53,19 +50,6 @@
           margin-right: 0.5rem; /* Space between icon and text */
         }
       }
-
-      /* Ensure no mobile collapse */
-      @media (max-width: 768px) {
-        display: inline-block !important; /* Force items to stay visible */
-        .p-menuitem-link {
-          display: inline-flex !important; /* Keep links as buttons */
-        }
-      }
-    }
-
-    /* Hide the default mobile toggle button */
-    .p-menubar-button {
-      display: none !important;
     }
   }
 }

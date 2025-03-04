@@ -14,7 +14,7 @@ export class CommitteesComponent {
   items: MenuItem[] = [
     { 
       label: 'Committees', 
-      icon: 'pi pi-users', // Icon for Committees
+      icon: 'pi pi-users',
       items: [
         { label: 'About', icon: 'pi pi-info-circle', routerLink: '/committees/home' },
         { label: 'Landscape Committee', icon: 'pi pi-leaf', routerLink: '/committees/landscape' },
@@ -24,4 +24,9 @@ export class CommitteesComponent {
       ],
     },
   ];
+
+  // Disable default mobile collapse by setting a high breakpoint
+  breakpoint: string = '9999px';
+
+  constructor() {}
 }
