@@ -30,12 +30,6 @@
             <small *ngIf="!formData.description" class="p-error">Description is required</small>
           </div>
 
-          <div class="field file-upload">
-            <p-button label="Upload Photo" (click)="openPhotoFileDialog()"></p-button>
-            <input #photoFile type="file" accept="image/*" (change)="onFileChangePhoto($event)" style="display: none;" />
-            <span *ngIf="filePhoto">{{ filePhoto.name }}</span>
-          </div>
-
           <div class="field">
             <p-button label="Submit" (click)="submit()"></p-button>
           </div>

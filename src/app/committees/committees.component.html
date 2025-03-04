@@ -1,6 +1,8 @@
-<div class="content-container">
-  <p-menubar [model]="items" [breakpoint]="breakpoint"></p-menubar>
-  <div class="router-outlet">
-    <router-outlet></router-outlet>
-  </div>
+<div class="menu-container">
+  <p-button (click)="toggleMenu($event)" icon="pi pi-ellipsis-v" label="Committees Menu" severity="secondary"></p-button>
+  <p-menu #menu [model]="items" [popup]="true"></p-menu>
+</div>
+<hr class="divider" />
+<div class="router-outlet">
+  <router-outlet></router-outlet>
 </div>
