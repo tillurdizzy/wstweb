@@ -34,7 +34,7 @@ export class CommitteesComponent implements OnInit, AfterViewInit {
         },
         { 
           label: 'Landscape Committee', 
-          icon: 'pi pi-leaf', 
+          icon: 'pi pi-sun', 
           routerLink: '/committees/landscape',
           style: { 'padding-left': '20px' }
         },
@@ -46,7 +46,7 @@ export class CommitteesComponent implements OnInit, AfterViewInit {
         },
         { 
           label: 'Legal Committee', 
-          icon: 'pi pi-gavel', 
+          icon: 'pi pi-hammer', 
           routerLink: '/committees/legal',
           style: { 'padding-left': '20px' }
         },

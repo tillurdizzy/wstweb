@@ -18,7 +18,7 @@ import { FluidModule } from 'primeng/fluid';
   imports: [CommonModule, CardModule, InputTextModule, ButtonModule, ToastModule, FormsModule, RouterModule, FluidModule, TextareaModule],
   templateUrl: './resident-feedback.component.html',
   styleUrls: ['./resident-feedback.component.scss'],
-  providers: [MessageService], // Provide MessageService for toast
+  providers: [MessageService], 
 })
 export class ResidentFeedbackComponent implements OnInit {
   formData: any = {

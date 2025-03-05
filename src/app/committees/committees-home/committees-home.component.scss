@@ -1,17 +1,5 @@
 /* committees-home.component.scss */
-.content-container {
-    display: flex;
-    justify-content: center;
-  }
-  
-  p-card {
-    width: 100%;
-    max-width: 300px;
-    box-sizing: border-box;
-    overflow: hidden;
-    margin-top: 20px;
-    border-radius: 4px;
-  }
+
   
   .card-content {
     p {
@@ -19,9 +7,16 @@
     }
   }
   
-  @media (max-width: 400px) {
-    p-card {
-      max-width: 280px;
-      padding: 10px 2px;
-    }
-  }
+  .intro {
+    margin-bottom: 20px;
+    padding: 15px;
+    max-width: 600px;
+}
+h2 {
+    color: #2a5d84;
+    margin-top: 0;
+}
+p {
+    line-height: 1.5;
+    margin: 10px 0;
+}

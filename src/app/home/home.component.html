@@ -7,20 +7,25 @@
       <div class="buttons-container">
         <p-fluid>
           <div class="button-container">
-          <p-button label="My Account" routerLink="/units"></p-button>
-        </div>
+            <p-button label="My Account" routerLink="/units"></p-button>
+          </div>
           <div class="button-container">
-          <p-button label="Management" routerLink="/management"></p-button>
-        </div>
+            <p-button label="Management" routerLink="/management"></p-button>
+          </div>
           <div class="button-container">
-          <p-button label="Board of Directors" routerLink="/board"></p-button>
-        </div>
+            <p-button label="Board of Directors" routerLink="/board"></p-button>
+          </div>
           <div class="button-container">
-          <p-button label="Committees" routerLink="/committees"></p-button>
-        </div>
+            <p-button label="Committees" routerLink="/committees"></p-button>
+          </div>
           <div class="button-container">
-          <p-button *ngIf="isAdmin" label="Admin View" routerLink="/admin"></p-button>
-        </div>
+            <p-button *ngIf="isAdmin" label="Admin View" routerLink="/admin"></p-button>
+          </div>
+
+          <div class="button-container">
+            <p-button label="Join the WST WhatsApp Group!" severity="success"  (onClick)="navigateToWhatsApp()"></p-button>
+          </div>
+
         </p-fluid>
       </div>
     </div>

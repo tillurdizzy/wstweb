@@ -1,4 +1,5 @@
 @import 'primeicons/primeicons.css';
+
 html {
   color-scheme: light;
   height: 100%;
@@ -7,16 +8,23 @@ html {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
-  
   min-height: 100vh;
   display: flex;
   flex-direction: column;
 }
 
+p-card {
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  margin-top: 20px;
+  border-radius: 4px;
+}
+
 /* Content container for centering */
 .content-container {
   width: 100%;
-  max-width: 500px;
+  max-width: 480px;
   min-width: 340px;
   margin: 0 auto;
   padding: 10px;
@@ -35,4 +43,41 @@ body {
 /* Custom styles for PrimeNG components (if needed) */
 :host {
   display: block;
+}
+
+
+// Forms
+.form-container {
+  width: 260px;
+  margin: 0 auto;
+
+  .button-container {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 15px;
+  }
+
+  .field {
+    margin-bottom: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  p-button {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  p-error {
+    color: #dc2626;
+    font-size: 12px;
+  }
+
+  .file-upload {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
 }

@@ -28,4 +28,8 @@ export class HomeComponent implements OnInit {
       this.isAdmin = await this.supabaseService.isAdmin();
     }
   }
+
+  navigateToWhatsApp() {
+    window.location.href = 'https://chat.whatsapp.com/Djc20BSdK3g2frto7Zv1bL';
+}
 }

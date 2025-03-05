@@ -1,27 +1,7 @@
-/* landscape.component.scss */
-.content-container {
-    display: flex;
-    justify-content: center;
-  }
-  
-  p-card {
-    width: 100%;
-    max-width: 300px;
-    box-sizing: border-box;
-    overflow: hidden;
-    margin-top: 20px;
-    border-radius: 4px;
-  }
-  
+
   .card-content {
     p {
       margin: 5px 0;
     }
   }
   
-  @media (max-width: 400px) {
-    p-card {
-      max-width: 280px;
-      padding: 10px 2px;
-    }
-  }
