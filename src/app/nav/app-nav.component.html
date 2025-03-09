@@ -43,54 +43,46 @@
               <div pRipple class="menu-item menu-parent" (click)="toggleSubmenu('forms')">
                 <span> <i class="pi pi-receipt"></i>Forms</span>
                 <i class="pi pi-chevron-down"></i>
-
               </div>
               <ul class="list-none p-0 m-0 submenu" [class.hidden]="!expandedSubmenus['forms']">
                 <li>
-                  <a pRipple [routerLink]="['/management/forms/work-order']" class="menu-item"
-                    (click)="visible = false">
+                  <a pRipple [routerLink]="['/management/forms/work-order']" class="menu-item" (click)="visible = false">
                     <i class="pi pi-wrench"></i>
                     <span>Work Order</span>
                   </a>
                 </li>
                 <li>
-                  <a pRipple [routerLink]="['/management/forms/resident-feedback']" class="menu-item"
-                    (click)="visible = false">
+                  <a pRipple [routerLink]="['/management/forms/resident-feedback']" class="menu-item" (click)="visible = false">
                     <i class="pi pi-comments"></i>
                     <span>Resident Feedback</span>
                   </a>
                 </li>
                 <li>
-                  <a pRipple [routerLink]="['/management/forms/billing-inquiry']" class="menu-item"
-                    (click)="visible = false">
+                  <a pRipple [routerLink]="['/management/forms/billing-inquiry']" class="menu-item" (click)="visible = false">
                     <i class="pi pi-dollar"></i>
                     <span>Billing Inquiry</span>
                   </a>
                 </li>
                 <li>
-                  <a pRipple [routerLink]="['/management/forms/violation-report']" class="menu-item"
-                    (click)="visible = false">
+                  <a pRipple [routerLink]="['/management/forms/violation-report']" class="menu-item" (click)="visible = false">
                     <i class="pi pi-exclamation-triangle"></i>
                     <span>Violation Report</span>
                   </a>
                 </li>
                 <li>
-                  <a pRipple [routerLink]="['/management/forms/crime-report']" class="menu-item"
-                    (click)="visible = false">
+                  <a pRipple [routerLink]="['/management/forms/crime-report']" class="menu-item" (click)="visible = false">
                     <i class="pi pi-shield"></i>
                     <span>Crime Report</span>
                   </a>
                 </li>
                 <li>
-                  <a pRipple [routerLink]="['/management/forms/arch-request']" class="menu-item"
-                    (click)="visible = false">
+                  <a pRipple [routerLink]="['/management/forms/arch-request']" class="menu-item" (click)="visible = false">
                     <i class="pi pi-pencil"></i>
                     <span>Architectural Request</span>
                   </a>
                 </li>
               </ul>
             </li>
-
           </ul>
         </li>
 
@@ -164,6 +156,7 @@
 <p-toolbar>
   <div class="p-toolbar-group-start">
     <p-button icon="pi pi-bars" (click)="toggleDrawer()" severity="secondary"></p-button>
+    <p-button  *ngIf="showBackToAdmin" icon="pi pi-cog" [routerLink]="['/admin']" severity="info"></p-button>
   </div>
   <div class="p-toolbar-group-center">
     <span>WST Owners Portal</span>
