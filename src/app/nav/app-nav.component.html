@@ -156,7 +156,7 @@
 <p-toolbar>
   <div class="p-toolbar-group-start">
     <p-button icon="pi pi-bars" (click)="toggleDrawer()" severity="secondary"></p-button>
-    <p-button  *ngIf="showBackToAdmin" icon="pi pi-cog" [routerLink]="['/admin']" severity="info"></p-button>
+    <p-button  *ngIf="showBackToAdmin" icon="pi pi-angle-double-left" [routerLink]="['/admin']" severity="info" class="left-margin"></p-button>
   </div>
   <div class="p-toolbar-group-center">
     <span>WST Owners Portal</span>
