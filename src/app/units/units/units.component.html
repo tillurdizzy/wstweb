@@ -1,6 +1,6 @@
 <div class="content-container">
   <p-card>
-    <ng-template #title>My Account</ng-template>
+    <ng-template #title>Unit {{ selectedUnit }}</ng-template>
     <div class="card-content">
       <p-fluid *ngIf="units.length > 1" class="unit-selector">
         <p-select [options]="units" optionLabel="unit" optionValue="unit" [(ngModel)]="selectedUnit" (onChange)="onUnitChange($event)" placeholder="Select Unit" [showClear]="true">
