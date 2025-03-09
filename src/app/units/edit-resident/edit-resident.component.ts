@@ -69,6 +69,27 @@ export class EditResidentComponent implements OnInit {
     }
   }
 
+  async delete() {
+    // Add confirmation prompt
+    const confirmDelete = confirm(`Are you sure you want to delete ${this.resident.firstname} ${this.resident.lastname}? This action cannot be undone.`);
+    if (!confirmDelete) {
+      return; // User canceled the deletion
+    }
+
+    const { error } = await this.supabaseService.client
+      .from('residents')
+      .delete()
+      .eq('id', this.resident.id);
+    if (error) {
+      console.error('Error deleting resident:', error.message);
+      alert('Failed to delete resident: ' + error.message);
+    } else {
+      console.log('Resident deleted successfully');
+      const unit = this.unitService.getSelectedUnit();
+      this.router.navigate(['/units'], { queryParams: { unit } });
+    }
+  }
+
   cancel() {
     const unit = this.unitService.getSelectedUnit();
     this.router.navigate(['/units'], { queryParams: { unit } });

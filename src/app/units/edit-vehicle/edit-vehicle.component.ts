@@ -69,6 +69,27 @@ export class EditVehicleComponent implements OnInit {
     }
   }
 
+  async delete() {
+    // Add confirmation prompt
+    const confirmDelete = confirm(`Are you sure you want to delete this vehicle (${this.vehicle.make} ${this.vehicle.model}, License: ${this.vehicle.tag})? This action cannot be undone.`);
+    if (!confirmDelete) {
+      return; // User canceled the deletion
+    }
+
+    const { error } = await this.supabaseService.client
+      .from('parking')
+      .delete()
+      .eq('id', this.vehicle.id);
+    if (error) {
+      console.error('Error deleting vehicle:', error.message);
+      alert('Failed to delete vehicle: ' + error.message);
+    } else {
+      console.log('Vehicle deleted successfully');
+      const unit = this.unitService.getSelectedUnit();
+      this.router.navigate(['/units'], { queryParams: { unit } });
+    }
+  }
+
   cancel() {
     const unit = this.unitService.getSelectedUnit();
     this.router.navigate(['/units'], { queryParams: { unit } });
