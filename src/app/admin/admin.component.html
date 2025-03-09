@@ -1,4 +1,3 @@
-<!-- admin.component.html -->
 <div class="content-container">
   <p-card>
     <ng-template #title>Admin Dashboard</ng-template>
@@ -41,18 +40,38 @@
         <p *ngIf="searchName && searchResults.length === 0">No matches found.</p>
       </div>
 
-      <div class="upload-section">
-        <p-button label="Upload Newsletter" (click)="openNewsletterFileDialog()"></p-button>
-        <input #newsletterFile type="file" accept="application/pdf" (change)="onFileChangeNewsletter($event)" style="display: none;" />
-        <span *ngIf="fileNewsletter">{{ fileNewsletter.name }}</span>
-      </div>
+      <!-- Add Owner Button and Form -->
+      <div class="search-section">
+        <p-button label="Add Owner" (click)="toggleAddOwnerForm()"></p-button>
 
-      <div class="upload-section">
-        <p-button label="Upload Report" (click)="openReportFileDialog()"></p-button>
-        <input #reportFile type="file" accept="application/pdf" (change)="onFileChangeReport($event)" style="display: none;" />
-        <span *ngIf="fileReport">{{ fileReport.name }}</span>
+        <div *ngIf="showAddOwnerForm" class="form-container">
+          <div class="search-section">
+            <label for="newUnitNumber">Unit #</label>
+            <input pInputText id="newUnitNumber" type="number" [(ngModel)]="newOwner.unitNumber" required />
+          </div>
+          <div class="search-section">
+            <label for="newFirstname">First Name</label>
+            <input pInputText id="newFirstname" type="text" [(ngModel)]="newOwner.firstname" required />
+          </div>
+          <div class="search-section">
+            <label for="newLastname">Last Name</label>
+            <input pInputText id="newLastname" type="text" [(ngModel)]="newOwner.lastname" required />
+          </div>
+          <div class="search-section">
+            <label for="newEmail">Email</label>
+            <input pInputText id="newEmail" type="email" [(ngModel)]="newOwner.email" required />
+          </div>
+          <div class="search-section">
+            <label for="newPassword">Password</label>
+            <input pInputText id="newPassword" type="password" [(ngModel)]="newOwner.password" required />
+          </div>
+          <div class="search-section">
+            <p-button label="Submit" (click)="addOwner()"></p-button>
+            <p-button label="Cancel" styleClass="p-button-secondary" (click)="toggleAddOwnerForm()"></p-button>
+          </div>
+        </div>
       </div>
     </div>
   </p-card>
+  <p-toast></p-toast>
 </div>
-<p-toast></p-toast>

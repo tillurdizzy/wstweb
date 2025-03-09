@@ -8,7 +8,7 @@ import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { PostgrestError } from '@supabase/supabase-js';
+import { AuthError, PostgrestError } from '@supabase/supabase-js';
 
 @Component({
   selector: 'app-admin',
@@ -39,13 +39,18 @@ export class AdminComponent {
     406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425,
     426, 500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518,
     519, 520, 521, 522, 523, 524, 525, 526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538,
-    539, 540, 541, 542, 543, 544, 545, 546, 547, 548, 549, 550, 551, 552, 553
+    539, 540, 541, 542, 543, 544, 545, 546, 547, 548, 549, 550, 551, 552, 553,601,602
   ];
-  fileNewsletter: File | null = null;
-  fileReport: File | null = null;
 
-  @ViewChild('newsletterFile') newsletterFileInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('reportFile') reportFileInput!: ElementRef<HTMLInputElement>;
+  // New properties for the Add Owner form
+  showAddOwnerForm: boolean = false;
+  newOwner = {
+    unitNumber: null as number | null,
+    firstname: '',
+    lastname: '',
+    email: '',
+    password: ''
+  };
 
   constructor(
     private supabaseService: SupabaseService,
@@ -53,7 +58,7 @@ export class AdminComponent {
     private messageService: MessageService
   ) {}
 
-  checkUnitNumber() {
+  checkUnitNumber(): boolean {
     if (this.unitNumber !== null) {
       const unitStr = this.unitNumber.toString();
       const isValid = unitStr.length >= 3 && this.allUnits.includes(this.unitNumber);
@@ -131,87 +136,112 @@ export class AdminComponent {
     }
   }
 
-  openNewsletterFileDialog() {
-    this.newsletterFileInput.nativeElement.click();
-  }
-
-  openReportFileDialog() {
-    this.reportFileInput.nativeElement.click();
-  }
-
-  onFileChangeNewsletter(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.fileNewsletter = input.files[0];
-      this.uploadNewsletter();
+  // Toggle the Add Owner form visibility
+  toggleAddOwnerForm() {
+    this.showAddOwnerForm = !this.showAddOwnerForm;
+    if (this.showAddOwnerForm) {
+      this.newOwner = { unitNumber: null, firstname: '', lastname: '', email: '', password: '' };
     }
   }
 
-  onFileChangeReport(event: Event) {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.fileReport = input.files[0];
-      this.uploadReport();
-    }
-  }
-
-  async uploadNewsletter() {
-    if (!this.fileNewsletter) {
-      this.messageService.add({ severity: 'warn', summary: 'No File', detail: 'Please select a PDF file to upload.' });
+  async addOwner() {
+    if (!this.newOwner.unitNumber || !this.allUnits.includes(this.newOwner.unitNumber)) {
+      this.messageService.add({ severity: 'warn', summary: 'Invalid Unit', detail: 'Please enter a valid unit number.' });
       return;
     }
-    if (window.innerWidth < 768) {
-      this.messageService.add({ severity: 'warn', summary: 'Mobile Restriction', detail: 'PDF uploads are only available on desktop due to mobile security restrictions.' });
+    if (!this.newOwner.firstname || !this.newOwner.lastname || !this.newOwner.email || !this.newOwner.password) {
+      this.messageService.add({ severity: 'warn', summary: 'Missing Fields', detail: 'All fields are required.' });
       return;
     }
-
-    console.log('Uploading newsletter:', this.fileNewsletter.name, 'to bucket:', 'newsletters');
-    const fileName = `${Date.now()}-${this.fileNewsletter.name}`;
-    try {
-      const { data, error } = await this.supabaseService.uploadFile('newsletters', fileName, this.fileNewsletter);
-      if (error) {
-        console.error('Error uploading newsletter PDF:', (error as PostgrestError).message, error);
-        this.messageService.add({ severity: 'error', summary: 'Upload Failed', detail: 'Failed to upload newsletter: ' + (error.message ?? 'An unknown error occurred') });
-      } else {
-        console.log('Upload response:', data);
-        await this.supabaseService.updatePdfPath('newsletters', fileName);
-        console.log('Newsletter PDF uploaded successfully to:', fileName);
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Newsletter uploaded successfully!' });
-      }
-    } catch (error) {
-      console.error('Error uploading newsletter PDF:', (error as Error).message, error);
-      this.messageService.add({ severity: 'error', summary: 'Upload Failed', detail: 'Failed to upload newsletter: ' + (error as Error).message });
+  
+    // Check if the unit is already assigned to another owner
+    const { data: currentOwner, error: currentError } = await this.supabaseService.client
+      .from('unit_owners')
+      .select('owner_id')
+      .eq('unit', this.newOwner.unitNumber)
+      .single();
+  
+    if (currentError && currentError.code !== 'PGRST116') {
+      console.error('Error checking unit assignment:', (currentError as PostgrestError).message);
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to check unit assignment: ' + (currentError as PostgrestError).message, life: 10000 });
+      return;
     }
-    this.fileNewsletter = null;
+  
+    if (currentOwner) {
+      // Remove the existing assignment
+      await this.supabaseService.client
+        .from('unit_owners')
+        .delete()
+        .eq('unit', this.newOwner.unitNumber)
+        .eq('owner_id', currentOwner.owner_id);
+    }
+  
+    // Sign up the new user in auth.users
+    const { data: authData, error: authError } = await this.supabaseService.client.auth.signUp({
+      email: this.newOwner.email,
+      password: this.newOwner.password,
+    });
+  
+    if (authError) {
+      console.error('Error signing up user:', (authError as AuthError).message);
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create user: ' + authError.message, life: 10000 });
+      return;
+    }
+  
+    // Get the user ID from the auth response and log it
+    const userId = authData.user?.id;
+    console.log('User ID from signup:', userId); // Debug log
+    if (!userId) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'User ID not found after signup.', life: 10000 });
+      return;
+    }
+  
+    // Insert into owners table, setting the uuid column to auth.users.id
+    const { data: ownersData, error: ownersError } = await this.supabaseService.client
+      .from('owners')
+      .insert({
+        uuid: userId, // Set the uuid column to the auth.users.id
+        firstname: this.newOwner.firstname,
+        lastname: this.newOwner.lastname,
+        email: this.newOwner.email,
+      })
+      .select(); // Return the inserted row to get owner_id
+  
+    if (ownersError) {
+      console.error('Error inserting into owners:', ownersError.message, ownersError);
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to add owner: ' + ownersError.message, life: 10000 });
+      return;
+    }
+  
+    console.log('Inserted owners data:', ownersData); // Debug log to verify owner_id
+    if (!ownersData || !ownersData[0]?.owner_id) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Owner ID not recorded correctly in owners table.', life: 10000 });
+      return;
+    }
+  
+    // Get the auto-generated owner_id from the owners insert
+    const newOwnerId = ownersData[0].owner_id;
+  
+    // Insert into unit_owners table using the owner_id from owners
+    const { error: unitOwnersError } = await this.supabaseService.client
+      .from('unit_owners')
+      .insert({
+        owner_id: newOwnerId, // Use the auto-generated owner_id
+        unit: this.newOwner.unitNumber,
+      });
+  
+    if (unitOwnersError) {
+      console.error('Error inserting into unit_owners:', unitOwnersError.message, unitOwnersError);
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to link unit: ' + unitOwnersError.message, life: 10000 });
+      return;
+    }
+  
+    // Show success message
+    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Owner added successfully!', life: 10000 });
+    this.toggleAddOwnerForm(); // Hide the form after success
   }
 
-  async uploadReport() {
-    if (!this.fileReport) {
-      this.messageService.add({ severity: 'warn', summary: 'No File', detail: 'Please select a PDF file to upload.' });
-      return;
-    }
-    if (window.innerWidth < 768) {
-      this.messageService.add({ severity: 'warn', summary: 'Mobile Restriction', detail: 'PDF uploads are only available on desktop due to mobile security restrictions.' });
-      return;
-    }
 
-    console.log('Uploading financial report:', this.fileReport.name, 'to bucket:', 'reports');
-    const fileName = `${Date.now()}-${this.fileReport.name}`;
-    try {
-      const { data, error } = await this.supabaseService.uploadFile('reports', fileName, this.fileReport);
-      if (error) {
-        console.error('Error uploading financial report PDF:', (error as PostgrestError).message, error);
-        this.messageService.add({ severity: 'error', summary: 'Upload Failed', detail: 'Failed to upload financial report: ' + (error.message ?? 'An unknown error occurred') });
-      } else {
-        console.log('Upload response:', data);
-        await this.supabaseService.updatePdfPath('reports', fileName);
-        console.log('Financial report PDF uploaded successfully to:', fileName);
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Financial report uploaded successfully!' });
-      }
-    } catch (error) {
-      console.error('Error uploading financial report PDF:', (error as Error).message, error);
-      this.messageService.add({ severity: 'error', summary: 'Upload Failed', detail: 'Failed to upload financial report: ' + (error as Error).message });
-    }
-    this.fileReport = null;
-  }
+
+
 }
