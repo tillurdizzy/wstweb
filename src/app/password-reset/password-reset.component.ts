@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
 import { CommonModule } from '@angular/common';
@@ -31,7 +31,10 @@ import { FluidModule } from 'primeng/fluid';
   providers: [MessageService],
 })
 export class PasswordResetComponent implements OnInit {
-  resetForm: FormGroup;
+  resetForm: FormGroup<{
+    password: FormControl<string | null>;
+    confirmPassword: FormControl<string | null>;
+  }>;
   loading = false;
   token: string | null = null;
 
@@ -42,28 +45,37 @@ export class PasswordResetComponent implements OnInit {
     private router: Router,
     private messageService: MessageService
   ) {
-    this.resetForm = this.fb.group({
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required]],
-    }, { validators: this.passwordMatchValidator });
+    this.router.events.subscribe(event => console.log('Router Event:', event));
+
+    // Typed FormGroup
+    this.resetForm = this.fb.group(
+      {
+        password: this.fb.control<string>('', [Validators.required, Validators.minLength(6)]),
+        confirmPassword: this.fb.control<string>('', [Validators.required]),
+      },
+      { validators: this.passwordMatchValidator }
+    );
+  }
+
+  // Update the validator to work with typed form
+  passwordMatchValidator(form: FormGroup<{
+    password: FormControl<string | null>;
+    confirmPassword: FormControl<string | null>;
+  }>) {
+    const password = form.controls.password.value;
+    const confirmPassword = form.controls.confirmPassword.value;
+    return password === confirmPassword ? null : { mismatch: true };
   }
 
   ngOnInit() {
-    // Extract token from URL query params
     this.route.queryParams.subscribe(params => {
-      this.token = params['access_token'] || null; // Adjust based on Supabase's actual param name
+      this.token = params['access_token'] || null;
+      console.log('Token:', this.token); // Debug
       if (!this.token) {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Invalid or missing reset token. Please request a new reset link.' });
-        setTimeout(() => this.router.navigate(['/login']), 3000); // Redirect after 3s
+        setTimeout(() => this.router.navigate(['/login']), 3000);
       }
     });
-  }
-
-  // Custom validator to check if passwords match
-  passwordMatchValidator(form: FormGroup) {
-    const password = form.get('password')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
-    return password === confirmPassword ? null : { mismatch: true };
   }
 
   async onSubmit() {
@@ -73,15 +85,15 @@ export class PasswordResetComponent implements OnInit {
     const { password } = this.resetForm.value;
 
     try {
-      // Update the user's password using Supabase
-      const { data, error } = await this.supabaseService.updateUser({ password });
+      const { data, error } = await this.supabaseService.updateUser({ password: password! }); // Non-null assertion since form is validated
+      console.log('Update User Response:', { data, error }); // Debug
       this.loading = false;
 
       if (error) {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message ?? 'An unknown error occurred' });
       } else if (data.user) {
         this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Password updated successfully! Redirecting to login...' });
-        setTimeout(() => this.router.navigate(['/login']), 2000); // Redirect after 2s
+        setTimeout(() => this.router.navigate(['/login']), 2000);
       }
     } catch (error) {
       this.loading = false;

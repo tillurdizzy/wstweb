@@ -73,6 +73,7 @@ export class SupabaseService {
 
   async updateUser(updates: { password: string }) {
     const { data, error } = await this.client.auth.updateUser(updates);
+    console.log('Update User Response:', { data, error });
     if (error) throw error;
     return { data, error } as { data: any; error: AuthError | null };
   }
