@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormControl } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
@@ -11,6 +11,7 @@ import { PasswordModule } from 'primeng/password';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { FluidModule } from 'primeng/fluid';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-password-reset',
@@ -30,13 +31,16 @@ import { FluidModule } from 'primeng/fluid';
   styleUrls: ['./password-reset.component.scss'],
   providers: [MessageService],
 })
-export class PasswordResetComponent implements OnInit {
+export class PasswordResetComponent implements OnInit, OnDestroy {
   resetForm: FormGroup<{
     password: FormControl<string | null>;
     confirmPassword: FormControl<string | null>;
   }>;
   loading = false;
   token: string | null = null;
+  refreshToken: string | null = null;
+  private fragmentSub: Subscription | null = null;
+  private routerEventsSub: Subscription | null = null;
 
   constructor(
     private fb: FormBuilder,
@@ -45,9 +49,6 @@ export class PasswordResetComponent implements OnInit {
     private router: Router,
     private messageService: MessageService
   ) {
-    this.router.events.subscribe(event => console.log('Router Event:', event));
-
-    // Typed FormGroup
     this.resetForm = this.fb.group(
       {
         password: this.fb.control<string>('', [Validators.required, Validators.minLength(6)]),
@@ -57,7 +58,6 @@ export class PasswordResetComponent implements OnInit {
     );
   }
 
-  // Update the validator to work with typed form
   passwordMatchValidator(form: FormGroup<{
     password: FormControl<string | null>;
     confirmPassword: FormControl<string | null>;
@@ -68,36 +68,113 @@ export class PasswordResetComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.token = params['access_token'] || null;
-      console.log('Token:', this.token); // Debug
-      if (!this.token) {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Invalid or missing reset token. Please request a new reset link.' });
-        setTimeout(() => this.router.navigate(['/login']), 3000);
-      }
+    // Log router events to debug navigation
+    this.routerEventsSub = this.router.events.subscribe(event => {
+      console.log('Router Event:', event);
+    });
+
+    // Handle the fragment directly
+    this.fragmentSub = this.route.fragment.subscribe({
+      next: (fragment) => {
+        console.log('Fragment Received:', fragment);
+        if (fragment) {
+          const params = new URLSearchParams(fragment);
+          this.token = params.get('access_token');
+          this.refreshToken = params.get('refresh_token');
+          console.log('Extracted Token:', this.token);
+          console.log('Extracted Refresh Token:', this.refreshToken);
+
+          if (!this.token) {
+            this.handleInvalidToken();
+          }
+        } else {
+          console.warn('No fragment found in URL');
+          this.handleInvalidToken();
+        }
+      },
+      error: (err) => {
+        console.error('Error subscribing to fragment:', err);
+        this.handleInvalidToken();
+      },
     });
   }
 
+  private handleInvalidToken() {
+    this.messageService.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'Invalid or missing reset token. Please request a new reset link.',
+    });
+    setTimeout(() => this.router.navigate(['login']), 3000);
+  }
+
+  ngOnDestroy() {
+    if (this.fragmentSub) {
+      this.fragmentSub.unsubscribe();
+    }
+    if (this.routerEventsSub) {
+      this.routerEventsSub.unsubscribe();
+    }
+  }
+
   async onSubmit() {
-    if (this.resetForm.invalid || !this.token) return;
+    if (this.resetForm.invalid || !this.token) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Invalid Form',
+        detail: 'Please ensure all fields are filled correctly and a valid token is present.',
+      });
+      return;
+    }
 
     this.loading = true;
     const { password } = this.resetForm.value;
 
     try {
-      const { data, error } = await this.supabaseService.updateUser({ password: password! }); // Non-null assertion since form is validated
-      console.log('Update User Response:', { data, error }); // Debug
+      console.log('Setting Supabase session with token:', this.token);
+      const { data: sessionData, error: authError } = await this.supabaseService.client.auth.setSession({
+        access_token: this.token!,
+        refresh_token: this.refreshToken || '',
+      });
+      console.log('setSession Response:', { sessionData, authError });
+
+      if (authError) {
+        throw new Error(authError.message || 'Failed to authenticate with token');
+      }
+
+      const { data, error } = await this.supabaseService.updateUser({ password: password! });
+      console.log('Update User Response:', { data, error });
+
       this.loading = false;
 
       if (error) {
-        this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message ?? 'An unknown error occurred' });
-      } else if (data.user) {
-        this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Password updated successfully! Redirecting to login...' });
-        setTimeout(() => this.router.navigate(['/login']), 2000);
+        throw new Error(error.message || 'Failed to update password');
+      }
+
+      if (data.user) {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Password updated successfully! Redirecting to login...',
+        });
+        setTimeout(() => {
+          console.log('Navigating to /login');
+          this.router.navigate(['login']).then(success => {
+            console.log('Navigation to /login successful:', success);
+          }).catch(err => {
+            console.error('Navigation to /login failed:', err);
+          });
+        }, 2000);
       }
     } catch (error) {
       this.loading = false;
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: (error as Error).message ?? 'An unknown error occurred' });
+      const errMsg = error instanceof Error ? error.message : 'An unknown error occurred';
+      console.error('Password reset error:', error);
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: errMsg,
+      });
     }
   }
 }
