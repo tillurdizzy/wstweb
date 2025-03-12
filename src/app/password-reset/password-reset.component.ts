@@ -76,9 +76,10 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
     // Handle the fragment directly
     this.fragmentSub = this.route.fragment.subscribe({
       next: (fragment) => {
-        console.log('Fragment Received:', fragment);
-        if (fragment) {
-          const params = new URLSearchParams(fragment);
+        const fullFragment = fragment || window.location.hash.substring(1); // Fallback to window.location.hash
+        console.log('Fragment Received:', fullFragment);
+        if (fullFragment) {
+          const params = new URLSearchParams(fullFragment);
           this.token = params.get('access_token');
           this.refreshToken = params.get('refresh_token');
           console.log('Extracted Token:', this.token);

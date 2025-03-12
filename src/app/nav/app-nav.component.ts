@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // Added ChangeDetectorRef
-import { Router, RouterModule, NavigationEnd } from '@angular/router';
+import { Router, RouterModule, NavigationEnd, RouterOutlet } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
 import { ButtonModule } from 'primeng/button';
 import { ToolbarModule } from 'primeng/toolbar';
@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-app-nav',
   standalone: true,
-  imports: [RouterModule, ToolbarModule, ButtonModule, DrawerModule, RippleModule,CommonModule],
+  imports: [RouterModule, ToolbarModule, ButtonModule, DrawerModule, RippleModule,CommonModule,RouterOutlet],
   templateUrl: './app-nav.component.html',
   styleUrls: ['./app-nav.component.scss'],
 })

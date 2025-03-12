@@ -15,12 +15,12 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     console.log('AppComponent: Current URL:', window.location.href);
-    console.log('AppComponent: Hash routing enabled:', window.location.hash.startsWith('#/'));
+    console.log('AppComponent: Hash present:', window.location.hash.length > 0);
 
-    // Force hash routing if not applied
-    if (!window.location.hash.startsWith('#/')) {
+    // Force hash routing if no hash is present
+    if (window.location.hash.length === 0) {
       console.log('AppComponent: Forcing hash routing redirect');
-      const path = window.location.pathname === '/' ? 'login' : window.location.pathname.replace(/^\/+/, ''); // Default to /login
+      const path = window.location.pathname === '/' ? 'login' : window.location.pathname.replace(/^\/+/, '');
       this.router.navigate([path], { replaceUrl: true }).then(success => {
         console.log('Forced redirect to hash route successful:', success);
       }).catch(err => {

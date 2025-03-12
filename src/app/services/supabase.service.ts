@@ -12,10 +12,10 @@ export class SupabaseService {
 
   constructor() {
     this.client = createClient(environment.supabaseUrl, environment.supabaseKey);
-    // Initialize user state lazily
+    // Initialize user state lazily with error handling
     this.client.auth.getUser().catch(err => {
       console.warn('Initial getUser failed (possibly Zr error):', err);
-      this.userSignal.set(null); // Set to null if there's an error
+      this.userSignal.set(null);
     });
   }
 
