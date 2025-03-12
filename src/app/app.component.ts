@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationStart } from '@angular/router';
 import { AppNavComponent } from './nav/app-nav.component';
 
 @Component({
@@ -11,20 +11,29 @@ import { AppNavComponent } from './nav/app-nav.component';
 })
 export class AppComponent implements OnInit {
   constructor(private router: Router) {}
-  title = 'WST Owners Portal';
 
   ngOnInit() {
     console.log('AppComponent: Current URL:', window.location.href);
     console.log('AppComponent: Hash present:', window.location.hash.length > 0);
 
-    // Force hash routing if no hash is present
-    if (window.location.hash.length === 0) {
-      console.log('AppComponent: Forcing hash routing redirect');
-      const path = window.location.pathname === '/' ? 'login' : window.location.pathname.replace(/^\/+/, '');
-      this.router.navigate([path], { replaceUrl: true }).then(success => {
-        console.log('Forced redirect to hash route successful:', success);
+    // Log router events to debug navigation
+    this.router.events.subscribe(event => {
+      if (event instanceof NavigationStart) {
+        console.log('Router Event: NavigationStart:', event.url);
+      } else {
+        console.log('Router Event:', event);
+      }
+    });
+
+    // Force hash routing if /#/ is not present
+    if (!window.location.href.includes('#/')) {
+      console.log('AppComponent: Forcing hash routing rewrite');
+      const path = window.location.pathname.replace(/^\/+/, '') || 'login'; // Default to login if root
+      const fragment = window.location.hash.length > 0 ? window.location.hash.substring(1) : undefined;
+      this.router.navigate([path], { fragment, replaceUrl: true }).then(success => {
+        console.log('Forced hash route rewrite successful:', success);
       }).catch(err => {
-        console.error('Forced redirect to hash route failed:', err);
+        console.error('Forced hash route rewrite failed:', err);
       });
     }
   }
