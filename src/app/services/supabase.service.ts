@@ -1,22 +1,53 @@
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, OnDestroy } from '@angular/core';
 import { createClient, SupabaseClient, AuthError, PostgrestError } from '@supabase/supabase-js';
 import { environment } from '../../environments/environment';
+import { Subscription } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
-export class SupabaseService {
+export class SupabaseService implements OnDestroy {
   client: SupabaseClient;
   private userSignal = signal<any>(null);
   user = computed(() => this.userSignal());
+  private authStateSubscription: Subscription | null = null;
 
   constructor() {
     this.client = createClient(environment.supabaseUrl, environment.supabaseKey);
-    // Initialize user state lazily with error handling
-    this.client.auth.getUser().catch(err => {
-      console.warn('Initial getUser failed (possibly Zr error):', err);
+
+    // Initialize user state lazily with enhanced error handling
+    this.client.auth.getUser().catch((err: any) => {
+      if (err && typeof err === 'object' && 'message' in err && 
+          (err.message.includes('LockManager') || err.message.includes('storage'))) {
+        console.warn('Suppressed LockManager/storage error on getUser:', err.message);
+      } else {
+        console.warn('Initial getUser failed:', err?.message || err);
+      }
       this.userSignal.set(null);
     });
+
+    // Handle auth state changes with proper subscription
+    this.authStateSubscription = (this.client.auth.onAuthStateChange((event, session) => {
+      try {
+        if (session) {
+          this.userSignal.set(session.user);
+        }
+      } catch (err: any) {
+        if (err && typeof err === 'object' && 'message' in err && 
+            (err.message.includes('LockManager') || err.message.includes('storage'))) {
+          console.warn('Suppressed LockManager/storage error on auth state change:', err.message);
+        } else {
+          console.warn('Auth state change error:', err?.message || err);
+        }
+      }
+    }).data.subscription) as unknown as Subscription; // Safe type conversion via unknown
+  }
+
+  ngOnDestroy() {
+    // Cleanup subscription on service destruction
+    if (this.authStateSubscription) {
+      this.authStateSubscription.unsubscribe();
+    }
   }
 
   async getUser() {
@@ -28,8 +59,12 @@ export class SupabaseService {
       }
       this.userSignal.set(data?.user || null);
       return { data, error } as { data: any; error: AuthError | null };
-    } catch (err) {
-      console.warn('Caught error in getUser:', err);
+    } catch (err: any) {
+      if (err && typeof err === 'object' && 'message' in err) {
+        console.warn('Caught error in getUser:', err.message);
+      } else {
+        console.warn('Caught error in getUser:', err);
+      }
       throw err;
     }
   }
@@ -37,10 +72,17 @@ export class SupabaseService {
   async signInWithPassword(credentials: { email: string; password: string }) {
     try {
       const { data, error } = await this.client.auth.signInWithPassword(credentials);
-      if (error) throw error;
+      if (error) {
+        console.error('Error signing in:', (error as AuthError).message);
+        throw error;
+      }
       return { data, error } as { data: any; error: AuthError | null };
-    } catch (err) {
-      console.warn('Caught error in signInWithPassword:', err);
+    } catch (err: any) {
+      if (err && typeof err === 'object' && 'message' in err) {
+        console.warn('Caught error in signInWithPassword:', err.message);
+      } else {
+        console.warn('Caught error in signInWithPassword:', err);
+      }
       throw err;
     }
   }
@@ -52,10 +94,17 @@ export class SupabaseService {
       const { error } = await this.client.auth.resetPasswordForEmail(email, {
         redirectTo,
       });
-      if (error) throw error;
+      if (error) {
+        console.error('Error resetting password:', (error as AuthError).message);
+        throw error;
+      }
       return { error } as { error: AuthError | null };
-    } catch (err) {
-      console.warn('Caught error in resetPasswordForEmail:', err);
+    } catch (err: any) {
+      if (err && typeof err === 'object' && 'message' in err) {
+        console.warn('Caught error in resetPasswordForEmail:', err.message);
+      } else {
+        console.warn('Caught error in resetPasswordForEmail:', err);
+      }
       throw err;
     }
   }
@@ -63,10 +112,17 @@ export class SupabaseService {
   async signOut() {
     try {
       const { error } = await this.client.auth.signOut();
-      if (error) throw error;
+      if (error) {
+        console.error('Error signing out:', (error as AuthError).message);
+        throw error;
+      }
       this.userSignal.set(null);
-    } catch (err) {
-      console.warn('Caught error in signOut:', err);
+    } catch (err: any) {
+      if (err && typeof err === 'object' && 'message' in err) {
+        console.warn('Caught error in signOut:', err.message);
+      } else {
+        console.warn('Caught error in signOut:', err);
+      }
       throw err;
     }
   }
@@ -93,8 +149,12 @@ export class SupabaseService {
         .upload(fileName, file, { upsert: true });
       if (error) throw error;
       return { data: this.client.storage.from(bucket).getPublicUrl(fileName).data.publicUrl, error: null } as { data: string; error: PostgrestError | null };
-    } catch (err) {
-      console.warn('Caught error in uploadFile:', err);
+    } catch (err: any) {
+      if (err && typeof err === 'object' && 'message' in err) {
+        console.warn('Caught error in uploadFile:', err.message);
+      } else {
+        console.warn('Caught error in uploadFile:', err);
+      }
       throw err;
     }
   }
@@ -105,8 +165,12 @@ export class SupabaseService {
         .from(table)
         .upsert({ pdf_path: fileName }, { onConflict: 'pdf_path' });
       if (error) throw error;
-    } catch (err) {
-      console.warn('Caught error in updatePdfPath:', err);
+    } catch (err: any) {
+      if (err && typeof err === 'object' && 'message' in err) {
+        console.warn('Caught error in updatePdfPath:', err.message);
+      } else {
+        console.warn('Caught error in updatePdfPath:', err);
+      }
       throw err;
     }
   }
@@ -116,10 +180,17 @@ export class SupabaseService {
       console.log('Calling updateUser with updates:', updates);
       const { data, error } = await this.client.auth.updateUser(updates);
       console.log('Update User Response:', { data, error });
-      if (error) throw error;
+      if (error) {
+        console.error('Error updating user:', (error as AuthError).message);
+        throw error;
+      }
       return { data, error } as { data: any; error: AuthError | null };
-    } catch (err) {
-      console.warn('Caught error in updateUser:', err);
+    } catch (err: any) {
+      if (err && typeof err === 'object' && 'message' in err) {
+        console.warn('Caught error in updateUser:', err.message);
+      } else {
+        console.warn('Caught error in updateUser:', err);
+      }
       throw err;
     }
   }

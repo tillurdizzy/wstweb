@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { Router, NavigationStart } from '@angular/router';
 import { AppNavComponent } from './nav/app-nav.component';
 
@@ -9,7 +9,7 @@ import { AppNavComponent } from './nav/app-nav.component';
   imports: [AppNavComponent],
   standalone: true,
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
   constructor(private router: Router) {}
 
   ngOnInit() {
@@ -24,11 +24,12 @@ export class AppComponent implements OnInit {
         console.log('Router Event:', event);
       }
     });
+  }
 
-    // Force hash routing if /#/ is not present
+  ngAfterViewInit() {
     if (!window.location.href.includes('#/')) {
       console.log('AppComponent: Forcing hash routing rewrite');
-      const path = window.location.pathname.replace(/^\/+/, '') || 'login'; // Default to login if root
+      const path = window.location.pathname.replace(/^\/+/, '') || 'login';
       const fragment = window.location.hash.length > 0 ? window.location.hash.substring(1) : undefined;
       this.router.navigate([path], { fragment, replaceUrl: true }).then(success => {
         console.log('Forced hash route rewrite successful:', success);
