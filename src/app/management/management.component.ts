@@ -31,7 +31,7 @@ export class ManagementComponent implements OnInit, AfterViewInit {
       icon: 'pi pi-info-circle',
       items: [
         { 
-          label: 'Marshall Mgmt.', 
+          label: 'Canady & Canady',   
           icon: 'pi pi-building',
           routerLink: '/management/information'
         },

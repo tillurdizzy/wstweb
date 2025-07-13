@@ -1,4 +1,4 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component } from '@angular/core';
 import { SupabaseService } from '../services/supabase.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -8,7 +8,8 @@ import { ButtonModule } from 'primeng/button';
 import { ToastModule } from 'primeng/toast';
 import { FormsModule } from '@angular/forms';
 import { MessageService } from 'primeng/api';
-import { AuthError, PostgrestError } from '@supabase/supabase-js';
+import { AuthError, PostgrestError, createClient } from '@supabase/supabase-js'; // Add createClient to imports
+import { environment } from '../../environments/environment'; // Ensure environment is imported
 
 @Component({
   selector: 'app-admin',
@@ -39,10 +40,9 @@ export class AdminComponent {
     406, 407, 408, 409, 410, 411, 412, 413, 414, 415, 416, 417, 418, 419, 420, 421, 422, 423, 424, 425,
     426, 500, 501, 502, 503, 504, 505, 506, 507, 508, 509, 510, 511, 512, 513, 514, 515, 516, 517, 518,
     519, 520, 521, 522, 523, 524, 525, 526, 527, 528, 529, 530, 531, 532, 533, 534, 535, 536, 537, 538,
-    539, 540, 541, 542, 543, 544, 545, 546, 547, 548, 549, 550, 551, 552, 553,601,602
+    539, 540, 541, 542, 543, 544, 545, 546, 547, 548, 549, 550, 551, 552, 553, 601, 602
   ];
 
-  // New properties for the Add Owner form
   showAddOwnerForm: boolean = false;
   newOwner = {
     unitNumber: null as number | null,
@@ -136,14 +136,6 @@ export class AdminComponent {
     }
   }
 
-  // Toggle the Add Owner form visibility
-  toggleAddOwnerForm() {
-    this.showAddOwnerForm = !this.showAddOwnerForm;
-    if (this.showAddOwnerForm) {
-      this.newOwner = { unitNumber: null, firstname: '', lastname: '', email: '', password: '' };
-    }
-  }
-
   async addOwner() {
     if (!this.newOwner.unitNumber || !this.allUnits.includes(this.newOwner.unitNumber)) {
       this.messageService.add({ severity: 'warn', summary: 'Invalid Unit', detail: 'Please enter a valid unit number.' });
@@ -153,95 +145,102 @@ export class AdminComponent {
       this.messageService.add({ severity: 'warn', summary: 'Missing Fields', detail: 'All fields are required.' });
       return;
     }
-  
-    // Check if the unit is already assigned to another owner
-    const { data: currentOwner, error: currentError } = await this.supabaseService.client
-      .from('unit_owners')
-      .select('owner_id')
-      .eq('unit', this.newOwner.unitNumber)
-      .single();
-  
-    if (currentError && currentError.code !== 'PGRST116') {
-      console.error('Error checking unit assignment:', (currentError as PostgrestError).message);
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to check unit assignment: ' + (currentError as PostgrestError).message, life: 10000 });
-      return;
-    }
-  
-    if (currentOwner) {
-      // Remove the existing assignment
-      await this.supabaseService.client
+
+    try {
+      // Step 1: Save the current admin session
+      const { data: currentSessionData, error: sessionError } = await this.supabaseService.client.auth.getSession();
+      if (sessionError || !currentSessionData.session) {
+        throw new Error('Failed to retrieve current admin session');
+      }
+      const adminSession = currentSessionData.session;
+
+      // Step 2: Create a temporary Supabase client for signup
+      const tempClient = createClient(environment.supabaseUrl, environment.supabaseKey);
+
+      // Step 3: Check if the unit is already assigned
+      const { data: currentOwner, error: currentError } = await this.supabaseService.client
         .from('unit_owners')
-        .delete()
+        .select('owner_id')
         .eq('unit', this.newOwner.unitNumber)
-        .eq('owner_id', currentOwner.owner_id);
-    }
-  
-    // Sign up the new user in auth.users
-    const { data: authData, error: authError } = await this.supabaseService.client.auth.signUp({
-      email: this.newOwner.email,
-      password: this.newOwner.password,
-    });
-  
-    if (authError) {
-      console.error('Error signing up user:', (authError as AuthError).message);
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to create user: ' + authError.message, life: 10000 });
-      return;
-    }
-  
-    // Get the user ID from the auth response and log it
-    const userId = authData.user?.id;
-    console.log('User ID from signup:', userId); // Debug log
-    if (!userId) {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'User ID not found after signup.', life: 10000 });
-      return;
-    }
-  
-    // Insert into owners table, setting the uuid column to auth.users.id
-    const { data: ownersData, error: ownersError } = await this.supabaseService.client
-      .from('owners')
-      .insert({
-        uuid: userId, // Set the uuid column to the auth.users.id
-        firstname: this.newOwner.firstname,
-        lastname: this.newOwner.lastname,
+        .single();
+
+      if (currentError && currentError.code !== 'PGRST116') {
+        throw new Error('Error checking unit assignment: ' + currentError.message);
+      }
+
+      if (currentOwner) {
+        await this.supabaseService.client
+          .from('unit_owners')
+          .delete()
+          .eq('unit', this.newOwner.unitNumber)
+          .eq('owner_id', currentOwner.owner_id);
+      }
+
+      // Step 4: Sign up the new user with the temporary client
+      const { data: authData, error: authError } = await tempClient.auth.signUp({
         email: this.newOwner.email,
-      })
-      .select(); // Return the inserted row to get owner_id
-  
-    if (ownersError) {
-      console.error('Error inserting into owners:', ownersError.message, ownersError);
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to add owner: ' + ownersError.message, life: 10000 });
-      return;
-    }
-  
-    console.log('Inserted owners data:', ownersData); // Debug log to verify owner_id
-    if (!ownersData || !ownersData[0]?.owner_id) {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Owner ID not recorded correctly in owners table.', life: 10000 });
-      return;
-    }
-  
-    // Get the auto-generated owner_id from the owners insert
-    const newOwnerId = ownersData[0].owner_id;
-  
-    // Insert into unit_owners table using the owner_id from owners
-    const { error: unitOwnersError } = await this.supabaseService.client
-      .from('unit_owners')
-      .insert({
-        owner_id: newOwnerId, // Use the auto-generated owner_id
-        unit: this.newOwner.unitNumber,
+        password: this.newOwner.password,
       });
-  
-    if (unitOwnersError) {
-      console.error('Error inserting into unit_owners:', unitOwnersError.message, unitOwnersError);
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Failed to link unit: ' + unitOwnersError.message, life: 10000 });
-      return;
+
+      if (authError || !authData.user) {
+        throw new Error('Failed to create user: ' + (authError?.message || 'Unknown error'));
+      }
+
+      const userId = authData.user.id;
+
+      // Step 5: Insert into owners table
+      const { data: ownersData, error: ownersError } = await this.supabaseService.client
+        .from('owners')
+        .insert({
+          uuid: userId,
+          firstname: this.newOwner.firstname,
+          lastname: this.newOwner.lastname,
+          email: this.newOwner.email,
+        })
+        .select()
+        .single();
+
+      if (ownersError || !ownersData) {
+        throw new Error('Failed to add owner: ' + (ownersError?.message || 'Unknown error'));
+      }
+
+      const newOwnerId = ownersData.owner_id;
+
+      // Step 6: Link the unit to the new owner
+      const { error: unitOwnersError } = await this.supabaseService.client
+        .from('unit_owners')
+        .insert({
+          owner_id: newOwnerId,
+          unit: this.newOwner.unitNumber,
+        });
+
+      if (unitOwnersError) {
+        throw new Error('Failed to link unit: ' + unitOwnersError.message);
+      }
+
+      // Step 7: Restore the admin session
+      await this.supabaseService.client.auth.setSession({
+        access_token: adminSession.access_token,
+        refresh_token: adminSession.refresh_token,
+      });
+
+      // Success
+      this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Owner added successfully!' });
+      this.toggleAddOwnerForm();
+    } catch (error) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Error',
+        detail: (error as Error).message || 'An unknown error occurred',
+        life: 10000,
+      });
     }
-  
-    // Show success message
-    this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Owner added successfully!', life: 10000 });
-    this.toggleAddOwnerForm(); // Hide the form after success
   }
 
-
-
-
+  toggleAddOwnerForm() {
+    this.showAddOwnerForm = !this.showAddOwnerForm;
+    if (this.showAddOwnerForm) {
+      this.newOwner = { unitNumber: null, firstname: '', lastname: '', email: '', password: '' };
+    }
+  }
 }
