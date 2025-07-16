@@ -1,77 +1,17 @@
 <div class="content-container">
   <p-card>
-    <ng-template #title>Admin Dashboard</ng-template>
+    <ng-template #title>Admin</ng-template>
     <div class="card-content">
-      <div class="search-input">
-        <div class="search-section">
-          <label for="unitNumber">Unit Number</label>
-          <input pInputText id="unitNumber" type="number" [(ngModel)]="unitNumber" (keyup)="checkUnitNumber()" />
-          <hr class="divider" />
-          <p-button 
-            label="Search" 
-            [disabled]="!this.checkUnitNumber()" 
-            (click)="goToUnit()">
-          </p-button>
-        </div>
-
-        <div class="search-section">
-          <label for="searchName">Search Owner by Name</label>
-          <input pInputText id="searchName" [(ngModel)]="searchName" (keyup)="searchOwners()" />
-        </div>
-      </div>
-
-      <div class="search-section">
-        <ul *ngIf="searchResults.length > 0">
-          <li *ngFor="let owner of searchResults">
-            <p-button 
-              icon="pi pi-eye" 
-              styleClass="p-button-text" 
-              (click)="viewOwnerUnits(owner.owner_id)">
-            </p-button>
-            {{ owner.firstname }} {{ owner.lastname }} ({{ owner.unitCount }} units)
-            <p-button 
-              *ngIf="unitNumber && allUnits.includes(unitNumber)" 
-              icon="pi pi-link" 
-              styleClass="p-button-text p-button-secondary" 
-              (click)="updateOwnerUnit(owner.owner_id, unitNumber)">
-            </p-button>
-          </li>
-        </ul>
-        <p *ngIf="searchName && searchResults.length === 0">No matches found.</p>
-      </div>
-
-      <!-- Add Owner Button and Form -->
-      <div class="search-section">
-        <p-button label="Add Owner" (click)="toggleAddOwnerForm()"></p-button>
-
-        <div *ngIf="showAddOwnerForm" class="form-container">
-          <div class="search-section">
-            <label for="newUnitNumber">Unit #</label>
-            <input pInputText id="newUnitNumber" type="number" [(ngModel)]="newOwner.unitNumber" required />
+      <div class="buttons-container">
+        <p-fluid>
+          <div class="button-container">
+            <p-button label="Unit Search" routerLink="/admin/unit-search"></p-button>
           </div>
-          <div class="search-section">
-            <label for="newFirstname">First Name</label>
-            <input pInputText id="newFirstname" type="text" [(ngModel)]="newOwner.firstname" required />
+          <div class="button-container">
+            <p-button label="Parking" routerLink="/admin/parking"></p-button>
           </div>
-          <div class="search-section">
-            <label for="newLastname">Last Name</label>
-            <input pInputText id="newLastname" type="text" [(ngModel)]="newOwner.lastname" required />
-          </div>
-          <div class="search-section">
-            <label for="newEmail">Email</label>
-            <input pInputText id="newEmail" type="email" [(ngModel)]="newOwner.email" required />
-          </div>
-          <div class="search-section">
-            <label for="newPassword">Password</label>
-            <input pInputText id="newPassword" type="password" [(ngModel)]="newOwner.password" required />
-          </div>
-          <div class="search-section">
-            <p-button label="Submit" (click)="addOwner()"></p-button>
-            <p-button label="Cancel" styleClass="p-button-secondary" (click)="toggleAddOwnerForm()"></p-button>
-          </div>
-        </div>
+        </p-fluid>
       </div>
     </div>
   </p-card>
-  <p-toast></p-toast>
 </div>
