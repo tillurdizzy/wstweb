@@ -1,34 +1,22 @@
-// >>>> parking.component.scss
-:host {
-display: block;
-padding: 1rem;
+/* src/app/admin/parking/parking.component.scss */
+.content-container {
+  padding: 1rem;
 }
 
 .search-section {
-margin-bottom: 20px;
+  margin-bottom: 1rem;
 }
 
-.form-container {
-width: 260px;
-margin: 0 auto;
+.p-inputtext {
+  width: 300px;
 }
 
-label {
-display: block;
-margin-bottom: 5px;
+ul {
+  list-style-type: none;
+  padding: 0;
 }
 
-p-inputtext {
-width: 200px;
-margin-right: 10px;
-}
-
-h3 {
-margin-top: 20px;
-}
-
-.options-section {
-margin-top: 20px;
-display: flex;
-gap: 10px;
+li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #ccc;
 }

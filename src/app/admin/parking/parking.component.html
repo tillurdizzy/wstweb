@@ -1,0 +1,13 @@
+<!-- src/app/admin/parking/parking.component.html -->
+<div class="content-container">
+  <h2>License Search</h2>
+  <div class="search-section">
+    <input pInputText [(ngModel)]="searchLicense" (input)="searchLicenses()" placeholder="Enter license tag (min 3 chars)" />
+  </div>
+  <ul *ngIf="licenseResults.length > 0">
+    <li *ngFor="let result of licenseResults">
+      Space: {{ result.space }} | Tag: {{ result.tag }} | Make: {{ result.make }} | Color: {{ result.color }}
+    </li>
+  </ul>
+  <p *ngIf="searchLicense.length >= 3 && licenseResults.length === 0">No matches found.</p>
+</div>
