@@ -40,38 +40,9 @@
         <p *ngIf="searchName && searchResults.length === 0">No matches found.</p>
       </div>
 
-      <!-- Add Owner Button and Form -->
-      <div class="search-section">
-        <p-button label="Add Owner" (click)="toggleAddOwnerForm()"></p-button>
 
-        <div *ngIf="showAddOwnerForm" class="form-container">
-          <div class="search-section">
-            <label for="newUnitNumber">Unit #</label>
-            <input pInputText id="newUnitNumber" type="number" [(ngModel)]="newOwner.unitNumber" required />
-          </div>
-          <div class="search-section">
-            <label for="newFirstname">First Name</label>
-            <input pInputText id="newFirstname" type="text" [(ngModel)]="newOwner.firstname" required />
-          </div>
-          <div class="search-section">
-            <label for="newLastname">Last Name</label>
-            <input pInputText id="newLastname" type="text" [(ngModel)]="newOwner.lastname" required />
-          </div>
-          <div class="search-section">
-            <label for="newEmail">Email</label>
-            <input pInputText id="newEmail" type="email" [(ngModel)]="newOwner.email" required />
-          </div>
-          <div class="search-section">
-            <label for="newPassword">Password</label>
-            <input pInputText id="newPassword" type="password" [(ngModel)]="newOwner.password" required />
-          </div>
-          <div class="search-section">
-            <p-button label="Submit" (click)="addOwner()"></p-button>
-            <p-button label="Cancel" styleClass="p-button-secondary" (click)="toggleAddOwnerForm()"></p-button>
-          </div>
-        </div>
-      </div>
     </div>
   </p-card>
   <p-toast></p-toast>
+  <p-confirmdialog></p-confirmdialog>
 </div>

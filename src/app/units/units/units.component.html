@@ -18,7 +18,7 @@
           <h3>Owner</h3>
           <ul *ngIf="owner">
             <li>
-              <p-button *ngIf="isAdmin" [routerLink]="['/edit-owner', owner.owner_id]" label="edit" severity="secondary"></p-button>
+             <p-button *ngIf="isAdmin" [routerLink]="['/edit-owner', owner.owner_id]" [queryParams]="{ unit: selectedUnit }" label="edit" severity="secondary"></p-button>
               <div class="owner-details">
                 <div>{{ owner.firstname }} {{ owner.lastname }}</div>
                 <div>{{ owner.cell }}</div>
@@ -32,7 +32,7 @@
           <h3>{{ ownerOccupied ? 'Residents' : 'Tenants' }}</h3>
           <ul *ngIf="residents.length > 0 || ownerOccupied; else noResidents">
             <li *ngIf="ownerOccupied">
-              <p-button *ngIf="isAdmin" [routerLink]="['/edit-owner', owner.owner_id]" label="edit" severity="secondary"></p-button>
+              <p-button *ngIf="isAdmin" [routerLink]="['/edit-owner', owner.owner_id]" [queryParams]="{ unit: selectedUnit }" label="edit" severity="secondary"></p-button>
               <div class="resident-details">
                 <div>{{ owner.firstname }} {{ owner.lastname }} (Owner)</div>
                 <div>{{ owner.cell }}</div>

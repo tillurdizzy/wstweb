@@ -1,50 +1,69 @@
 <div class="content-container">
   <p-card>
-    <ng-template #title>Edit Owner</ng-template>
+    <ng-template #title>
+      {{ isAddingOwner ? 'Add New Owner' : 'Edit Current Owner' }}
+      <span *ngIf="currentUnit"> Unit #{{ currentUnit }}</span>
+    </ng-template>
     <div class="card-content">
       <p-fluid>
         <div class="form-container">
           <div class="field">
             <label for="firstname">First Name</label>
-            <input pInputText id="firstname" [(ngModel)]="owner.firstname" required />
-            <small *ngIf="!owner.firstname" class="p-error">First Name is required</small>
+            <input pInputText id="firstname" [(ngModel)]="form.firstname" required />
+            <small *ngIf="!form.firstname" class="p-error">First Name is required</small>
           </div>
 
           <div class="field">
             <label for="lastname">Last Name</label>
-            <input pInputText id="lastname" [(ngModel)]="owner.lastname" required />
-            <small *ngIf="!owner.lastname" class="p-error">Last Name is required</small>
+            <input pInputText id="lastname" [(ngModel)]="form.lastname" required />
+            <small *ngIf="!form.lastname" class="p-error">Last Name is required</small>
           </div>
 
           <div class="field">
             <label for="email">Email</label>
-            <input pInputText id="email" [(ngModel)]="owner.email" type="email" required />
-            <small *ngIf="!owner.email" class="p-error">Email is required</small>
+            <input
+              pInputText
+              id="email"
+              [(ngModel)]="form.email"
+              type="email"
+              [readonly]="!isAddingOwner"
+              [class.disabled-input]="!isAddingOwner"
+            />
+            <small *ngIf="isAddingOwner && !form.email" class="p-error">Email is required</small>
           </div>
 
           <div class="field">
             <label for="cell">Phone</label>
-            <input pInputText id="cell" [(ngModel)]="owner.cell" type="tel" />
+            <input pInputText id="cell" [(ngModel)]="form.cell" type="tel" />
           </div>
 
           <div class="field">
             <label for="street">Street</label>
-            <input pInputText id="street" [(ngModel)]="owner.street" />
+            <input pInputText id="street" [(ngModel)]="form.street" />
           </div>
 
           <div class="field">
             <label for="csz">City, State, Zip</label>
-            <input pInputText id="csz" [(ngModel)]="owner.csz" />
+            <input pInputText id="csz" [(ngModel)]="form.csz" />
           </div>
 
-          <div class="field">
-            <p-checkbox [(ngModel)]="ownerOccupied" binary="true"></p-checkbox>
+          <div class="field occupied-row">
+            <p-checkbox inputId="owner_occupied" [(ngModel)]="ownerOccupied" [binary]="true"></p-checkbox>
             <label for="owner_occupied" class="checkbox-label">Owner Occupied</label>
           </div>
 
-          <div class="field">
+          <div class="field" *ngIf="!isAddingOwner">
             <p-button label="Save" (click)="save()"></p-button>
           </div>
+
+          <div class="field" *ngIf="isAdmin && !isAddingOwner">
+            <p-button label="Add New Owner" severity="info" (click)="startAddOwner()"></p-button>
+          </div>
+
+          <div class="field" *ngIf="isAddingOwner">
+            <p-button label="Submit new owner" (click)="addNewOwner()"></p-button>
+          </div>
+
           <div class="field">
             <p-button label="Cancel" (click)="cancel()" severity="secondary"></p-button>
           </div>
@@ -52,4 +71,6 @@
       </p-fluid>
     </div>
   </p-card>
+  <p-toast></p-toast>
+  <p-confirmdialog></p-confirmdialog>
 </div>

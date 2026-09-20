@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core'; // Added ChangeDetectorRef
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router, RouterModule, NavigationEnd, RouterOutlet } from '@angular/router';
 import { SupabaseService } from '../services/supabase.service';
 import { ButtonModule } from 'primeng/button';
@@ -11,52 +11,61 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-app-nav',
   standalone: true,
-  imports: [RouterModule, ToolbarModule, ButtonModule, DrawerModule, RippleModule,CommonModule,RouterOutlet],
+  imports: [RouterModule, ToolbarModule, ButtonModule, DrawerModule, RippleModule, CommonModule, RouterOutlet],
   templateUrl: './app-nav.component.html',
   styleUrls: ['./app-nav.component.scss'],
 })
 export class AppNavComponent implements OnInit {
-  visible: boolean = false; // Controls drawer visibility
-  expandedSubmenus: { [key: string]: boolean } = {}; // Track submenu states
-  showBackToAdmin: boolean = false; // Flag to control "Back to Admin" button visibility
+  visible: boolean = false;
+  expandedSubmenus: { [key: string]: boolean } = {};
+  showBackToAdmin: boolean = false;
 
   constructor(
     private supabaseService: SupabaseService,
     private router: Router,
-    private cdr: ChangeDetectorRef // Added ChangeDetectorRef
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
-    // Subscribe to router events to detect navigation to /admin
+    this.updateBackButton(this.router.url);
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: NavigationEnd) => {
-        console.log('Navigation to:', event.urlAfterRedirects); // Debug log
-        if (event.urlAfterRedirects === '/admin') {
-          this.showBackToAdmin = true; // Set flag to show the button
-          console.log('showBackToAdmin set to:', this.showBackToAdmin); // Debug log
-          this.cdr.detectChanges(); // Force change detection
-        }
+        this.updateBackButton(event.urlAfterRedirects);
+        this.cdr.detectChanges();
       });
+  }
+
+  private updateBackButton(url: string) {
+    const path = url.split('?')[0];
+    this.showBackToAdmin =
+      path.startsWith('/admin/') ||
+      path.startsWith('/edit-owner') ||
+      path.startsWith('/edit-resident') ||
+      path.startsWith('/edit-vehicle') ||
+      path.startsWith('/add-resident') ||
+      path.startsWith('/add-vehicle') ||
+      path.startsWith('/units');
+  }
+
+  goToAdmin() {
+    this.router.navigate(['/admin']);
   }
 
   async logout() {
     try {
       await this.supabaseService.signOut();
       this.router.navigate(['']);
-      // Optionally reset showBackToAdmin on logout (if desired)
-      // this.showBackToAdmin = false;
-      // this.cdr.detectChanges(); // Optional: Force change detection on logout
     } catch (error) {
       console.error('Logout failed:', (error as Error).message);
     }
   }
 
   toggleDrawer() {
-    this.visible = !this.visible; // Toggles the drawer
+    this.visible = !this.visible;
   }
 
   toggleSubmenu(key: string) {
-    this.expandedSubmenus[key] = !this.expandedSubmenus[key]; // Toggle submenu visibility
+    this.expandedSubmenus[key] = !this.expandedSubmenus[key];
   }
 }

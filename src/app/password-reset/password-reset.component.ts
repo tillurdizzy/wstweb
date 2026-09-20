@@ -13,6 +13,8 @@ import { MessageService } from 'primeng/api';
 import { FluidModule } from 'primeng/fluid';
 import { Subscription } from 'rxjs';
 
+const TEMP_PASSWORD = '123456';
+
 @Component({
   selector: 'app-password-reset',
   standalone: true,
@@ -39,6 +41,7 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
   loading = false;
   token: string | null = null;
   refreshToken: string | null = null;
+  sessionReady = false;
   private fragmentSub: Subscription | null = null;
   private routerEventsSub: Subscription | null = null;
 
@@ -67,36 +70,33 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
     return password === confirmPassword ? null : { mismatch: true };
   }
 
-  ngOnInit() {
-    // Log router events to debug navigation
-    this.routerEventsSub = this.router.events.subscribe(event => {
-      console.log('Router Event:', event);
-    });
+  async ngOnInit() {
+    const forced = this.route.snapshot.queryParamMap.get('force') === '1';
+    if (forced) {
+      const { data } = await this.supabaseService.client.auth.getSession();
+      if (data.session) {
+        this.sessionReady = true;
+        return;
+      }
+    }
 
-    // Handle the fragment directly
     this.fragmentSub = this.route.fragment.subscribe({
       next: (fragment) => {
-        const fullFragment = fragment || window.location.hash.substring(1); // Fallback to window.location.hash
-        console.log('Fragment Received:', fullFragment);
+        const fullFragment = fragment || window.location.hash.substring(1);
         if (fullFragment) {
           const params = new URLSearchParams(fullFragment);
           this.token = params.get('access_token');
           this.refreshToken = params.get('refresh_token');
-          console.log('Extracted Token:', this.token);
-          console.log('Extracted Refresh Token:', this.refreshToken);
-
           if (!this.token) {
             this.handleInvalidToken();
+          } else {
+            this.sessionReady = true;
           }
-        } else {
-          console.warn('No fragment found in URL');
+        } else if (!forced) {
           this.handleInvalidToken();
         }
       },
-      error: (err) => {
-        console.error('Error subscribing to fragment:', err);
-        this.handleInvalidToken();
-      },
+      error: () => this.handleInvalidToken(),
     });
   }
 
@@ -110,71 +110,58 @@ export class PasswordResetComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.fragmentSub) {
-      this.fragmentSub.unsubscribe();
-    }
-    if (this.routerEventsSub) {
-      this.routerEventsSub.unsubscribe();
-    }
+    if (this.fragmentSub) this.fragmentSub.unsubscribe();
+    if (this.routerEventsSub) this.routerEventsSub.unsubscribe();
   }
 
   async onSubmit() {
-    if (this.resetForm.invalid || !this.token) {
+    if (this.resetForm.invalid || (!this.token && !this.sessionReady)) {
       this.messageService.add({
         severity: 'warn',
         summary: 'Invalid Form',
-        detail: 'Please ensure all fields are filled correctly and a valid token is present.',
+        detail: 'Please ensure all fields are filled correctly.',
+      });
+      return;
+    }
+
+    const password = this.resetForm.value.password!;
+    if (password === TEMP_PASSWORD) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Choose a different password',
+        detail: 'Do not reuse the temporary password.',
       });
       return;
     }
 
     this.loading = true;
-    const { password } = this.resetForm.value;
-
     try {
-      console.log('Setting Supabase session with token:', this.token);
-      const { data: sessionData, error: authError } = await this.supabaseService.client.auth.setSession({
-        access_token: this.token!,
-        refresh_token: this.refreshToken || '',
-      });
-      console.log('setSession Response:', { sessionData, authError });
-
-      if (authError) {
-        throw new Error(authError.message || 'Failed to authenticate with token');
+      if (this.token) {
+        const { error: authError } = await this.supabaseService.client.auth.setSession({
+          access_token: this.token,
+          refresh_token: this.refreshToken || '',
+        });
+        if (authError) throw new Error(authError.message || 'Failed to authenticate with token');
       }
 
-      const { data, error } = await this.supabaseService.updateUser({ password: password! });
-      console.log('Update User Response:', { data, error });
-
+      const { data, error } = await this.supabaseService.updateUser({ password });
       this.loading = false;
-
-      if (error) {
-        throw new Error(error.message || 'Failed to update password');
-      }
+      if (error) throw new Error(error.message || 'Failed to update password');
 
       if (data.user) {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'Password updated successfully! Redirecting to login...',
+          detail: 'Password updated successfully! Redirecting…',
         });
-        setTimeout(() => {
-          console.log('Navigating to /login');
-          this.router.navigate(['login']).then(success => {
-            console.log('Navigation to /login successful:', success);
-          }).catch(err => {
-            console.error('Navigation to /login failed:', err);
-          });
-        }, 2000);
+        setTimeout(() => this.router.navigate(['/home']), 1500);
       }
     } catch (error) {
       this.loading = false;
-      const errMsg = error instanceof Error ? error.message : 'An unknown error occurred';
-      console.error('Password reset error:', error);
       this.messageService.add({
         severity: 'error',
         summary: 'Error',
-        detail: errMsg,
+        detail: error instanceof Error ? error.message : 'An unknown error occurred',
       });
     }
   }

@@ -8,9 +8,11 @@ import { InputTextModule } from 'primeng/inputtext';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { ButtonModule } from 'primeng/button';
 import { PasswordModule } from 'primeng/password';
-import { ToastModule } from 'primeng/toast'; // For snackbar-like feedback
+import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { FluidModule } from 'primeng/fluid';
+
+const TEMP_PASSWORD = '123456';
 
 @Component({
   selector: 'app-login',
@@ -28,7 +30,7 @@ import { FluidModule } from 'primeng/fluid';
   ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
-  providers: [MessageService], // Provide MessageService for toast
+  providers: [MessageService],
 })
 export class LoginComponent {
   loginForm: FormGroup;
@@ -58,7 +60,11 @@ export class LoginComponent {
       if (error) {
         this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message ?? 'An unknown error occurred' });
       } else if (data.user) {
-        this.router.navigate(['/home']);
+        if (password === TEMP_PASSWORD) {
+          this.router.navigate(['/password-reset'], { queryParams: { force: '1' } });
+        } else {
+          this.router.navigate(['/home']);
+        }
       }
     } catch (error) {
       this.loading = false;
