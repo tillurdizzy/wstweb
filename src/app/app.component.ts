@@ -29,7 +29,7 @@ export class AppComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     if (!window.location.href.includes('#/')) {
       console.log('AppComponent: Forcing hash routing rewrite');
-      const path = window.location.pathname.replace(/^\/+/, '') || 'login';
+      const path = window.location.pathname.replace(/^\/+/, '') || 'home';
       const fragment = window.location.hash.length > 0 ? window.location.hash.substring(1) : undefined;
       this.router.navigate([path], { fragment, replaceUrl: true }).then(success => {
         console.log('Forced hash route rewrite successful:', success);
