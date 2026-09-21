@@ -27,6 +27,8 @@ import { NewsComponent } from './news/news.component';
 import { LetterComponent } from './news/letter/letter.component';
 import { EventsComponent } from './news/events/events.component';
 import { ElectionComponent } from './news/election/election.component';
+import { FlyersComponent } from './news/election/flyers/flyers.component';
+import { BylawsComponent } from './news/election/bylaws/bylaws.component';
 import { ActivatedRouteSnapshot } from '@angular/router';
 
 const preserveFragmentResolver: ResolveFn<string | null> = (route: ActivatedRouteSnapshot) => {
@@ -50,6 +52,8 @@ export const routes: Routes = [
           { path: 'letter', component: LetterComponent, title: 'Newsletter' },
           { path: 'events', component: EventsComponent, title: 'Events' },
           { path: 'election', component: ElectionComponent, title: 'Annual Election 2027' },
+            { path: 'election/flyers', component: FlyersComponent, title: 'Election Flyers' },
+            { path: 'election/bylaws', component: BylawsComponent, title: 'Bylaws Amendment' },
         ],
       },
       {

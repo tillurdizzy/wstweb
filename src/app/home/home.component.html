@@ -5,16 +5,19 @@
       <a class="election-banner" routerLink="/news/election">
         <span class="election-kicker">January 2027</span>
         <span class="election-title">Annual Board Election</span>
-        <span class="election-cta">Vote &amp; details →</span>
+        <span class="election-cta">Time for a Change!</span>
       </a>
 
       <p *ngIf="userEmail">{{ userEmail }}</p>
-      <p *ngIf="!userEmail">Westwood South Tenants &amp; Owners</p>
+      <p *ngIf="!userEmail">Westbury Square Townhomes</p>
 
       <div class="buttons-container">
         <p-fluid>
           <div class="button-container">
             <p-button label="News and Events" severity="warn" routerLink="/news"></p-button>
+          </div>
+           <div class="button-container">
+            <p-button label="Join the WST WhatsApp Group!" severity="success" (onClick)="navigateToWhatsApp()"></p-button>
           </div>
           <div class="button-container">
             <p-button label="Management" routerLink="/management"></p-button>
@@ -26,13 +29,10 @@
             <p-button label="Committees" routerLink="/committees"></p-button>
           </div>
           <div class="button-container">
-            <p-button *ngIf="isAdmin" label="Admin View" routerLink="/admin"></p-button>
-          </div>
-          <div class="button-container">
-            <p-button label="Join the WST WhatsApp Group!" severity="success" (onClick)="navigateToWhatsApp()"></p-button>
-          </div>
-          <div class="button-container">
             <p-button label="My Account" (onClick)="goToAccount()"></p-button>
+          </div>
+           <div class="button-container">
+            <p-button *ngIf="isAdmin" label="Admin View" routerLink="/admin"></p-button>
           </div>
         </p-fluid>
       </div>

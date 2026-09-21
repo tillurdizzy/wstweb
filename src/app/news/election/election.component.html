@@ -1,8 +1,59 @@
+<div class="menu-container">
+  <p-button (click)="toggleMenu($event)" icon="pi pi-ellipsis-v" label="Elections Menu" severity="secondary"></p-button>
+  <p-menu #menu [model]="items" [popup]="true"></p-menu>
+</div>
+<hr class="divider" />
+
 <div class="content-container">
   <p-card>
-    <ng-template #title>Annual Election 2027</ng-template>
+    <ng-template #title>A Message from the Westbury Square 2027 Election Committee</ng-template>
     <div class="card-content">
-      <p>Board election information for January 2027 will be posted here.</p>
+      <img class="election-banner" src="election-banner.png" alt="Your vote matters" />
+
+      <p>Our current Board of Directors was not elected. We have not completed an election in two years because those meetings did not reach quorum. That outcome was not an accident.</p>
+
+      <p>One owner has operated for more than ten years as a proxy collector, at times holding as many as 54 proxies. That is enough to decide an election — or to stop one.</p>
+
+      <p>Here is how a failed election can be arranged. Quorum takes about 100 voters. If 80 owners come ready to vote the other way, the collector can simply withhold those proxies. Those 50 votes never enter the quorum count. The meeting fails. The previous board stays in office because the election did not succeed. That is a win for the person who already chose that board.</p>
+
+      <p>Many HOAs and COAs wrote their bylaws to block this. Ours date to 1979 and do not.</p>
+
+      <p>The bylaws need two updates that are now standard elsewhere:</p>
+      <ul>
+        <li><strong>A Quorum Ladder</strong> — If the first meeting fails, the next meeting requires a lower percentage, down to as little as 10% of owners under state law, until an election is completed.</li>
+        <li><strong>Electronic voting</strong> — lets owners cast their own secret ballot from any device during a multi-day window, so participation no longer depends on attending a meeting or handing a form to a neighbor. Higher turnout makes quorum more reliable and reduces the chance that one person can swing—or block—an election by collecting or withholding proxies. Automated credentials, one-vote-per-unit checks, and an audit trail also cut counting errors and proxy disputes, which strengthens election integrity.</li>
+      </ul>
+
+      <p>Because every current director is a holdover, <strong>all five seats are open in 2027</strong>. This is the year the entire board can be replaced with directors who are not beholden to one person behind the scenes.</p>
+
+      <p>Until the bylaws change, we have to use the tool that has been used against us: proxies. We need about 100 voters for quorum. Your proxy lets us know exactly how many votes we have and how many more we need so this election succeeds.</p>
+
+      <p>Give us your name, unit number, email, and phone below if we can count on you. Let’s get this done!</p>
+
+      <div class="signup">
+        <p-fluid>
+          <div class="field">
+            <label for="name">Name</label>
+            <input pInputText id="name" [(ngModel)]="form.name" />
+          </div>
+          <div class="field">
+            <label for="unit">Unit #</label>
+            <input pInputText id="unit" type="number" [(ngModel)]="form.unit" />
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input pInputText id="email" type="email" [(ngModel)]="form.email" />
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input pInputText id="phone" type="tel" [(ngModel)]="form.phone" />
+          </div>
+          <div class="field">
+            <p-button label="Submit" [disabled]="sending" (click)="submit()"></p-button>
+          </div>
+        </p-fluid>
+      </div>
     </div>
   </p-card>
+  <p-toast></p-toast>
 </div>

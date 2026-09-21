@@ -1,0 +1,14 @@
+<div class="menu-container">
+  <p-button (click)="toggleMenu($event)" icon="pi pi-ellipsis-v" label="Elections Menu" severity="secondary"></p-button>
+  <p-menu #menu [model]="items" [popup]="true"></p-menu>
+</div>
+<hr class="divider" />
+
+<div class="content-container">
+  <p-card>
+    <ng-template #title>Bylaws Amendment</ng-template>
+    <div class="card-content">
+      <p>Proposed bylaws amendments will be posted here.</p>
+    </div>
+  </p-card>
+</div>
