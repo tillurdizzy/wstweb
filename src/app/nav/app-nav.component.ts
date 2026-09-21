@@ -60,8 +60,19 @@ export class AppNavComponent implements OnInit {
       path.startsWith('/units');
   }
 
-  goToAdmin() {
-    this.router.navigate(['/admin']);
+  goBack() {
+    const path = this.router.url.split('?')[0];
+    if (path === '/units' || path.startsWith('/units')) {
+      this.router.navigate(['/admin/unit-search']);
+      return;
+    }
+    if (path.startsWith('/admin/')) {
+      this.router.navigate(['/admin']);
+      return;
+    }
+    const query = this.router.url.split('?')[1] || '';
+    const unit = new URLSearchParams(query).get('unit');
+    this.router.navigate(['/units'], unit ? { queryParams: { unit } } : {});
   }
 
   goToAccount() {

@@ -40,7 +40,7 @@
               </div>
             </li>
             <li *ngFor="let resident of residents">
-              <p-button [routerLink]="['/edit-resident', resident.id]" label="edit" severity="secondary"></p-button>
+              <p-button [routerLink]="['/edit-resident', resident.id]" [queryParams]="{ unit: selectedUnit }" label="edit" severity="secondary"></p-button>
               <div class="resident-details">
                 <div>{{ resident.firstname }} {{ resident.lastname }}</div>
                 <div>{{ resident.cell }}</div>
@@ -51,14 +51,14 @@
           <ng-template #noResidents>
             <p>No {{ ownerOccupied ? 'residents' : 'tenants' }} assigned.</p>
           </ng-template>
-          <p-button [routerLink]="['/add-resident']" label="{{ ownerOccupied ? 'Add Resident' : 'Add Tenant' }}"></p-button>
+          <p-button [routerLink]="['/add-resident']" [queryParams]="{ unit: selectedUnit }" label="{{ ownerOccupied ? 'Add Resident' : 'Add Tenant' }}"></p-button>
 
           <hr class="divider" />
 
           <h3>Vehicles</h3>
           <ul *ngIf="vehicles.length > 0; else noVehicles">
             <li *ngFor="let vehicle of vehicles">
-              <p-button [routerLink]="['/edit-vehicle', vehicle.id]" label="edit" severity="secondary"></p-button>
+              <p-button [routerLink]="['/edit-vehicle', vehicle.id]" [queryParams]="{ unit: selectedUnit }" label="edit" severity="secondary"></p-button>
               <div class="vehicle-details">
                 <div>{{ vehicle.make }} {{ vehicle.model }}</div>
                 <div>{{ vehicle.color }}</div>
@@ -69,7 +69,7 @@
           <ng-template #noVehicles>
             <p>No vehicles assigned.</p>
           </ng-template>
-          <p-button [routerLink]="['/add-vehicle']" label="Add Vehicle"></p-button>
+          <p-button [routerLink]="['/add-vehicle']" [queryParams]="{ unit: selectedUnit }" label="Add Vehicle"></p-button>
         </div>
       </p-fluid>
       <ng-template #loading>

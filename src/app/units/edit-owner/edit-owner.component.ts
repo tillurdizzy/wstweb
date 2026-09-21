@@ -41,6 +41,8 @@ export class EditOwnerComponent implements OnInit {
   currentUnit: number | null = null;
   isAdmin: boolean = false;
   isAddingOwner: boolean = false;
+  dataConfirmed: boolean = false;
+  originalConfirmed: boolean = false;
 
   constructor(
     private supabaseService: SupabaseService,
@@ -61,13 +63,15 @@ export class EditOwnerComponent implements OnInit {
     if (ownerId) {
       const { data: ownerData, error: ownerError } = await this.supabaseService.client
         .from('owners')
-        .select('owner_id, firstname, lastname, email, cell, street, csz, is_admin')
+        .select('owner_id, firstname, lastname, email, cell, street, csz, is_admin, data_confirmed')
         .eq('owner_id', ownerId)
         .single();
       if (ownerError) {
         console.error('Error fetching owner:', ownerError.message);
       } else {
         this.owner = ownerData || this.owner;
+        this.dataConfirmed = !!ownerData.data_confirmed;
+        this.originalConfirmed = this.dataConfirmed;
         this.copyOwnerToForm();
       }
 
@@ -119,11 +123,25 @@ export class EditOwnerComponent implements OnInit {
     };
   }
 
+  private async editorEmail(): Promise<string> {
+    const { data } = await this.supabaseService.client.auth.getUser();
+    return data.user?.email || '';
+  }
+
   async save() {
     if (!this.form.firstname || !this.form.lastname) {
       this.messageService.add({ severity: 'warn', summary: 'Missing fields', detail: 'First name and last name are required.' });
       return;
     }
+
+    let confirmed = this.dataConfirmed;
+    if (this.originalConfirmed) {
+      confirmed = await this.confirm('Data changed. Mark as confirmed again?');
+    } else {
+      confirmed = await this.confirm('Set data as confirmed?');
+    }
+
+    const updatedBy = await this.editorEmail();
 
     const { error: ownersError } = await this.supabaseService.client
       .from('owners')
@@ -133,6 +151,8 @@ export class EditOwnerComponent implements OnInit {
         cell: this.form.cell,
         street: this.form.street,
         csz: this.form.csz,
+        data_confirmed: confirmed,
+        updated_by: updatedBy,
       })
       .eq('owner_id', this.owner.owner_id);
     if (ownersError) {
@@ -251,6 +271,7 @@ export class EditOwnerComponent implements OnInit {
     const previousOwnerId = this.owner.owner_id;
     const currentName = this.ownerLabel(this.owner);
     const addName = `${firstname} ${lastname}`.trim();
+    const updatedBy = adminSession.user?.email || '';
 
     try {
       const { data: emailMatches, error: emailError } = await this.supabaseService.client
@@ -313,6 +334,8 @@ export class EditOwnerComponent implements OnInit {
           cell: this.form.cell,
           street: this.form.street,
           csz: this.form.csz,
+          data_confirmed: true,
+          updated_by: updatedBy,
         })
         .select('owner_id')
         .single();
