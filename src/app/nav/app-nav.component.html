@@ -1,10 +1,7 @@
-<!-- Drawer Component -->
 <p-drawer [(visible)]="visible" [style]="{ width: '300px' }" position="left">
   <div class="flex flex-col h-full">
-    <!-- Menu Content -->
     <div class="overflow-y-auto">
       <ul class="list-none p-4 m-0 menu-container">
-        <!-- Home -->
         <li>
           <a pRipple [routerLink]="['/home']" class="menu-item" (click)="visible = false">
             <i class="pi pi-home"></i>
@@ -12,15 +9,33 @@
           </a>
         </li>
 
-        <!-- My Account -->
         <li>
-          <a pRipple [routerLink]="['/units']" class="menu-item" (click)="visible = false">
-            <i class="pi pi-user"></i>
-            <span>My Account</span>
-          </a>
+          <div pRipple class="menu-item menu-parent" (click)="toggleSubmenu('news')">
+            <span>News and Events</span>
+            <i class="pi pi-chevron-down"></i>
+          </div>
+          <ul class="list-none p-0 m-0 submenu" [class.hidden]="!expandedSubmenus['news']">
+            <li>
+              <a pRipple [routerLink]="['/news/letter']" class="menu-item" (click)="visible = false">
+                <i class="pi pi-book"></i>
+                <span>Newsletter</span>
+              </a>
+            </li>
+            <li>
+              <a pRipple [routerLink]="['/news/events']" class="menu-item" (click)="visible = false">
+                <i class="pi pi-calendar"></i>
+                <span>Events</span>
+              </a>
+            </li>
+            <li>
+              <a pRipple [routerLink]="['/news/election']" class="menu-item" (click)="visible = false">
+                <i class="pi pi-star"></i>
+                <span>Annual Election 2027</span>
+              </a>
+            </li>
+          </ul>
         </li>
 
-        <!-- Management -->
         <li>
           <div pRipple class="menu-item menu-parent" (click)="toggleSubmenu('management')">
             <span>Management</span>
@@ -39,7 +54,7 @@
                 <span>HOA Dues</span>
               </a>
             </li>
-            <li>
+            <li *ngIf="isLoggedIn">
               <div pRipple class="menu-item menu-parent" (click)="toggleSubmenu('forms')">
                 <span> <i class="pi pi-receipt"></i>Forms</span>
                 <i class="pi pi-chevron-down"></i>
@@ -86,7 +101,6 @@
           </ul>
         </li>
 
-        <!-- Board of Directors -->
         <li>
           <div pRipple class="menu-item menu-parent" (click)="toggleSubmenu('board')">
             <span>Board of Directors</span>
@@ -100,7 +114,7 @@
               </a>
             </li>
             <li>
-              <a pRipple [routerLink]="['/board/newsletter']" class="menu-item" (click)="visible = false">
+              <a pRipple [routerLink]="['/news/letter']" class="menu-item" (click)="visible = false">
                 <i class="pi pi-book"></i>
                 <span>Newsletter</span>
               </a>
@@ -114,7 +128,6 @@
           </ul>
         </li>
 
-        <!-- Committees -->
         <li>
           <div pRipple class="menu-item menu-parent" (click)="toggleSubmenu('committees')">
             <span>Committees</span>
@@ -147,12 +160,18 @@
             </li>
           </ul>
         </li>
+
+        <li>
+          <a pRipple class="menu-item" (click)="goToAccount()">
+            <i class="pi pi-user"></i>
+            <span>My Account</span>
+          </a>
+        </li>
       </ul>
     </div>
   </div>
 </p-drawer>
 
-<!-- Toolbar -->
 <p-toolbar>
   <div class="p-toolbar-group-start">
     <p-button icon="pi pi-bars" (click)="toggleDrawer()" severity="secondary"></p-button>
@@ -162,11 +181,11 @@
     <span>WST Owners Portal</span>
   </div>
   <div class="p-toolbar-group-end">
-    <p-button icon="pi pi-sign-out" (click)="logout()" severity="secondary"></p-button>
+    <p-button *ngIf="isLoggedIn" icon="pi pi-sign-out" (click)="logout()" severity="secondary"></p-button>
+    <p-button *ngIf="!isLoggedIn" icon="pi pi-sign-in" (click)="goToAccount()" severity="secondary"></p-button>
   </div>
 </p-toolbar>
 
-<!-- Content Area -->
 <div class="content-container">
   <router-outlet></router-outlet>
 </div>

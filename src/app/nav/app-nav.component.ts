@@ -19,6 +19,7 @@ export class AppNavComponent implements OnInit {
   visible: boolean = false;
   expandedSubmenus: { [key: string]: boolean } = {};
   showBackToAdmin: boolean = false;
+  isLoggedIn: boolean = false;
 
   constructor(
     private supabaseService: SupabaseService,
@@ -26,14 +27,25 @@ export class AppNavComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
+    await this.refreshAuth();
     this.updateBackButton(this.router.url);
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
-      .subscribe((event: NavigationEnd) => {
+      .subscribe(async (event: NavigationEnd) => {
+        await this.refreshAuth();
         this.updateBackButton(event.urlAfterRedirects);
         this.cdr.detectChanges();
       });
+  }
+
+  private async refreshAuth() {
+    try {
+      const { data } = await this.supabaseService.getUser();
+      this.isLoggedIn = !!data?.user;
+    } catch {
+      this.isLoggedIn = false;
+    }
   }
 
   private updateBackButton(url: string) {
@@ -52,10 +64,16 @@ export class AppNavComponent implements OnInit {
     this.router.navigate(['/admin']);
   }
 
+  goToAccount() {
+    this.visible = false;
+    this.router.navigate([this.isLoggedIn ? '/units' : '/login']);
+  }
+
   async logout() {
     try {
       await this.supabaseService.signOut();
-      this.router.navigate(['']);
+      this.isLoggedIn = false;
+      this.router.navigate(['/home']);
     } catch (error) {
       console.error('Logout failed:', (error as Error).message);
     }

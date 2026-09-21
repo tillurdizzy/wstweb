@@ -63,7 +63,7 @@ export class LoginComponent {
         if (password === TEMP_PASSWORD) {
           this.router.navigate(['/password-reset'], { queryParams: { force: '1' } });
         } else {
-          this.router.navigate(['/home']);
+          this.router.navigate(['/units']);
         }
       }
     } catch (error) {

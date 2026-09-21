@@ -2,12 +2,19 @@
   <p-card>
     <ng-template #title>Welcome</ng-template>
     <div class="card-content">
+      <a class="election-banner" routerLink="/news/election">
+        <span class="election-kicker">January 2027</span>
+        <span class="election-title">Annual Board Election</span>
+        <span class="election-cta">Vote &amp; details →</span>
+      </a>
+
       <p *ngIf="userEmail">{{ userEmail }}</p>
-      <p *ngIf="!userEmail">Not logged in.</p>
+      <p *ngIf="!userEmail">Westwood South Tenants &amp; Owners</p>
+
       <div class="buttons-container">
         <p-fluid>
           <div class="button-container">
-            <p-button label="My Account" routerLink="/units"></p-button>
+            <p-button label="News and Events" severity="warn" routerLink="/news"></p-button>
           </div>
           <div class="button-container">
             <p-button label="Management" routerLink="/management"></p-button>
@@ -21,11 +28,12 @@
           <div class="button-container">
             <p-button *ngIf="isAdmin" label="Admin View" routerLink="/admin"></p-button>
           </div>
-
           <div class="button-container">
-            <p-button label="Join the WST WhatsApp Group!" severity="success"  (onClick)="navigateToWhatsApp()"></p-button>
+            <p-button label="Join the WST WhatsApp Group!" severity="success" (onClick)="navigateToWhatsApp()"></p-button>
           </div>
-
+          <div class="button-container">
+            <p-button label="My Account" (onClick)="goToAccount()"></p-button>
+          </div>
         </p-fluid>
       </div>
     </div>
