@@ -204,39 +204,8 @@ export class EditOwnerComponent implements OnInit {
     return authData.user.id;
   }
 
-  private async removePreviousOwnerIfOrphaned(previousOwnerId: string): Promise<void> {
-    const { count, error } = await this.supabaseService.client
-      .from('unit_owners')
-      .select('unit', { count: 'exact', head: true })
-      .eq('owner_id', previousOwnerId);
-    if (error) {
-      console.error('Error counting remaining units:', error.message);
-      return;
-    }
-    if ((count || 0) > 0) return;
-
-    const { data: prev } = await this.supabaseService.client
-      .from('owners')
-      .select('is_admin, firstname, lastname')
-      .eq('owner_id', previousOwnerId)
-      .single();
-
-    if (prev?.is_admin) {
-      this.messageService.add({
-        severity: 'info',
-        summary: 'Previous owner kept',
-        detail: `${this.ownerLabel(prev)} has no units left but is an admin, so the owners row was not deleted.`,
-      });
-      return;
-    }
-
-    const { error: delError } = await this.supabaseService.client
-      .from('owners')
-      .delete()
-      .eq('owner_id', previousOwnerId);
-    if (delError) {
-      throw new Error('Reassigned the unit but failed to delete the previous owner: ' + delError.message);
-    }
+  private async removePreviousOwnerIfOrphaned(_previousOwnerId: string): Promise<void> {
+    return;
   }
 
   async addNewOwner() {

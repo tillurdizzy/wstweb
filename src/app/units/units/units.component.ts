@@ -150,7 +150,7 @@ export class UnitsComponent implements OnInit {
       this.vehicles = vehData || [];
     }
 
-    this.residentsStatus = this.sectionStatus(this.residents);
+    this.residentsStatus = this.residentsSectionStatus();
     this.vehiclesStatus = this.sectionStatus(this.vehicles);
   }
 
@@ -163,11 +163,23 @@ export class UnitsComponent implements OnInit {
     }
   }
 
+  private residentsSectionStatus(): 'green' | 'red' | 'yellow' {
+    const flags: boolean[] = this.residents.map((r) => !!r.data_confirmed);
+    if (this.ownerOccupied) {
+      flags.unshift(this.ownerConfirmed);
+    }
+    return this.statusFromFlags(flags);
+  }
+
   private sectionStatus(rows: any[]): 'green' | 'red' | 'yellow' {
-    if (!rows || rows.length === 0) return 'red';
-    const confirmed = rows.filter((r) => r.data_confirmed).length;
-    if (confirmed === rows.length) return 'green';
-    if (rows.length > 1 && confirmed > 0 && confirmed < rows.length) return 'yellow';
+    return this.statusFromFlags((rows || []).map((r) => !!r.data_confirmed));
+  }
+
+  private statusFromFlags(flags: boolean[]): 'green' | 'red' | 'yellow' {
+    if (!flags.length) return 'red';
+    const confirmed = flags.filter((f) => f).length;
+    if (confirmed === flags.length) return 'green';
+    if (flags.length > 1 && confirmed > 0 && confirmed < flags.length) return 'yellow';
     return 'red';
   }
 }
