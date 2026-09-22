@@ -15,7 +15,11 @@
 
       <p-fluid *ngIf="units.length > 0; else loading">
         <div class="details-section">
-          <h3>Owner</h3>
+          <h3>
+            Owner
+            <span *ngIf="isAdmin" class="status-dot" [class.green]="ownerConfirmed" [class.red]="!ownerConfirmed"></span>
+            <i *ngIf="isAdmin" class="pi auth-key" [ngClass]="ownerHasAuth ? 'pi-key' : 'pi-ban'" [title]="ownerHasAuth ? 'Auth linked' : 'No Auth'"></i>
+          </h3>
           <ul *ngIf="owner">
             <li>
              <p-button *ngIf="isAdmin" [routerLink]="['/edit-owner', owner.owner_id]" [queryParams]="{ unit: selectedUnit }" label="edit" severity="secondary"></p-button>
@@ -29,7 +33,10 @@
 
           <hr class="divider" />
 
-          <h3>{{ ownerOccupied ? 'Residents' : 'Tenants' }}</h3>
+          <h3>
+            {{ ownerOccupied ? 'Residents' : 'Tenants' }}
+            <span *ngIf="isAdmin" class="status-dot" [class.green]="residentsStatus === 'green'" [class.red]="residentsStatus === 'red'" [class.yellow]="residentsStatus === 'yellow'"></span>
+          </h3>
           <ul *ngIf="residents.length > 0 || ownerOccupied; else noResidents">
             <li *ngIf="ownerOccupied">
               <p-button *ngIf="isAdmin" [routerLink]="['/edit-owner', owner.owner_id]" [queryParams]="{ unit: selectedUnit }" label="edit" severity="secondary"></p-button>
@@ -55,7 +62,10 @@
 
           <hr class="divider" />
 
-          <h3>Vehicles</h3>
+          <h3>
+            Vehicles
+            <span *ngIf="isAdmin" class="status-dot" [class.green]="vehiclesStatus === 'green'" [class.red]="vehiclesStatus === 'red'" [class.yellow]="vehiclesStatus === 'yellow'"></span>
+          </h3>
           <ul *ngIf="vehicles.length > 0; else noVehicles">
             <li *ngFor="let vehicle of vehicles">
               <p-button [routerLink]="['/edit-vehicle', vehicle.id]" [queryParams]="{ unit: selectedUnit }" label="edit" severity="secondary"></p-button>

@@ -3,43 +3,29 @@ import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
+import { CheckboxModule } from 'primeng/checkbox';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
 import { UnitService } from '../../services/unit.service';
 import { FluidModule } from 'primeng/fluid';
-import { ToastModule } from 'primeng/toast';
-import { ConfirmDialogModule } from 'primeng/confirmdialog';
-import { ConfirmationService, MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-add-resident',
   standalone: true,
-  imports: [
-    CommonModule,
-    CardModule,
-    InputTextModule,
-    ButtonModule,
-    FormsModule,
-    RouterModule,
-    FluidModule,
-    ToastModule,
-    ConfirmDialogModule,
-  ],
+  imports: [CommonModule, CardModule, InputTextModule, ButtonModule, CheckboxModule, FormsModule, RouterModule, FluidModule],
   templateUrl: './add-resident.component.html',
   styleUrls: ['./add-resident.component.scss'],
-  providers: [MessageService, ConfirmationService],
 })
 export class AddResidentComponent {
   resident: any = { firstname: '', lastname: '', cell: '', email: '', unit: null };
+  dataConfirmed: boolean = false;
 
   constructor(
     private supabaseService: SupabaseService,
     private unitService: UnitService,
     private router: Router,
-    private route: ActivatedRoute,
-    private messageService: MessageService,
-    private confirmationService: ConfirmationService
+    private route: ActivatedRoute
   ) {
     const unitParam = this.route.snapshot.queryParamMap.get('unit');
     const selectedUnit = unitParam ? Number(unitParam) : this.unitService.getSelectedUnit();
@@ -48,30 +34,15 @@ export class AddResidentComponent {
     }
   }
 
-  private confirm(message: string): Promise<boolean> {
-    return new Promise((resolve) => {
-      this.confirmationService.confirm({
-        message,
-        header: 'Confirm',
-        icon: 'pi pi-exclamation-triangle',
-        accept: () => resolve(true),
-        reject: () => resolve(false),
-      });
-    });
-  }
-
   async save() {
     if (!this.resident.firstname || !this.resident.lastname) {
-      this.messageService.add({ severity: 'warn', summary: 'Missing fields', detail: 'First name and last name are required.' });
+      alert('First Name and Last Name are required.');
       return;
     }
     if (!this.resident.unit) {
-      this.messageService.add({ severity: 'warn', summary: 'No unit', detail: 'Open Add Resident from a unit page.' });
+      alert('Open Add Resident from a unit page.');
       return;
     }
-
-    const ok = await this.confirm('Set this new data as confirmed?');
-    if (!ok) return;
 
     const { data: userData } = await this.supabaseService.client.auth.getUser();
     const updatedBy = userData.user?.email || '';
@@ -84,11 +55,11 @@ export class AddResidentComponent {
         cell: this.resident.cell,
         email: this.resident.email,
         unit: this.resident.unit,
-        data_confirmed: true,
+        data_confirmed: this.dataConfirmed,
         updated_by: updatedBy,
       });
     if (error) {
-      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+      alert('Failed to add resident: ' + error.message);
       return;
     }
 

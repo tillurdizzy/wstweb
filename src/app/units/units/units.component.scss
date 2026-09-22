@@ -1,5 +1,3 @@
-
-
 .unit-selector {
   margin-bottom: 15px;
 }
@@ -28,7 +26,6 @@ li {
   margin-left: 10px;
 }
 
-
 .divider {
   border: 0;
   border-top: 2px solid #333;
@@ -42,3 +39,31 @@ h3 {
   color:#3e4a4a;
 }
 
+.status-dot {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-left: 8px;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+.status-dot.green { background: #22c55e; }
+.status-dot.red { background: #dc2626; }
+.status-dot.yellow { background: #eab308; }
+
+.auth-key {
+  margin-left: 6px;
+  font-size: 0.9rem;
+  vertical-align: middle;
+}
+
+.occupied-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.occupied-row .checkbox-label {
+  margin: 0;
+}

@@ -19,3 +19,13 @@ p-error {
   color: #dc2626; /* Red color for errors, adjust as needed */
   font-size: 12px;
 }
+
+.occupied-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.occupied-row .checkbox-label {
+  margin: 0;
+}

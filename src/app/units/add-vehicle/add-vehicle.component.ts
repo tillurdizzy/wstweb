@@ -1,31 +1,34 @@
-import { Component, inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { FormsModule } from '@angular/forms'; // For ngModel
-import { RouterModule } from '@angular/router'; // For consistency
+import { CheckboxModule } from 'primeng/checkbox';
+import { FormsModule } from '@angular/forms';
+import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
 import { UnitService } from '../../services/unit.service';
-import { Router } from '@angular/router';
 import { FluidModule } from 'primeng/fluid';
 
 @Component({
   selector: 'app-add-vehicle',
   standalone: true,
-  imports: [CommonModule, CardModule, InputTextModule, ButtonModule, FormsModule, RouterModule, FluidModule],
+  imports: [CommonModule, CardModule, InputTextModule, ButtonModule, CheckboxModule, FormsModule, RouterModule, FluidModule],
   templateUrl: './add-vehicle.component.html',
   styleUrls: ['./add-vehicle.component.scss'],
 })
 export class AddVehicleComponent {
   vehicle: any = { make: '', model: '', color: '', tag: '', unit: null };
+  dataConfirmed: boolean = false;
 
   constructor(
     private supabaseService: SupabaseService,
     private unitService: UnitService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
-    const selectedUnit = this.unitService.getSelectedUnit();
+    const unitParam = this.route.snapshot.queryParamMap.get('unit');
+    const selectedUnit = unitParam ? Number(unitParam) : this.unitService.getSelectedUnit();
     if (selectedUnit !== null) {
       this.vehicle.unit = selectedUnit;
     }
@@ -37,21 +40,29 @@ export class AddVehicleComponent {
       return;
     }
 
+    const { data: userData } = await this.supabaseService.client.auth.getUser();
+    const updatedBy = userData.user?.email || '';
+
     const { error } = await this.supabaseService.client
       .from('parking')
-      .insert(this.vehicle);
+      .insert({
+        make: this.vehicle.make,
+        model: this.vehicle.model,
+        color: this.vehicle.color,
+        tag: this.vehicle.tag,
+        unit: this.vehicle.unit,
+        data_confirmed: this.dataConfirmed,
+        updated_by: updatedBy,
+      });
     if (error) {
-      console.error('Error adding vehicle:', error.message);
       alert('Failed to add vehicle: ' + error.message);
-    } else {
-      console.log('Vehicle added successfully');
-      const unit = this.unitService.getSelectedUnit();
-      this.router.navigate(['/units'], { queryParams: { unit } });
+      return;
     }
+
+    this.router.navigate(['/units'], { queryParams: { unit: this.vehicle.unit } });
   }
 
   cancel() {
-    const unit = this.unitService.getSelectedUnit();
-    this.router.navigate(['/units'], { queryParams: { unit } });
+    this.router.navigate(['/units'], { queryParams: { unit: this.vehicle.unit } });
   }
 }

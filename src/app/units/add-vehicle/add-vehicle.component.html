@@ -27,6 +27,11 @@
             <small *ngIf="!vehicle.tag" class="p-error">License is required</small>
           </div>
 
+          <div class="field occupied-row">
+            <p-checkbox inputId="data_confirmed" [(ngModel)]="dataConfirmed" [binary]="true"></p-checkbox>
+            <label for="data_confirmed" class="checkbox-label">Data confirmed</label>
+          </div>
+
           <div class="field">
             <p-button label="Save" (click)="save()"></p-button>
           </div>

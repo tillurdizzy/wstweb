@@ -1,10 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { ButtonModule } from 'primeng/button';
-import { FormsModule } from '@angular/forms'; // For ngModel
-import { RouterModule } from '@angular/router'; // For routerLink
+import { CheckboxModule } from 'primeng/checkbox';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 import { SupabaseService } from '../../services/supabase.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UnitService } from '../../services/unit.service';
@@ -13,12 +14,13 @@ import { FluidModule } from 'primeng/fluid';
 @Component({
   selector: 'app-edit-vehicle',
   standalone: true,
-  imports: [CommonModule, CardModule, InputTextModule, ButtonModule, FormsModule, RouterModule, FluidModule],
+  imports: [CommonModule, CardModule, InputTextModule, ButtonModule, CheckboxModule, FormsModule, RouterModule, FluidModule],
   templateUrl: './edit-vehicle.component.html',
   styleUrls: ['./edit-vehicle.component.scss'],
 })
 export class EditVehicleComponent implements OnInit {
   vehicle: any = { id: '', make: '', model: '', color: '', tag: '', unit: null };
+  dataConfirmed: boolean = false;
 
   constructor(
     private supabaseService: SupabaseService,
@@ -32,13 +34,14 @@ export class EditVehicleComponent implements OnInit {
     if (vehicleId) {
       const { data, error } = await this.supabaseService.client
         .from('parking')
-        .select('id, make, model, color, tag, unit')
+        .select('id, make, model, color, tag, unit, data_confirmed')
         .eq('id', vehicleId)
         .single();
       if (error) {
         console.error('Error fetching vehicle:', error.message);
       } else {
         this.vehicle = data || this.vehicle;
+        this.dataConfirmed = !!data.data_confirmed;
       }
     }
   }
@@ -49,6 +52,9 @@ export class EditVehicleComponent implements OnInit {
       return;
     }
 
+    const { data: userData } = await this.supabaseService.client.auth.getUser();
+    const updatedBy = userData.user?.email || '';
+
     const { error } = await this.supabaseService.client
       .from('parking')
       .update({
@@ -56,42 +62,39 @@ export class EditVehicleComponent implements OnInit {
         model: this.vehicle.model,
         color: this.vehicle.color,
         tag: this.vehicle.tag,
-        unit: this.vehicle.unit, // Ensure unit stays linked
+        unit: this.vehicle.unit,
+        data_confirmed: this.dataConfirmed,
+        updated_by: updatedBy,
       })
       .eq('id', this.vehicle.id);
     if (error) {
-      console.error('Error updating vehicle:', error.message);
       alert('Failed to update vehicle: ' + error.message);
-    } else {
-      console.log('Vehicle updated successfully');
-      const unit = this.unitService.getSelectedUnit();
-      this.router.navigate(['/units'], { queryParams: { unit } });
+      return;
     }
+
+    const unit = this.route.snapshot.queryParamMap.get('unit') || this.unitService.getSelectedUnit();
+    this.router.navigate(['/units'], { queryParams: { unit } });
   }
 
   async delete() {
-    // Add confirmation prompt
     const confirmDelete = confirm(`Are you sure you want to delete this vehicle (${this.vehicle.make} ${this.vehicle.model}, License: ${this.vehicle.tag})? This action cannot be undone.`);
-    if (!confirmDelete) {
-      return; // User canceled the deletion
-    }
+    if (!confirmDelete) return;
 
     const { error } = await this.supabaseService.client
       .from('parking')
       .delete()
       .eq('id', this.vehicle.id);
     if (error) {
-      console.error('Error deleting vehicle:', error.message);
       alert('Failed to delete vehicle: ' + error.message);
-    } else {
-      console.log('Vehicle deleted successfully');
-      const unit = this.unitService.getSelectedUnit();
-      this.router.navigate(['/units'], { queryParams: { unit } });
+      return;
     }
+
+    const unit = this.route.snapshot.queryParamMap.get('unit') || this.unitService.getSelectedUnit();
+    this.router.navigate(['/units'], { queryParams: { unit } });
   }
 
   cancel() {
-    const unit = this.unitService.getSelectedUnit();
+    const unit = this.route.snapshot.queryParamMap.get('unit') || this.unitService.getSelectedUnit();
     this.router.navigate(['/units'], { queryParams: { unit } });
   }
 }

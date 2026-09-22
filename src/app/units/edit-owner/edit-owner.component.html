@@ -52,7 +52,7 @@
             <label for="owner_occupied" class="checkbox-label">Owner Occupied</label>
           </div>
 
-          <div class="field occupied-row" *ngIf="isAdmin && !isAddingOwner">
+          <div class="field occupied-row">
             <p-checkbox inputId="data_confirmed" [(ngModel)]="dataConfirmed" [binary]="true"></p-checkbox>
             <label for="data_confirmed" class="checkbox-label">Data confirmed</label>
           </div>

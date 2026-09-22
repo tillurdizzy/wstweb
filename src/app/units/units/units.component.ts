@@ -1,11 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
-import { SelectModule } from 'primeng/select'; // For p-select
+import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
-import { FormsModule } from '@angular/forms'; // Added for ngModel support
-import { RouterModule } from '@angular/router'; // Added for routerLink
-import { MessageModule } from 'primeng/message'; // Added for p-message
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { MessageModule } from 'primeng/message';
 import { SupabaseService } from '../../services/supabase.service';
 import { UnitService } from '../../services/unit.service';
 import { ActivatedRoute } from '@angular/router';
@@ -21,7 +21,7 @@ import { FluidModule } from 'primeng/fluid';
     ButtonModule,
     FormsModule,
     RouterModule,
-    MessageModule, // Import MessageModule for p-message
+    MessageModule,
     FluidModule,
   ],
   templateUrl: './units.component.html',
@@ -35,6 +35,10 @@ export class UnitsComponent implements OnInit {
   owner: any = null;
   ownerOccupied: boolean = false;
   isAdmin: boolean = false;
+  ownerConfirmed: boolean = false;
+  ownerHasAuth: boolean = false;
+  residentsStatus: 'green' | 'red' | 'yellow' = 'red';
+  vehiclesStatus: 'green' | 'red' | 'yellow' = 'red';
 
   constructor(
     private supabaseService: SupabaseService,
@@ -64,13 +68,15 @@ export class UnitsComponent implements OnInit {
 
       const { data: ownerData, error: ownerError } = await this.supabaseService.client
         .from('owners')
-        .select('owner_id, firstname, lastname, cell, email')
+        .select('owner_id, firstname, lastname, cell, email, data_confirmed, uuid')
         .eq('owner_id', ownerId)
         .single();
       if (ownerError) {
         console.error('Error fetching owner:', ownerError.message);
       } else {
         this.owner = ownerData;
+        this.ownerConfirmed = !!ownerData.data_confirmed;
+        this.ownerHasAuth = !!ownerData.uuid;
 
         const { data: unitData, error: unitDataError } = await this.supabaseService.client
           .from('units')
@@ -87,7 +93,7 @@ export class UnitsComponent implements OnInit {
     } else {
       let ownerQuery = this.supabaseService.client
         .from('owners')
-        .select('owner_id, firstname, lastname, cell, email');
+        .select('owner_id, firstname, lastname, cell, email, data_confirmed, uuid');
 
       if (ownerIdParam && this.isAdmin) {
         ownerQuery = ownerQuery.eq('owner_id', ownerIdParam);
@@ -98,6 +104,8 @@ export class UnitsComponent implements OnInit {
       const owner = await ownerQuery.single();
       if (owner.data) {
         this.owner = owner.data;
+        this.ownerConfirmed = !!this.owner.data_confirmed;
+        this.ownerHasAuth = !!this.owner.uuid;
 
         const { data, error } = await this.supabaseService.client
           .from('unit_owners')
@@ -124,7 +132,7 @@ export class UnitsComponent implements OnInit {
   async loadUnitDetails(unit: number | null) {
     const { data: resData, error: resError } = await this.supabaseService.client
       .from('residents')
-      .select('id, firstname, lastname, cell, email')
+      .select('id, firstname, lastname, cell, email, data_confirmed')
       .eq('unit', unit);
     if (resError) {
       console.error('Error fetching residents:', resError.message);
@@ -134,21 +142,32 @@ export class UnitsComponent implements OnInit {
 
     const { data: vehData, error: vehError } = await this.supabaseService.client
       .from('parking')
-      .select('id, make, model, color, tag')
+      .select('id, make, model, color, tag, data_confirmed')
       .eq('unit', unit);
     if (vehError) {
       console.error('Error fetching vehicles:', vehError.message);
     } else {
       this.vehicles = vehData || [];
     }
+
+    this.residentsStatus = this.sectionStatus(this.residents);
+    this.vehiclesStatus = this.sectionStatus(this.vehicles);
   }
 
   async onUnitChange(event: any) {
-    const newUnit = event.value; // Get the selected unit value from the event
+    const newUnit = event.value;
     if (newUnit !== null) {
       this.selectedUnit = newUnit;
       this.unitService.setSelectedUnit(this.selectedUnit);
       await this.loadUnitDetails(this.selectedUnit);
     }
+  }
+
+  private sectionStatus(rows: any[]): 'green' | 'red' | 'yellow' {
+    if (!rows || rows.length === 0) return 'red';
+    const confirmed = rows.filter((r) => r.data_confirmed).length;
+    if (confirmed === rows.length) return 'green';
+    if (rows.length > 1 && confirmed > 0 && confirmed < rows.length) return 'yellow';
+    return 'red';
   }
 }

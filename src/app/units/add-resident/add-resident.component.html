@@ -26,6 +26,11 @@
             <input pInputText id="email" [(ngModel)]="resident.email" type="email" />
           </div>
 
+          <div class="field occupied-row">
+            <p-checkbox inputId="data_confirmed" [(ngModel)]="dataConfirmed" [binary]="true"></p-checkbox>
+            <label for="data_confirmed" class="checkbox-label">Data confirmed</label>
+          </div>
+
           <div class="field">
             <p-button label="Save" (click)="save()"></p-button>
           </div>
@@ -36,6 +41,4 @@
       </p-fluid>
     </div>
   </p-card>
-  <p-toast></p-toast>
-  <p-confirmdialog></p-confirmdialog>
 </div>

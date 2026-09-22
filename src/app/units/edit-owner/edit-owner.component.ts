@@ -42,7 +42,6 @@ export class EditOwnerComponent implements OnInit {
   isAdmin: boolean = false;
   isAddingOwner: boolean = false;
   dataConfirmed: boolean = false;
-  originalConfirmed: boolean = false;
 
   constructor(
     private supabaseService: SupabaseService,
@@ -71,7 +70,6 @@ export class EditOwnerComponent implements OnInit {
       } else {
         this.owner = ownerData || this.owner;
         this.dataConfirmed = !!ownerData.data_confirmed;
-        this.originalConfirmed = this.dataConfirmed;
         this.copyOwnerToForm();
       }
 
@@ -113,6 +111,7 @@ export class EditOwnerComponent implements OnInit {
 
   startAddOwner() {
     this.isAddingOwner = true;
+    this.dataConfirmed = true;
     this.form = {
       firstname: '',
       lastname: '',
@@ -134,13 +133,6 @@ export class EditOwnerComponent implements OnInit {
       return;
     }
 
-    let confirmed = this.dataConfirmed;
-    if (this.originalConfirmed) {
-      confirmed = await this.confirm('Data changed. Mark as confirmed again?');
-    } else {
-      confirmed = await this.confirm('Set data as confirmed?');
-    }
-
     const updatedBy = await this.editorEmail();
 
     const { error: ownersError } = await this.supabaseService.client
@@ -151,7 +143,7 @@ export class EditOwnerComponent implements OnInit {
         cell: this.form.cell,
         street: this.form.street,
         csz: this.form.csz,
-        data_confirmed: confirmed,
+        data_confirmed: this.dataConfirmed,
         updated_by: updatedBy,
       })
       .eq('owner_id', this.owner.owner_id);
@@ -177,6 +169,7 @@ export class EditOwnerComponent implements OnInit {
   async cancel() {
     if (this.isAddingOwner) {
       this.isAddingOwner = false;
+      this.dataConfirmed = !!this.owner.data_confirmed;
       this.copyOwnerToForm();
       return;
     }
@@ -334,7 +327,7 @@ export class EditOwnerComponent implements OnInit {
           cell: this.form.cell,
           street: this.form.street,
           csz: this.form.csz,
-          data_confirmed: true,
+          data_confirmed: this.dataConfirmed,
           updated_by: updatedBy,
         })
         .select('owner_id')
