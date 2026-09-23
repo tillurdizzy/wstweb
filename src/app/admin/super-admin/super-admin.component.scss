@@ -1,0 +1,101 @@
+.card-content {
+  .search-input {
+    margin-bottom: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 12px;
+  }
+
+  .search-section,
+  .pin-gate,
+  .detail {
+    margin-bottom: 20px;
+  }
+
+  .pin-gate,
+  .detail {
+    max-width: 420px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: left;
+  }
+
+  .search-row {
+    width: 100%;
+    max-width: 420px;
+  }
+
+  .search-controls {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .search-controls input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+
+  .checkbox-label {
+    display: inline;
+    margin-left: 8px;
+  }
+
+  .occupied-row {
+    display: flex;
+    align-items: center;
+  }
+
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+    gap: 8px;
+  }
+
+  .owner-line {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .meta {
+    color: #666;
+    font-size: 0.85rem;
+    word-break: break-all;
+  }
+
+  .status-icon.auth-yes {
+    color: #2e7d32;
+  }
+
+  .status-icon.auth-no {
+    color: #c62828;
+  }
+
+  .field {
+    margin: 10px 0;
+  }
+
+  .email-input,
+  input.email-input,
+  :host ::ng-deep .email-input {
+    width: 100%;
+    max-width: 420px;
+    box-sizing: border-box;
+  }
+
+  .unit-list li {
+    justify-content: flex-start;
+  }
+}

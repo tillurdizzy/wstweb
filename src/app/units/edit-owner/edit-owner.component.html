@@ -29,7 +29,7 @@
               [readonly]="!isAddingOwner"
               [class.disabled-input]="!isAddingOwner"
             />
-            <small *ngIf="isAddingOwner && !form.email" class="p-error">Email is required</small>
+            <small *ngIf="isAddingOwner" class="p-hint">Optional. If you enter one, a login is created (password 123456).</small>
           </div>
 
           <div class="field">

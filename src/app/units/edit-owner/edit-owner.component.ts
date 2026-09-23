@@ -216,11 +216,19 @@ export class EditOwnerComponent implements OnInit {
     const lastname = (this.form.lastname || '').trim();
 
     if (!unit) {
-      this.messageService.add({ severity: 'warn', summary: 'No unit', detail: 'Open this page from a unit so the unit number is known.' });
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'No unit',
+        detail: 'Open this page from a unit so the unit number is known.',
+      });
       return;
     }
-    if (!firstname || !lastname || !email) {
-      this.messageService.add({ severity: 'warn', summary: 'Missing fields', detail: 'Name and email are required.' });
+    if (!firstname || !lastname) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Missing fields',
+        detail: 'First name and last name are required.',
+      });
       return;
     }
 
@@ -236,13 +244,15 @@ export class EditOwnerComponent implements OnInit {
     const updatedBy = adminSession.user?.email || '';
 
     try {
-      const { data: emailMatches, error: emailError } = await this.supabaseService.client
-        .from('owners')
-        .select('owner_id, firstname, lastname, email, uuid, is_admin')
-        .ilike('email', email);
-      if (emailError) throw new Error(emailError.message);
-
-      const existing = emailMatches && emailMatches.length > 0 ? emailMatches[0] : null;
+      let existing: any = null;
+      if (email) {
+        const { data: emailMatches, error: emailError } = await this.supabaseService.client
+          .from('owners')
+          .select('owner_id, firstname, lastname, email, uuid, is_admin')
+          .ilike('email', email);
+        if (emailError) throw new Error(emailError.message);
+        existing = emailMatches && emailMatches.length > 0 ? emailMatches[0] : null;
+      }
 
       if (existing && existing.owner_id === previousOwnerId) {
         this.messageService.add({
@@ -255,7 +265,7 @@ export class EditOwnerComponent implements OnInit {
 
       if (existing) {
         const ok = await this.confirm(
-          `Unit ${unit} is assigned to ${currentName}. Reassign it to ${this.ownerLabel(existing)}? The current owner will be removed if they have no other units.`
+          `Unit ${unit} is assigned to ${currentName}. Reassign it to ${this.ownerLabel(existing)}?`
         );
         if (!ok) return;
 
@@ -281,21 +291,25 @@ export class EditOwnerComponent implements OnInit {
       }
 
       const okNew = await this.confirm(
-        `Unit ${unit} is assigned to ${currentName}. Reassign it to ${addName}? The current owner will be removed if they have no other units.`
+        `Unit ${unit} is assigned to ${currentName}. Reassign it to ${addName}?`
       );
       if (!okNew) return;
 
-      const authId = await this.signUpOwner(email, TEMP_PASSWORD);
+      let authId: string | null = null;
+      if (email) {
+        authId = await this.signUpOwner(email, TEMP_PASSWORD);
+      }
+
       const { data: created, error: ownersError } = await this.supabaseService.client
         .from('owners')
         .insert({
           uuid: authId,
           firstname,
           lastname,
-          email,
-          cell: this.form.cell,
-          street: this.form.street,
-          csz: this.form.csz,
+          email: email || null,
+          cell: this.form.cell || null,
+          street: this.form.street || null,
+          csz: this.form.csz || null,
           data_confirmed: this.dataConfirmed,
           updated_by: updatedBy,
         })
@@ -317,7 +331,13 @@ export class EditOwnerComponent implements OnInit {
       }
 
       await this.removePreviousOwnerIfOrphaned(previousOwnerId);
-      this.messageService.add({ severity: 'success', summary: 'Success', detail: `${addName} now owns unit ${unit}.` });
+      this.messageService.add({
+        severity: 'success',
+        summary: 'Success',
+        detail: email
+          ? `${addName} now owns unit ${unit}. Login password is ${TEMP_PASSWORD}.`
+          : `${addName} now owns unit ${unit}. No login until an email is added.`,
+      });
       this.router.navigate(['/units'], { queryParams: { unit } });
     } catch (error) {
       this.messageService.add({
