@@ -102,60 +102,53 @@
         </li>
 
         <li>
-          <div pRipple class="menu-item menu-parent" (click)="toggleSubmenu('board')">
-            <span>Board of Directors</span>
+          <div pRipple class="menu-item menu-parent" (click)="toggleSubmenu('governance')">
+            <span>Governance</span>
             <i class="pi pi-chevron-down"></i>
           </div>
-          <ul class="list-none p-0 m-0 submenu" [class.hidden]="!expandedSubmenus['board']">
+          <ul class="list-none p-0 m-0 submenu" [class.hidden]="!expandedSubmenus['governance']">
             <li>
-              <a pRipple [routerLink]="['/board/home']" class="menu-item" (click)="visible = false">
-                <i class="pi pi-info-circle"></i>
-                <span>About</span>
-              </a>
-            </li>
-            <li>
-              <a pRipple [routerLink]="['/news/letter']" class="menu-item" (click)="visible = false">
-                <i class="pi pi-book"></i>
-                <span>Newsletter</span>
-              </a>
-            </li>
-            <li>
-              <a pRipple [routerLink]="['/board/reports']" class="menu-item" (click)="visible = false">
-                <i class="pi pi-chart-bar"></i>
-                <span>Financial Reports</span>
-              </a>
-            </li>
-          </ul>
-        </li>
-
-        <li>
-          <div pRipple class="menu-item menu-parent" (click)="toggleSubmenu('committees')">
-            <span>Committees</span>
-            <i class="pi pi-chevron-down"></i>
-          </div>
-          <ul class="list-none p-0 m-0 submenu" [class.hidden]="!expandedSubmenus['committees']">
-            <li>
-              <a pRipple [routerLink]="['/committees/landscape']" class="menu-item" (click)="visible = false">
-                <i class="pi pi-sun"></i>
-                <span>Landscape</span>
-              </a>
-            </li>
-            <li>
-              <a pRipple [routerLink]="['/committees/welcome']" class="menu-item" (click)="visible = false">
+              <a pRipple [routerLink]="['/governance/board']" class="menu-item" (click)="visible = false">
                 <i class="pi pi-users"></i>
-                <span>Welcome</span>
+                <span>Board of Directors</span>
               </a>
             </li>
             <li>
-              <a pRipple [routerLink]="['/committees/legal']" class="menu-item" (click)="visible = false">
-                <i class="pi pi-hammer"></i>
-                <span>Legal</span>
-              </a>
+              <div pRipple class="menu-item menu-parent" (click)="toggleSubmenu('committees')">
+                <span>Committees</span>
+                <i class="pi pi-chevron-down"></i>
+              </div>
+              <ul class="list-none p-0 m-0 submenu" [class.hidden]="!expandedSubmenus['committees']">
+                <li>
+                  <a pRipple [routerLink]="['/governance/committees/landscape']" class="menu-item" (click)="visible = false">
+                    <i class="pi pi-sun"></i>
+                    <span>Landscape</span>
+                  </a>
+                </li>
+                <li>
+                  <a pRipple [routerLink]="['/governance/committees/welcome']" class="menu-item" (click)="visible = false">
+                    <i class="pi pi-users"></i>
+                    <span>Welcome</span>
+                  </a>
+                </li>
+                <li>
+                  <a pRipple [routerLink]="['/governance/committees/legal']" class="menu-item" (click)="visible = false">
+                    <i class="pi pi-hammer"></i>
+                    <span>Legal</span>
+                  </a>
+                </li>
+                <li>
+                  <a pRipple [routerLink]="['/governance/committees/violations-parking']" class="menu-item" (click)="visible = false">
+                    <i class="pi pi-car"></i>
+                    <span>Parking & Violations</span>
+                  </a>
+                </li>
+              </ul>
             </li>
             <li>
-              <a pRipple [routerLink]="['/committees/violations-parking']" class="menu-item" (click)="visible = false">
-                <i class="pi pi-car"></i>
-                <span>Parking & Violations</span>
+              <a pRipple [routerLink]="['/governance/documents']" class="menu-item" (click)="visible = false">
+                <i class="pi pi-file"></i>
+                <span>Governing Documents</span>
               </a>
             </li>
           </ul>

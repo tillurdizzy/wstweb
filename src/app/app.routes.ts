@@ -111,39 +111,40 @@ export const routes: Routes = [
         ],
       },
       {
-        path: 'board',
-        loadComponent: () => import('./board/board.component').then(m => m.BoardComponent),
+        path: 'governance',
+        loadComponent: () =>
+          import('./governance/governance.component').then(m => m.GovernanceComponent),
         children: [
-          { path: '', redirectTo: 'home', pathMatch: 'full' },
+          { path: '', redirectTo: 'board', pathMatch: 'full' },
           {
-            path: 'home',
-            loadComponent: () => import('./board/board-home/board-home.component').then(m => m.BoardHomeComponent),
-            title: 'Board Home',
+            path: 'board',
+            loadComponent: () =>
+              import('./board/board-home/board-home.component').then(m => m.BoardHomeComponent),
+            title: 'Board of Directors',
           },
           {
-            path: 'newsletter',
-            loadComponent: () => import('./board/newsletter/newsletter.component').then(m => m.NewsletterComponent),
-            title: 'Newsletter',
+            path: 'documents',
+            loadComponent: () =>
+              import('./governance/documents/documents.component').then(m => m.DocumentsComponent),
+            title: 'Governing Documents',
           },
           {
-            path: 'reports',
-            loadComponent: () => import('./board/reports/reports.component').then(m => m.ReportsComponent),
-            title: 'Financial',
+            path: 'committees',
+            component: CommitteesComponent,
+            children: [
+              { path: '', redirectTo: 'home', pathMatch: 'full' },
+              { path: 'home', component: CommitteesHomeComponent, title: 'Committees Home' },
+              { path: 'landscape', component: LandscapeComponent, title: 'Landscape Committee' },
+              { path: 'welcome', component: WelcomeCommitteeComponent, title: 'Welcome Committee' },
+              { path: 'legal', component: LegalCommitteeComponent, title: 'Legal Committee' },
+              { path: 'violations-parking', component: ViolationsAndParkingComponent, title: 'Violations and Parking' },
+            ],
           },
         ],
       },
-      {
-        path: 'committees',
-        component: CommitteesComponent,
-        children: [
-          { path: '', redirectTo: 'home', pathMatch: 'full' },
-          { path: 'home', component: CommitteesHomeComponent, title: 'Committees Home' },
-          { path: 'landscape', component: LandscapeComponent, title: 'Landscape Committee' },
-          { path: 'welcome', component: WelcomeCommitteeComponent, title: 'Welcome Committee' },
-          { path: 'legal', component: LegalCommitteeComponent, title: 'Legal Committee' },
-          { path: 'violations-parking', component: ViolationsAndParkingComponent, title: 'Violations and Parking' },
-        ],
-      },
+      { path: 'board', redirectTo: 'governance/board', pathMatch: 'prefix' },
+      { path: 'committees', redirectTo: 'governance/committees', pathMatch: 'prefix' },
+      { path: 'board', redirectTo: 'governance/board', pathMatch: 'prefix' },
       {
         path: 'password-reset',
         title: 'Reset Password',

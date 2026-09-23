@@ -1,0 +1,29 @@
+<div class="content-container">
+  <p-card>
+    <ng-template #title>Governing Documents</ng-template>
+    <div class="card-content">
+      <div class="doc-list">
+        <div class="doc-block" *ngFor="let doc of docs">
+          <button type="button" class="doc-title" (click)="toggleDoc(doc)">
+            {{ doc.title }}
+          </button>
+
+          <div class="pdf-wrap" *ngIf="openDocId === doc.id && doc.pdf && !doc.sections">
+            <iframe [src]="doc.pdf | safeUrl" [title]="doc.title"></iframe>
+          </div>
+
+          <div class="toc" *ngIf="openDocId === doc.id && doc.sections">
+            <div class="toc-item" *ngFor="let section of doc.sections">
+              <button type="button" class="toc-link" (click)="toggleSection(section.id)">
+                {{ section.title }}
+              </button>
+              <div class="pdf-wrap" *ngIf="openSectionId === section.id">
+                <iframe [src]="section.pdf | safeUrl" [title]="section.title"></iframe>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </p-card>
+</div>

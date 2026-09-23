@@ -1,0 +1,68 @@
+.doc-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 0 16px;
+}
+
+.doc-block {
+  width: 100%;
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.doc-title {
+  background: none;
+  border: none;
+  padding: 10px 12px;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: #1976d2;
+  cursor: pointer;
+  text-align: center;
+}
+
+.doc-title:hover {
+  text-decoration: underline;
+}
+
+.toc {
+  width: 100%;
+  margin: 4px 0 16px;
+  padding: 8px 0 4px;
+}
+
+.toc-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.toc-link {
+  background: none;
+  border: none;
+  padding: 6px 8px;
+  font-size: 1rem;
+  color: #333;
+  cursor: pointer;
+  text-align: center;
+}
+
+.toc-link:hover {
+  color: #1976d2;
+  text-decoration: underline;
+}
+
+.pdf-wrap {
+  width: 100%;
+  margin: 8px 0 16px;
+}
+
+.pdf-wrap iframe {
+  width: 100%;
+  height: 640px;
+  border: 1px solid #ddd;
+}

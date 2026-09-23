@@ -9,17 +9,29 @@
     margin: 15px 0 5px 0;
     font-weight: 500;
   }
-  
+
   p {
     margin: 5px 0;
   }
-  
+
   a {
-    color: #1976d2; /* Matches Material primary color */
-    text-decoration: none;
-  
+    color: #1976d2;
+    text-description: none;
+
     &:hover {
       text-decoration: underline;
     }
+  }
+}
+
+.rep-photo {
+  margin: 16px 0;
+
+  img {
+    display: block;
+    max-width: 220px;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
   }
 }
