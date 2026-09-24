@@ -80,11 +80,7 @@ export class ResidentFeedbackComponent implements OnInit {
     }
   }
 
-  openPhotoFileDialog() {
-    if (this.isMobile) {
-      alert('Photo uploads are only available on desktop due to mobile security restrictions.');
-      return;
-    }
+    openPhotoFileDialog() {
     this.photoFileInput.nativeElement.click();
   }
 

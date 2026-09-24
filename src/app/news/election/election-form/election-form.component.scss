@@ -20,10 +20,17 @@
 .image-placeholder {
   width: 100%;
   max-width: 640px;
-  height: 180px;
   margin: 0 auto 18px auto;
+}
+
+.image-placeholder img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  object-fit: cover;
+  object-position: center;
   border-radius: 8px;
-  background: #ddd;
 }
 
 p {

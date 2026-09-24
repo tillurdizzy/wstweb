@@ -2,6 +2,9 @@
   <p-card>
     <ng-template #title>Submit Work Order</ng-template>
     <div class="card-content">
+      <div class="advisory">
+        This website is not the official Association site. These forms are for demonstration only and are not submitted to Management.
+      </div>
       <p-fluid>
         <div class="form-container">
           <div class="field">
@@ -37,7 +40,7 @@
           </div>
 
           <div class="field">
-            <p-button label="Submit" (click)="submit()"></p-button>
+            <p-button label="Submit" [disabled]="true"></p-button>
           </div>
           <div class="field">
             <p-button label="Cancel" (click)="cancel()" severity="secondary"></p-button>
