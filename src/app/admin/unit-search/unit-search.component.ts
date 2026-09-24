@@ -9,7 +9,7 @@ import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
-import { PostgrestError, createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
 
 @Component({
@@ -29,11 +29,13 @@ import { environment } from '../../../environments/environment';
   providers: [MessageService, ConfirmationService],
 })
 export class UnitSearchComponent {
-  unitNumber: number | null = null;
-  searchName: string = '';
+  query = '';
+  searched = false;
   searchResults: any[] = [];
+  activeUnit: number | null = null;
+
   allUnits = [
-    101, 102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,
+    100, 101, 102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,
     121,122,123,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,
     200,201,202,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,
     220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,300,301,302,
@@ -42,7 +44,7 @@ export class UnitSearchComponent {
     406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425,
     426,500,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,
     519,520,521,522,523,524,525,526,527,528,529,530,531,532,533,534,535,536,537,538,
-    539,540,541,542,543,544,545,546,547,548,549,550,551,552,553,601,602
+    539,540,541,542,543,544,545,546,547,548,549,550,551,552,553
   ];
 
   showAddOwnerForm: boolean = false;
@@ -61,45 +63,63 @@ export class UnitSearchComponent {
     private confirmationService: ConfirmationService
   ) {}
 
-  checkUnitNumber(): boolean {
-    if (this.unitNumber !== null) {
-      const unitStr = this.unitNumber.toString();
-      return unitStr.length >= 3 && this.allUnits.includes(this.unitNumber);
-    }
-    return false;
-  }
-
-  async goToUnit() {
-    if (this.unitNumber !== null && this.allUnits.includes(this.unitNumber)) {
-      this.router.navigate(['/units'], { queryParams: { unit: this.unitNumber } });
-    } else {
-      this.messageService.add({ severity: 'warn', summary: 'Invalid Unit', detail: 'Please enter a valid unit number.' });
-    }
-  }
-
-  async searchOwners() {
-    if (this.searchName.trim()) {
-      const { data, error } = await this.supabaseService.client
-        .from('owners')
-        .select('owner_id, firstname, lastname')
-        .or(`firstname.ilike.%${this.searchName}%,lastname.ilike.%${this.searchName}%`);
-      if (error) {
-        console.error('Error searching owners:', (error as PostgrestError).message);
-      } else {
-        this.searchResults = await Promise.all(data.map(async owner => {
-          const { data: units, error: unitsError } = await this.supabaseService.client
-            .from('unit_owners')
-            .select('unit')
-            .eq('owner_id', owner.owner_id);
-          if (unitsError) {
-            console.error('Error fetching units for owner:', (unitsError as PostgrestError).message);
-          }
-          return { ...owner, unitCount: units?.length || 0 };
-        })) || [];
-      }
-    } else {
+  onQueryChange() {
+    const q = (this.query || '').trim();
+    this.activeUnit = null;
+    if (q.length < 3) {
+      this.searched = false;
       this.searchResults = [];
+      return;
     }
+    if (/^\d+$/.test(q)) {
+      this.activeUnit = Number(q);
+      this.searchByUnit(this.activeUnit);
+    } else {
+      this.searchOwners(q);
+    }
+  }
+
+  clearSearch() {
+    this.query = '';
+    this.searched = false;
+    this.searchResults = [];
+    this.activeUnit = null;
+  }
+
+  async searchByUnit(unit: number) {
+    this.searched = true;
+    const { data, error } = await this.supabaseService.client
+      .from('unit_owners')
+      .select('owner_id, owners(owner_id, firstname, lastname)')
+      .eq('unit', unit)
+      .maybeSingle();
+    if (error) {
+      console.error('Error searching unit:', error.message);
+      return;
+    }
+    if (!data?.owners) {
+      this.searchResults = [];
+      return;
+    }
+    const owner = data.owners as any;
+    this.searchResults = [{ ...owner, unitCount: 1 }];
+  }
+
+  async searchOwners(q: string) {
+    this.searched = true;
+    const { data, error } = await this.supabaseService.client
+      .from('owners')
+      .select('owner_id, firstname, lastname, unit_owners(unit)')
+      .or(`firstname.ilike.%${q}%,lastname.ilike.%${q}%`)
+      .order('lastname');
+    if (error) {
+      console.error('Error searching owners:', error.message);
+      return;
+    }
+    this.searchResults = (data || []).map((o: any) => ({
+      ...o,
+      unitCount: (o.unit_owners || []).length,
+    }));
   }
 
   viewOwnerUnits(ownerId: string) {

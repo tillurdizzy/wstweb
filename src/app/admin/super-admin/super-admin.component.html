@@ -13,9 +13,14 @@
           <div class="search-section search-row">
             <label for="query">Unit number or owner name</label>
             <div class="search-controls">
-              <input
+            <input
                 pInputText
-                id="query"
+                id="superOwnerSearch"
+                name="superOwnerSearch"
+                autocomplete="off"
+                autocorrect="off"
+                autocapitalize="off"
+                spellcheck="false"
                 [(ngModel)]="query"
                 (ngModelChange)="onQueryChange()"
               />

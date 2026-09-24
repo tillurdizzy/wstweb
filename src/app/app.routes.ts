@@ -29,6 +29,7 @@ import { EventsComponent } from "./news/events/events.component";
 import { ElectionComponent } from "./news/election/election.component";
 import { FlyersComponent } from "./news/election/flyers/flyers.component";
 import { BylawsComponent } from "./news/election/bylaws/bylaws.component";
+import { ElectionFormComponent } from "./news/election/election-form/election-form.component";
 import { ActivatedRouteSnapshot } from "@angular/router";
 
 const preserveFragmentResolver: ResolveFn<string | null> = (
@@ -53,6 +54,7 @@ export const routes: Routes = [
           { path: "", redirectTo: "letter", pathMatch: "full" },
           { path: "letter", component: LetterComponent, title: "Newsletter" },
           { path: "events", component: EventsComponent, title: "Events" },
+          { path: 'election/form', component: ElectionFormComponent, title: 'You Can Count on Me' },
           {
             path: "election",
             component: ElectionComponent,

@@ -18,42 +18,13 @@
 
       <p>Many HOAs and COAs wrote their bylaws to block this. Ours date to 1979 and do not.</p>
 
-      <p>The bylaws need two updates that are now standard elsewhere:</p>
-      <ul>
-        <li><strong>A Quorum Ladder</strong> — If the first meeting fails, the next meeting requires a lower percentage, down to as little as 10% of owners under state law, until an election is completed.</li>
-        <li><strong>Electronic voting</strong> — lets owners cast their own secret ballot from any device during a multi-day window, so participation no longer depends on attending a meeting or handing a form to a neighbor. Higher turnout makes quorum more reliable and reduces the chance that one person can swing—or block—an election by collecting or withholding proxies. Automated credentials, one-vote-per-unit checks, and an audit trail also cut counting errors and proxy disputes, which strengthens election integrity.</li>
-      </ul>
-
       <p>Because every current director is a holdover, <strong>all five seats are open in 2027</strong>. This is the year the entire board can be replaced with directors who are not beholden to one person behind the scenes.</p>
 
-      <p>Until the bylaws change, we have to use the tool that has been used against us: proxies. We need about 100 voters for quorum. Your proxy lets us know exactly how many votes we have and how many more we need so this election succeeds.</p>
+      <p>Can we count on you in the important election?</p>
 
-      <p>Give us your name, unit number, email, and phone below if we can count on you. Let’s get this done!</p>
-
-      <div class="signup">
-        <p-fluid>
-          <div class="field">
-            <label for="name">Name</label>
-            <input pInputText id="name" [(ngModel)]="form.name" />
-          </div>
-          <div class="field">
-            <label for="unit">Unit #</label>
-            <input pInputText id="unit" type="number" [(ngModel)]="form.unit" />
-          </div>
-          <div class="field">
-            <label for="email">Email</label>
-            <input pInputText id="email" type="email" [(ngModel)]="form.email" />
-          </div>
-          <div class="field">
-            <label for="phone">Phone</label>
-            <input pInputText id="phone" type="tel" [(ngModel)]="form.phone" />
-          </div>
-          <div class="field">
-            <p-button label="Submit" [disabled]="sending" (click)="submit()"></p-button>
-          </div>
-        </p-fluid>
+      <div class="cta">
+        <p-button label="You Can Count on Me" routerLink="/news/election/form"></p-button>
       </div>
     </div>
   </p-card>
-  <p-toast></p-toast>
 </div>

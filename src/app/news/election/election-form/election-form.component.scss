@@ -17,16 +17,16 @@
   margin: 0 auto;
 }
 
-.election-banner {
-  display: block;
+.image-placeholder {
   width: 100%;
   max-width: 640px;
-  height: auto;
+  height: 180px;
   margin: 0 auto 18px auto;
   border-radius: 8px;
+  background: #ddd;
 }
 
-p, li {
+p {
   line-height: 1.45;
 }
 
@@ -42,8 +42,4 @@ p, li {
 label {
   display: block;
   margin-bottom: 4px;
-}
-.cta {
-  margin: 24px 0 8px;
-  text-align: center;
 }

@@ -3,44 +3,44 @@
     <ng-template #title>Unit Search</ng-template>
     <div class="card-content">
       <div class="search-input">
-        <div class="search-section">
-          <label for="unitNumber">Unit Number</label>
-          <input pInputText id="unitNumber" type="number" [(ngModel)]="unitNumber" (keyup)="checkUnitNumber()" />
-          <hr class="divider" />
-          <p-button 
-            label="Search" 
-            [disabled]="!this.checkUnitNumber()" 
-            (click)="goToUnit()">
-          </p-button>
-        </div>
-
-        <div class="search-section">
-          <label for="searchName">Search Owner by Name</label>
-          <input pInputText id="searchName" [(ngModel)]="searchName" (keyup)="searchOwners()" />
+        <div class="search-section search-row">
+          <label for="query">Unit number or owner name</label>
+          <div class="search-controls">
+           <input
+              pInputText
+              id="unitOwnerSearch"
+              name="unitOwnerSearch"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              [(ngModel)]="query"
+              (ngModelChange)="onQueryChange()"
+            />
+            <p-button label="Clear" severity="secondary" (click)="clearSearch()"></p-button>
+          </div>
         </div>
       </div>
 
-      <div class="search-section">
-        <ul *ngIf="searchResults.length > 0">
+      <div class="search-section" *ngIf="searchResults.length > 0">
+        <ul>
           <li *ngFor="let owner of searchResults">
-            <p-button 
-              icon="pi pi-eye" 
-              styleClass="p-button-text" 
-              (click)="viewOwnerUnits(owner.owner_id)">
-            </p-button>
+            <p-button
+              icon="pi pi-eye"
+              styleClass="p-button-text"
+              (click)="viewOwnerUnits(owner.owner_id)"
+            ></p-button>
             {{ owner.firstname }} {{ owner.lastname }} ({{ owner.unitCount }} units)
-            <p-button 
-              *ngIf="unitNumber && allUnits.includes(unitNumber)" 
-              icon="pi pi-link" 
-              styleClass="p-button-text p-button-secondary" 
-              (click)="updateOwnerUnit(owner.owner_id, unitNumber)">
-            </p-button>
+            <p-button
+              *ngIf="activeUnit"
+              icon="pi pi-link"
+              styleClass="p-button-text p-button-secondary"
+              (click)="updateOwnerUnit(owner.owner_id, activeUnit)"
+            ></p-button>
           </li>
         </ul>
-        <p *ngIf="searchName && searchResults.length === 0">No matches found.</p>
       </div>
-
-
+      <p *ngIf="searched && searchResults.length === 0">No matches found.</p>
     </div>
   </p-card>
   <p-toast></p-toast>
