@@ -91,6 +91,13 @@
               <label [for]="'occ-' + u.unit" class="checkbox-label">Owner occupied</label>
             </li>
           </ul>
+          <div class="field assign-row">
+            <label for="assignUnit">Assign another unit</label>
+            <div class="search-controls">
+              <input pInputText id="assignUnit" type="number" [(ngModel)]="assignUnit" />
+              <p-button label="Assign" (click)="assignUnitToOwner()"></p-button>
+            </div>
+          </div>
         </div>
       </ng-container>
     </div>

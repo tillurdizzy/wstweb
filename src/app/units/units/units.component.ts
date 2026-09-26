@@ -54,6 +54,8 @@ export class UnitsComponent implements OnInit {
 
     if (!user?.user) return;
 
+    let ownerId: string | null = null;
+
     if (unitParam && this.isAdmin) {
       const { data: unitOwners, error: unitError } = await this.supabaseService.client
         .from('unit_owners')
@@ -63,65 +65,54 @@ export class UnitsComponent implements OnInit {
         console.error('Error fetching unit owner:', unitError?.message);
         return;
       }
-
-      const ownerId = unitOwners[0].owner_id;
-
-      const { data: ownerData, error: ownerError } = await this.supabaseService.client
-        .from('owners')
-        .select('owner_id, firstname, lastname, cell, email, data_confirmed, uuid')
-        .eq('owner_id', ownerId)
-        .single();
-      if (ownerError) {
-        console.error('Error fetching owner:', ownerError.message);
-      } else {
-        this.owner = ownerData;
-        this.ownerConfirmed = !!ownerData.data_confirmed;
-        this.ownerHasAuth = !!ownerData.uuid;
-
-        const { data: unitData, error: unitDataError } = await this.supabaseService.client
-          .from('units')
-          .select('unit, owner_occupied')
-          .eq('unit', Number(unitParam))
-          .single();
-        if (unitDataError) {
-          console.error('Error fetching unit data:', unitDataError.message);
-        } else {
-          this.units = [{ unit: unitData.unit, owner_occupied: unitData.owner_occupied }];
-          this.ownerOccupied = unitData.owner_occupied;
-        }
-      }
+      ownerId = unitOwners[0].owner_id;
+    } else if (ownerIdParam && this.isAdmin) {
+      ownerId = ownerIdParam;
     } else {
-      let ownerQuery = this.supabaseService.client
+      const { data: ownerRow } = await this.supabaseService.client
         .from('owners')
-        .select('owner_id, firstname, lastname, cell, email, data_confirmed, uuid');
+        .select('owner_id')
+        .eq('uuid', user.user.id)
+        .single();
+      ownerId = ownerRow?.owner_id || null;
+    }
 
-      if (ownerIdParam && this.isAdmin) {
-        ownerQuery = ownerQuery.eq('owner_id', ownerIdParam);
-      } else {
-        ownerQuery = ownerQuery.eq('uuid', user.user.id);
-      }
+    if (!ownerId) return;
 
-      const owner = await ownerQuery.single();
-      if (owner.data) {
-        this.owner = owner.data;
-        this.ownerConfirmed = !!this.owner.data_confirmed;
-        this.ownerHasAuth = !!this.owner.uuid;
+    const { data: ownerData, error: ownerError } = await this.supabaseService.client
+      .from('owners')
+      .select('owner_id, firstname, lastname, cell, email, data_confirmed, uuid')
+      .eq('owner_id', ownerId)
+      .single();
+    if (ownerError) {
+      console.error('Error fetching owner:', ownerError.message);
+      return;
+    }
 
-        const { data, error } = await this.supabaseService.client
-          .from('unit_owners')
-          .select('unit, units!inner(unit, owner_occupied)')
-          .eq('owner_id', this.owner.owner_id);
-        if (error) {
-          console.error('Error fetching units:', error.message);
-        } else {
-          this.units = data.map((uo: any) => ({ unit: uo.units.unit, owner_occupied: uo.units.owner_occupied })) || [];
-        }
-      }
+    this.owner = ownerData;
+    this.ownerConfirmed = !!ownerData.data_confirmed;
+    this.ownerHasAuth = !!ownerData.uuid;
+
+    const { data, error } = await this.supabaseService.client
+      .from('unit_owners')
+      .select('unit, units!inner(unit, owner_occupied)')
+      .eq('owner_id', ownerId);
+    if (error) {
+      console.error('Error fetching units:', error.message);
+    } else {
+      this.units = (data || []).map((uo: any) => ({
+        unit: uo.units.unit,
+        owner_occupied: !!uo.units.owner_occupied,
+      }));
     }
 
     if (this.units.length > 0) {
-      this.selectedUnit = this.units[0].unit;
-      this.ownerOccupied = this.units[0].owner_occupied;
+      const requested = unitParam ? Number(unitParam) : null;
+      const match = requested
+        ? this.units.find((u) => u.unit === requested)
+        : null;
+      this.selectedUnit = match ? match.unit : this.units[0].unit;
+      this.applyOccupancy(this.selectedUnit);
       this.unitService.setSelectedUnit(this.selectedUnit);
       if (this.selectedUnit !== null) {
         await this.loadUnitDetails(this.selectedUnit);
@@ -129,7 +120,14 @@ export class UnitsComponent implements OnInit {
     }
   }
 
+  private applyOccupancy(unit: number | null) {
+    const row = this.units.find((u) => u.unit === unit);
+    this.ownerOccupied = !!row?.owner_occupied;
+  }
+
   async loadUnitDetails(unit: number | null) {
+    this.applyOccupancy(unit);
+
     const { data: resData, error: resError } = await this.supabaseService.client
       .from('residents')
       .select('id, firstname, lastname, cell, email, data_confirmed')

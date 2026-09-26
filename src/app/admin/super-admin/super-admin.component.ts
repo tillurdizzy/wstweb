@@ -43,6 +43,7 @@ export class SuperAdminComponent {
   selectedUnits: { unit: number; owner_occupied: boolean }[] = [];
   editEmail = '';
   editIsAdmin = false;
+  assignUnit: number | null = null;
 
   constructor(
     private supabaseService: SupabaseService,
@@ -236,6 +237,68 @@ export class SuperAdminComponent {
       severity: 'success',
       summary: 'Unit ' + u.unit,
       detail: u.owner_occupied ? 'Owner occupied' : 'Not owner occupied',
+    });
+  }
+  async assignUnitToOwner() {
+    if (!this.selected || !this.assignUnit) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Unit required',
+        detail: 'Enter the unit number to assign to this owner.',
+      });
+      return;
+    }
+
+    const unit = Number(this.assignUnit);
+
+    const { data: current, error: currentError } = await this.supabaseService.client
+      .from('unit_owners')
+      .select('unit, owner_id, owners(firstname, lastname)')
+      .eq('unit', unit)
+      .maybeSingle();
+
+    if (currentError) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: currentError.message });
+      return;
+    }
+    if (!current) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'No unit row',
+        detail: `Unit ${unit} has no unit_owners row.`,
+      });
+      return;
+    }
+    if (current.owner_id === this.selected.owner_id) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Already assigned',
+        detail: `This owner already owns unit ${unit}.`,
+      });
+      return;
+    }
+
+    const fromName = `${(current as any).owners?.firstname || ''} ${(current as any).owners?.lastname || ''}`.trim();
+    if (!confirm(`Unit ${unit} is assigned to ${fromName || 'another owner'}. Reassign it to ${this.selected.firstname} ${this.selected.lastname}?`)) {
+      return;
+    }
+
+    const { error } = await this.supabaseService.client
+      .from('unit_owners')
+      .update({ owner_id: this.selected.owner_id })
+      .eq('unit', unit);
+
+    if (error) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+      return;
+    }
+
+    this.assignUnit = null;
+    await this.selectOwner(this.selected);
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Assigned',
+      detail: `Unit ${unit} now belongs to ${this.selected.firstname} ${this.selected.lastname}.`,
     });
   }
 }
