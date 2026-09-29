@@ -2,11 +2,7 @@
   <p-card>
     <ng-template #title>Welcome</ng-template>
     <div class="card-content">
-      <a class="election-banner" routerLink="/news/election">
-        <span class="election-kicker">January 2027</span>
-        <span class="election-title">Annual Board Election</span>
-        <span class="election-cta">Time for a Change!</span>
-      </a>
+     
 
       <p *ngIf="userEmail">{{ userEmail }}</p>
       <p *ngIf="!userEmail">Westbury Square Townhomes</p>
