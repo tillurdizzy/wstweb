@@ -31,6 +31,7 @@ import { FlyersComponent } from "./news/election/flyers/flyers.component";
 import { BylawsComponent } from "./news/election/bylaws/bylaws.component";
 import { ElectionFormComponent } from "./news/election/election-form/election-form.component";
 import { ActivatedRouteSnapshot } from "@angular/router";
+import { WhatsappComponent } from "./home/whatsapp/whatsapp.component";
 
 const preserveFragmentResolver: ResolveFn<string | null> = (
   route: ActivatedRouteSnapshot
@@ -47,6 +48,7 @@ export const routes: Routes = [
       { path: "", redirectTo: "home", pathMatch: "full" },
       { path: "login", component: LoginComponent },
       { path: "home", component: HomeComponent },
+      { path: 'whatsapp', component: WhatsappComponent, title: 'WST WhatsApp' },
       {
         path: "news",
         component: NewsComponent,

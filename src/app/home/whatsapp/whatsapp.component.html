@@ -1,0 +1,29 @@
+<div class="content-container">
+  <p-card>
+    <ng-template #title>WST Community WhatsApp</ng-template>
+    <div class="card-content">
+      <p>
+        Use this QR code to help others join the group.
+      </p>
+
+      <img
+        class="qr"
+        src="whatsapp-qrcode.jpg"
+        alt="WST Community WhatsApp group QR code"
+      />
+
+      <p>
+        If this is your phone, tap the button below to open WhatsApp and join.
+      </p>
+
+      <div class="join">
+        <p-button
+          label="Join on this phone"
+          severity="success"
+          icon="pi pi-whatsapp"
+          (onClick)="joinOnThisPhone()"
+        ></p-button>
+      </div>
+    </div>
+  </p-card>
+</div>
