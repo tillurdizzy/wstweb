@@ -6,7 +6,7 @@
         <div class="search-section search-row">
           <label for="query">Unit number or owner name</label>
           <div class="search-controls">
-           <input
+            <input
               pInputText
               id="unitOwnerSearch"
               name="unitOwnerSearch"
@@ -22,7 +22,7 @@
         </div>
       </div>
 
-      <div class="search-section" *ngIf="searchResults.length > 0">
+      <div class="search-section" *ngIf="searchResults.length > 0 && !activeUnit">
         <ul>
           <li *ngFor="let owner of searchResults">
             <p-button
@@ -31,18 +31,19 @@
               (click)="viewOwnerUnits(owner.owner_id)"
             ></p-button>
             {{ owner.firstname }} {{ owner.lastname }} ({{ owner.unitCount }} units)
-            <p-button
-              *ngIf="activeUnit"
-              icon="pi pi-link"
-              styleClass="p-button-text p-button-secondary"
-              (click)="updateOwnerUnit(owner.owner_id, activeUnit)"
-            ></p-button>
           </li>
         </ul>
       </div>
       <p *ngIf="searched && searchResults.length === 0">No matches found.</p>
     </div>
   </p-card>
+
+  <app-units
+    *ngIf="selectedOwnerId"
+    [ownerIdInput]="selectedOwnerId"
+    [unitInput]="activeUnit"
+  ></app-units>
+
   <p-toast></p-toast>
   <p-confirmdialog></p-confirmdialog>
 </div>

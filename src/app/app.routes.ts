@@ -26,12 +26,9 @@ import { ViolationsAndParkingComponent } from "./committees/committees-violation
 import { NewsComponent } from "./news/news.component";
 import { LetterComponent } from "./news/letter/letter.component";
 import { EventsComponent } from "./news/events/events.component";
-import { ElectionComponent } from "./news/election/election.component";
-import { FlyersComponent } from "./news/election/flyers/flyers.component";
-import { BylawsComponent } from "./news/election/bylaws/bylaws.component";
-import { ElectionFormComponent } from "./news/election/election-form/election-form.component";
 import { ActivatedRouteSnapshot } from "@angular/router";
 import { WhatsappComponent } from "./home/whatsapp/whatsapp.component";
+import { ElectionFormComponent } from "./admin/quick-note/election-form.component";
 
 const preserveFragmentResolver: ResolveFn<string | null> = (
   route: ActivatedRouteSnapshot
@@ -48,6 +45,7 @@ export const routes: Routes = [
       { path: "", redirectTo: "home", pathMatch: "full" },
       { path: "login", component: LoginComponent },
       { path: "home", component: HomeComponent },
+      { path: 'quick-note', component: ElectionFormComponent, title: 'Quick Note' },
       { path: 'whatsapp', component: WhatsappComponent, title: 'WST WhatsApp' },
       {
         path: "news",
@@ -56,22 +54,6 @@ export const routes: Routes = [
           { path: "", redirectTo: "letter", pathMatch: "full" },
           { path: "letter", component: LetterComponent, title: "Newsletter" },
           { path: "events", component: EventsComponent, title: "Events" },
-          { path: 'election/form', component: ElectionFormComponent, title: 'You Can Count on Me' },
-          {
-            path: "election",
-            component: ElectionComponent,
-            title: "Annual Election 2027",
-          },
-          {
-            path: "election/flyers",
-            component: FlyersComponent,
-            title: "Election Flyers",
-          },
-          {
-            path: "election/bylaws",
-            component: BylawsComponent,
-            title: "Bylaws Amendment",
-          },
         ],
       },
       {
@@ -264,6 +246,12 @@ export const routes: Routes = [
         path: "admin/parking",
         component: ParkingComponent,
         canActivate: [authGuard, AdminGuard],
+      },
+      {
+        path: "admin/quick-note",
+        component: ElectionFormComponent,
+        canActivate: [authGuard, AdminGuard],
+        title: "Quick Note",
       },
       {
         path: "admin/super",

@@ -62,6 +62,7 @@
 
           <hr class="divider" />
 
+          <!-- Vehicles hidden for the election period
           <h3>
             Vehicles
             <span *ngIf="isAdmin" class="status-dot" [class.green]="vehiclesStatus === 'green'" [class.red]="vehiclesStatus === 'red'" [class.yellow]="vehiclesStatus === 'yellow'"></span>
@@ -80,6 +81,31 @@
             <p>No vehicles assigned.</p>
           </ng-template>
           <p-button [routerLink]="['/add-vehicle']" [queryParams]="{ unit: selectedUnit }" label="Add Vehicle"></p-button>
+          -->
+
+                   <h3>Election</h3>
+          <div class="election-form">
+            <div class="field">
+              <label for="vote">Will vote for new board?</label>
+              <select id="vote" [(ngModel)]="vote">
+                <option [ngValue]="null">Select</option>
+                <option *ngFor="let choice of voteChoices" [ngValue]="choice">{{ choice }}</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="proxy">Will give proxy?</label>
+              <select id="proxy" [(ngModel)]="proxy">
+                <option [ngValue]="null">Select</option>
+                <option *ngFor="let choice of voteChoices" [ngValue]="choice">{{ choice }}</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="notes">Notes</label>
+              <textarea pTextarea id="notes" rows="5" [(ngModel)]="notes"></textarea>
+            </div>
+            <p *ngIf="electionMessage">{{ electionMessage }}</p>
+            <p-button label="Submit" [disabled]="savingElection" (click)="saveElection()"></p-button>
+          </div>
         </div>
       </p-fluid>
       <ng-template #loading>

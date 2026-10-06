@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { SupabaseService } from '../../services/supabase.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { createClient } from '@supabase/supabase-js';
 import { environment } from '../../../environments/environment';
+import { UnitsComponent } from '../../units/units/units.component';
 
 @Component({
   selector: 'app-unit-search',
@@ -23,16 +24,18 @@ import { environment } from '../../../environments/environment';
     ToastModule,
     ConfirmDialogModule,
     FormsModule,
+    UnitsComponent,
   ],
   templateUrl: './unit-search.component.html',
   styleUrls: ['./unit-search.component.scss'],
   providers: [MessageService, ConfirmationService],
 })
-export class UnitSearchComponent {
+export class UnitSearchComponent implements OnInit {
   query = '';
   searched = false;
   searchResults: any[] = [];
   activeUnit: number | null = null;
+  selectedOwnerId: string | null = null;
 
   allUnits = [
     100, 101, 102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,
@@ -59,9 +62,18 @@ export class UnitSearchComponent {
   constructor(
     private supabaseService: SupabaseService,
     private router: Router,
+    private route: ActivatedRoute,
     private messageService: MessageService,
     private confirmationService: ConfirmationService
   ) {}
+
+  async ngOnInit() {
+    const unit = this.route.snapshot.queryParamMap.get('unit');
+    if (!unit) return;
+    this.query = unit;
+    this.activeUnit = Number(unit);
+    await this.searchByUnit(this.activeUnit);
+  }
 
   onQueryChange() {
     const q = (this.query || '').trim();
@@ -69,12 +81,14 @@ export class UnitSearchComponent {
     if (q.length < 3) {
       this.searched = false;
       this.searchResults = [];
+      this.selectedOwnerId = null;
       return;
     }
     if (/^\d+$/.test(q)) {
       this.activeUnit = Number(q);
       this.searchByUnit(this.activeUnit);
     } else {
+      this.selectedOwnerId = null;
       this.searchOwners(q);
     }
   }
@@ -84,6 +98,7 @@ export class UnitSearchComponent {
     this.searched = false;
     this.searchResults = [];
     this.activeUnit = null;
+    this.selectedOwnerId = null;
   }
 
   async searchByUnit(unit: number) {
@@ -99,10 +114,12 @@ export class UnitSearchComponent {
     }
     if (!data?.owners) {
       this.searchResults = [];
+      this.selectedOwnerId = null;
       return;
     }
     const owner = data.owners as any;
     this.searchResults = [{ ...owner, unitCount: 1 }];
+    this.selectedOwnerId = owner.owner_id;
   }
 
   async searchOwners(q: string) {
@@ -123,7 +140,8 @@ export class UnitSearchComponent {
   }
 
   viewOwnerUnits(ownerId: string) {
-    this.router.navigate(['/units'], { queryParams: { ownerId } });
+    this.selectedOwnerId = ownerId;
+    this.activeUnit = null;
   }
 
   private ownerLabel(row: { firstname?: string; lastname?: string; email?: string } | null): string {
@@ -188,7 +206,8 @@ export class UnitSearchComponent {
     try {
       await this.assignUnit(unit, ownerId);
       this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Unit ownership updated.' });
-      this.router.navigate(['/units'], { queryParams: { ownerId } });
+      this.selectedOwnerId = ownerId;
+      this.activeUnit = unit;
     } catch (error) {
       this.messageService.add({
         severity: 'error',
@@ -288,6 +307,8 @@ export class UnitSearchComponent {
           detail: `Unit ${unit} is now assigned to ${this.ownerLabel(existing)}.`,
         });
         this.toggleAddOwnerForm();
+        this.selectedOwnerId = existing.owner_id;
+        this.activeUnit = unit;
         return;
       }
 
@@ -329,6 +350,8 @@ export class UnitSearchComponent {
         detail: `${addName} added and unit ${unit} reassigned.`,
       });
       this.toggleAddOwnerForm();
+      this.selectedOwnerId = created.owner_id;
+      this.activeUnit = unit;
     } catch (error) {
       this.messageService.add({
         severity: 'error',

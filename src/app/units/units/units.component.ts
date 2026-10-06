@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TextareaModule } from 'primeng/textarea';
 import { CardModule } from 'primeng/card';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
@@ -27,7 +28,10 @@ import { FluidModule } from 'primeng/fluid';
   templateUrl: './units.component.html',
   styleUrls: ['./units.component.scss'],
 })
-export class UnitsComponent implements OnInit {
+export class UnitsComponent implements OnInit, OnChanges {
+  @Input() ownerIdInput: string | null = null;
+  @Input() unitInput: number | null = null;
+
   units: any[] = [];
   selectedUnit: number | null = null;
   residents: any[] = [];
@@ -39,6 +43,13 @@ export class UnitsComponent implements OnInit {
   ownerHasAuth: boolean = false;
   residentsStatus: 'green' | 'red' | 'yellow' = 'red';
   vehiclesStatus: 'green' | 'red' | 'yellow' = 'red';
+  private ready = false;
+  voteChoices = ['Yes', 'No', 'Maybe'];
+vote: string | null = null;
+proxy: string | null = null;
+notes = '';
+savingElection = false;
+electionMessage = '';
 
   constructor(
     private supabaseService: SupabaseService,
@@ -48,15 +59,29 @@ export class UnitsComponent implements OnInit {
 
   async ngOnInit() {
     this.isAdmin = await this.supabaseService.isAdmin();
-    const unitParam = this.route.snapshot.queryParamMap.get('unit');
-    const ownerIdParam = this.route.snapshot.queryParamMap.get('ownerId');
+    this.ready = true;
+    await this.load();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (!this.ready) return;
+    if (changes['ownerIdInput'] || changes['unitInput']) {
+      this.load();
+    }
+  }
+
+  private async load() {
+    const unitParam = this.unitInput != null
+      ? String(this.unitInput)
+      : this.route.snapshot.queryParamMap.get('unit');
+    const ownerIdParam = this.ownerIdInput || this.route.snapshot.queryParamMap.get('ownerId');
     const { data: user } = await this.supabaseService.getUser();
 
     if (!user?.user) return;
 
     let ownerId: string | null = null;
 
-    if (unitParam && this.isAdmin) {
+    if (unitParam && this.isAdmin && !ownerIdParam) {
       const { data: unitOwners, error: unitError } = await this.supabaseService.client
         .from('unit_owners')
         .select('owner_id')
@@ -108,9 +133,7 @@ export class UnitsComponent implements OnInit {
 
     if (this.units.length > 0) {
       const requested = unitParam ? Number(unitParam) : null;
-      const match = requested
-        ? this.units.find((u) => u.unit === requested)
-        : null;
+      const match = requested ? this.units.find((u) => u.unit === requested) : null;
       this.selectedUnit = match ? match.unit : this.units[0].unit;
       this.applyOccupancy(this.selectedUnit);
       this.unitService.setSelectedUnit(this.selectedUnit);
@@ -150,7 +173,50 @@ export class UnitsComponent implements OnInit {
 
     this.residentsStatus = this.residentsSectionStatus();
     this.vehiclesStatus = this.sectionStatus(this.vehicles);
+    await this.loadElection(unit);
   }
+
+async loadElection(unit: number | null) {
+  this.vote = null;
+  this.proxy = null;
+  this.notes = '';
+  this.electionMessage = '';
+  if (!this.owner?.owner_id) return;
+
+  const { data, error } = await this.supabaseService.client
+    .from('election')
+    .select('vote, proxy, notes, owner_id')
+    .eq('owner_id', this.owner.owner_id)
+    .order('id', { ascending: false })
+    .limit(1);
+  if (error) {
+    console.error('Error fetching election note:', error.message);
+    return;
+  }
+  const row = data && data.length ? data[0] : null;
+  if (!row) return;
+  this.vote = row.vote || null;
+  this.proxy = row.proxy || null;
+  this.notes = row.notes || '';
+}
+
+async saveElection() {
+  if (this.selectedUnit == null || !this.owner?.owner_id) return;
+  this.savingElection = true;
+  this.electionMessage = '';
+  const { error } = await this.supabaseService.client.from('election').insert({
+    owner_id: this.owner.owner_id,
+    unit: this.selectedUnit,
+    name: `${this.owner.firstname || ''} ${this.owner.lastname || ''}`.trim() || null,
+    email: this.owner.email || null,
+    phone: this.owner.cell || null,
+    vote: this.vote || null,
+    proxy: this.proxy || null,
+    notes: (this.notes || '').trim() || null,
+  });
+  this.savingElection = false;
+  this.electionMessage = error ? error.message : 'Saved.';
+}
 
   async onUnitChange(event: any) {
     const newUnit = event.value;

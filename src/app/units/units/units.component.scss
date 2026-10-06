@@ -67,3 +67,28 @@ h3 {
 .occupied-row .checkbox-label {
   margin: 0;
 }
+
+.election-form .field {
+  margin-bottom: 16px;
+}
+
+.election-form label {
+  display: block;
+  margin-bottom: 6px;
+}
+
+.election-form select,
+.election-form textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.election-form select {
+  height: 42px;
+  padding: 0 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  font: inherit;
+}

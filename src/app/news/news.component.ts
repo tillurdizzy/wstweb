@@ -22,7 +22,6 @@ export class NewsComponent {
       items: [
         { label: 'Newsletter', icon: 'pi pi-book', routerLink: '/news/letter' },
         { label: 'Events', icon: 'pi pi-calendar', routerLink: '/news/events' },
-        { label: 'Annual Election 2027', icon: 'pi pi-star', routerLink: '/news/election' },
       ],
     },
   ];
