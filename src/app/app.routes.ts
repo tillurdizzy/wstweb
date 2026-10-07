@@ -246,12 +246,6 @@ export const routes: Routes = [
         canActivate: [authGuard, AdminGuard],
       },
       {
-        path: "admin/quick-note",
-        component: ElectionFormComponent,
-        canActivate: [authGuard, AdminGuard],
-        title: "Quick Note",
-      },
-      {
         path: "admin/super",
         loadComponent: () =>
           import("./admin/super-admin/super-admin.component").then(
