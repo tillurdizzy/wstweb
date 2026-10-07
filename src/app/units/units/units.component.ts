@@ -204,16 +204,18 @@ async saveElection() {
   if (this.selectedUnit == null || !this.owner?.owner_id) return;
   this.savingElection = true;
   this.electionMessage = '';
-  const { error } = await this.supabaseService.client.from('election').insert({
-    owner_id: this.owner.owner_id,
-    unit: this.selectedUnit,
-    name: `${this.owner.firstname || ''} ${this.owner.lastname || ''}`.trim() || null,
-    email: this.owner.email || null,
-    phone: this.owner.cell || null,
-    vote: this.vote || null,
-    proxy: this.proxy || null,
-    notes: (this.notes || '').trim() || null,
-  });
+  const { error } = await this.supabaseService.client
+    .from('election')
+    .update({
+      unit: this.selectedUnit,
+      name: `${this.owner.firstname || ''} ${this.owner.lastname || ''}`.trim() || null,
+      email: this.owner.email || null,
+      phone: this.owner.cell || null,
+      vote: this.vote || null,
+      proxy: this.proxy || null,
+      notes: (this.notes || '').trim() || null,
+    })
+    .eq('owner_id', this.owner.owner_id);
   this.savingElection = false;
   this.electionMessage = error ? error.message : 'Saved.';
 }

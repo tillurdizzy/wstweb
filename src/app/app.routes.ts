@@ -28,7 +28,6 @@ import { LetterComponent } from "./news/letter/letter.component";
 import { EventsComponent } from "./news/events/events.component";
 import { ActivatedRouteSnapshot } from "@angular/router";
 import { WhatsappComponent } from "./home/whatsapp/whatsapp.component";
-import { ElectionFormComponent } from "./admin/quick-note/election-form.component";
 
 const preserveFragmentResolver: ResolveFn<string | null> = (
   route: ActivatedRouteSnapshot
@@ -45,7 +44,6 @@ export const routes: Routes = [
       { path: "", redirectTo: "home", pathMatch: "full" },
       { path: "login", component: LoginComponent },
       { path: "home", component: HomeComponent },
-      { path: 'quick-note', component: ElectionFormComponent, title: 'Quick Note' },
       { path: 'whatsapp', component: WhatsappComponent, title: 'WST WhatsApp' },
       {
         path: "news",
