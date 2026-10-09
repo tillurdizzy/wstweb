@@ -83,7 +83,27 @@
           <p-button [routerLink]="['/add-vehicle']" [queryParams]="{ unit: selectedUnit }" label="Add Vehicle"></p-button>
           -->
 
-                   <h3>Election</h3>
+
+          <h3>Contact Summary</h3>
+          <div class="election-form">
+            <div class="field">
+              <label for="contactType">Type</label>
+              <select id="contactType" [(ngModel)]="contactType">
+                <option [ngValue]="null">Select</option>
+                <option *ngFor="let choice of contactTypes" [ngValue]="choice">{{ choice }}</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="contactNote">Notes</label>
+              <textarea id="contactNote" rows="5" [(ngModel)]="contactNote"></textarea>
+            </div>
+            <p *ngIf="contactMessage">{{ contactMessage }}</p>
+            <p-button label="Submit" [disabled]="savingContact" (click)="saveContact()"></p-button>
+          </div>
+
+          <hr class="divider" />
+
+          <h3>Vote Prediction</h3>
           <div class="election-form">
             <div class="field">
               <label for="vote">Will vote for new board?</label>
@@ -99,13 +119,19 @@
                 <option *ngFor="let choice of voteChoices" [ngValue]="choice">{{ choice }}</option>
               </select>
             </div>
-            <div class="field">
-              <label for="notes">Notes</label>
-              <textarea pTextarea id="notes" rows="5" [(ngModel)]="notes"></textarea>
-            </div>
             <p *ngIf="electionMessage">{{ electionMessage }}</p>
             <p-button label="Submit" [disabled]="savingElection" (click)="saveElection()"></p-button>
           </div>
+
+          <hr class="divider" />
+
+          <h3>Contact History</h3>
+          <div class="election-form">
+            <textarea id="contactHistory" rows="12" [ngModel]="contactHistory" readonly></textarea>
+          </div>
+
+
+
         </div>
       </p-fluid>
       <ng-template #loading>

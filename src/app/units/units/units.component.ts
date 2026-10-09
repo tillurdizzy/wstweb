@@ -45,11 +45,18 @@ export class UnitsComponent implements OnInit, OnChanges {
   vehiclesStatus: 'green' | 'red' | 'yellow' = 'red';
   private ready = false;
   voteChoices = ['Yes', 'No', 'Maybe'];
-vote: string | null = null;
-proxy: string | null = null;
-notes = '';
-savingElection = false;
-electionMessage = '';
+  vote: string | null = null;
+  proxy: string | null = null;
+  notes = '';
+  savingElection = false;
+  electionMessage = '';
+  contactTypes = ['Face to face', 'email', 'text', 'mail'];
+  contactType: string | null = null;
+  contactNote = '';
+  contactHistory = '';
+  savingContact = false;
+  contactMessage = '';
+  signedInEmail = '';
 
   constructor(
     private supabaseService: SupabaseService,
@@ -59,6 +66,7 @@ electionMessage = '';
 
   async ngOnInit() {
     this.isAdmin = await this.supabaseService.isAdmin();
+    
     this.ready = true;
     await this.load();
   }
@@ -78,7 +86,7 @@ electionMessage = '';
     const { data: user } = await this.supabaseService.getUser();
 
     if (!user?.user) return;
-
+    this.signedInEmail = user.user.email || '';
     let ownerId: string | null = null;
 
     if (unitParam && this.isAdmin && !ownerIdParam) {
@@ -179,15 +187,17 @@ electionMessage = '';
 async loadElection(unit: number | null) {
   this.vote = null;
   this.proxy = null;
-  this.notes = '';
+  this.contactType = null;
+  this.contactNote = '';
+  this.contactHistory = '';
+  this.contactMessage = '';
   this.electionMessage = '';
   if (!this.owner?.owner_id) return;
 
   const { data, error } = await this.supabaseService.client
     .from('election')
-    .select('vote, proxy, notes, owner_id')
+    .select('vote, proxy, notes')
     .eq('owner_id', this.owner.owner_id)
-    .order('id', { ascending: false })
     .limit(1);
   if (error) {
     console.error('Error fetching election note:', error.message);
@@ -197,7 +207,48 @@ async loadElection(unit: number | null) {
   if (!row) return;
   this.vote = row.vote || null;
   this.proxy = row.proxy || null;
-  this.notes = row.notes || '';
+  this.contactHistory = row.notes || '';
+}
+
+async saveContact() {
+  if (!this.owner?.owner_id) return;
+  const note = (this.contactNote || '').trim();
+  if (!this.contactType || !note) {
+    this.contactMessage = 'Type and notes are required.';
+    return;
+  }
+
+  this.savingContact = true;
+  this.contactMessage = '';
+
+  const today = new Date().toLocaleDateString('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+  const block = [
+    `Date: ${today}`,
+    `User: ${this.signedInEmail || 'unknown'}`,
+    `Type: ${this.contactType}`,
+    `Note: ${note}`,
+  ].join('\n');
+  const next = this.contactHistory ? `${this.contactHistory}\n\n${block}` : block;
+
+  const { error } = await this.supabaseService.client
+    .from('election')
+    .update({ notes: next })
+    .eq('owner_id', this.owner.owner_id);
+
+  this.savingContact = false;
+  if (error) {
+    this.contactMessage = error.message;
+    return;
+  }
+
+  this.contactHistory = next;
+  this.contactType = null;
+  this.contactNote = '';
+  this.contactMessage = 'Saved.';
 }
 
 async saveElection() {
@@ -213,7 +264,6 @@ async saveElection() {
       phone: this.owner.cell || null,
       vote: this.vote || null,
       proxy: this.proxy || null,
-      notes: (this.notes || '').trim() || null,
     })
     .eq('owner_id', this.owner.owner_id);
   this.savingElection = false;
