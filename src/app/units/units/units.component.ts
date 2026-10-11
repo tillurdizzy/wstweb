@@ -50,7 +50,7 @@ export class UnitsComponent implements OnInit, OnChanges {
   notes = '';
   savingElection = false;
   electionMessage = '';
-  contactTypes = ['Face to face', 'email', 'text', 'mail'];
+  contactTypes = ['Face to face', 'email', 'text', 'mail','note'];
   contactType: string | null = null;
   contactNote = '';
   contactHistory = '';
