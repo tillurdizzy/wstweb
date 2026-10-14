@@ -44,25 +44,53 @@ export class UnitsComponent implements OnInit, OnChanges {
   residentsStatus: 'green' | 'red' | 'yellow' = 'red';
   vehiclesStatus: 'green' | 'red' | 'yellow' = 'red';
   private ready = false;
-  voteChoices = ['Yes', 'No', 'Maybe'];
   vote: string | null = null;
   proxy: string | null = null;
   notes = '';
   savingElection = false;
   electionMessage = '';
-  contactTypes = ['Face to face', 'email', 'text', 'mail','note'];
   contactType: string | null = null;
   contactNote = '';
   contactHistory = '';
   savingContact = false;
   contactMessage = '';
   signedInEmail = '';
+  contactFlags = [
+  'No Answer',
+  'Hostile',
+  'Not interested',
+  'Somewhat interested',
+  'Very interested',
+  'Gave flyer',
+  'Send WhatsApp invite',
+  'Corrected info',
+];
+voteChoices = [
+  'In person with us',
+  'Proxy to us',
+  'Quorum only',
+  'In person not with us',
+  'Proxy not to us',
+];
 
   constructor(
     private supabaseService: SupabaseService,
     private unitService: UnitService,
     private route: ActivatedRoute
   ) {}
+
+  isFlagChecked(item: string): boolean {
+  return this.contactNote.split('\n').map((s) => s.trim()).includes(item);
+}
+
+toggleFlag(item: string, checked: boolean) {
+  const lines = this.contactNote
+    .split('\n')
+    .map((s) => s.trim())
+    .filter((s) => s && s !== item);
+  if (checked) lines.push(item);
+  this.contactNote = lines.join('\n');
+}
 
   async ngOnInit() {
     this.isAdmin = await this.supabaseService.isAdmin();
@@ -213,8 +241,8 @@ async loadElection(unit: number | null) {
 async saveContact() {
   if (!this.owner?.owner_id) return;
   const note = (this.contactNote || '').trim();
-  if (!this.contactType || !note) {
-    this.contactMessage = 'Type and notes are required.';
+  if (!note) {
+    this.contactMessage = 'Notes are required.';
     return;
   }
 
@@ -229,7 +257,6 @@ async saveContact() {
   const block = [
     `Date: ${today}`,
     `User: ${this.signedInEmail || 'unknown'}`,
-    `Type: ${this.contactType}`,
     `Note: ${note}`,
   ].join('\n');
   const next = this.contactHistory ? `${this.contactHistory}\n\n${block}` : block;
@@ -246,7 +273,6 @@ async saveContact() {
   }
 
   this.contactHistory = next;
-  this.contactType = null;
   this.contactNote = '';
   this.contactMessage = 'Saved.';
 }
@@ -255,6 +281,10 @@ async saveElection() {
   if (this.selectedUnit == null || !this.owner?.owner_id) return;
   this.savingElection = true;
   this.electionMessage = '';
+
+  const withUs = ['In person with us', 'Proxy to us', 'Quorum only'];
+  const vote = !this.proxy ? null : withUs.includes(this.proxy) ? 'Yes' : 'No';
+
   const { error } = await this.supabaseService.client
     .from('election')
     .update({
@@ -262,10 +292,11 @@ async saveElection() {
       name: `${this.owner.firstname || ''} ${this.owner.lastname || ''}`.trim() || null,
       email: this.owner.email || null,
       phone: this.owner.cell || null,
-      vote: this.vote || null,
+      vote,
       proxy: this.proxy || null,
     })
     .eq('owner_id', this.owner.owner_id);
+
   this.savingElection = false;
   this.electionMessage = error ? error.message : 'Saved.';
 }
