@@ -46,6 +46,12 @@ export class EditResidentComponent implements OnInit {
     }
   }
 
+  private async returnToUnit(unit: number | string | null) {
+    const admin = await this.supabaseService.isAdmin();
+    const path = admin ? '/admin/unit-search' : '/units';
+    this.router.navigate([path], unit != null ? { queryParams: { unit } } : {});
+  }
+
   async save() {
     if (!this.resident.firstname || !this.resident.lastname) {
       alert('First Name and Last Name are required.');
@@ -73,7 +79,7 @@ export class EditResidentComponent implements OnInit {
     }
 
     const unit = this.route.snapshot.queryParamMap.get('unit') || this.unitService.getSelectedUnit();
-    this.router.navigate(['/units'], { queryParams: { unit } });
+    await this.returnToUnit(unit);
   }
 
   async delete() {
@@ -90,11 +96,11 @@ export class EditResidentComponent implements OnInit {
     }
 
     const unit = this.route.snapshot.queryParamMap.get('unit') || this.unitService.getSelectedUnit();
-    this.router.navigate(['/units'], { queryParams: { unit } });
+    await this.returnToUnit(unit);
   }
 
-  cancel() {
+  async cancel() {
     const unit = this.route.snapshot.queryParamMap.get('unit') || this.unitService.getSelectedUnit();
-    this.router.navigate(['/units'], { queryParams: { unit } });
+    await this.returnToUnit(unit);
   }
 }

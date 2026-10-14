@@ -13,6 +13,7 @@ import { createClient } from '@supabase/supabase-js';
 import { SupabaseService } from '../../services/supabase.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { UnitService } from '../../services/unit.service';
 
 const TEMP_PASSWORD = '123456';
 
@@ -48,6 +49,7 @@ export class EditOwnerComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private messageService: MessageService,
+    private unitService: UnitService,
     private confirmationService: ConfirmationService
   ) {}
 
@@ -162,8 +164,14 @@ export class EditOwnerComponent implements OnInit {
         return;
       }
     }
+    const unit = this.route.snapshot.queryParamMap.get('unit') || this.unitService.getSelectedUnit();
+    await this.returnToUnit(unit);
+  }
 
-    this.router.navigate(['/units'], { queryParams: { unit: this.currentUnit } });
+  private async returnToUnit(unit: number | string | null) {
+    const admin = await this.supabaseService.isAdmin();
+    const path = admin ? '/admin/unit-search' : '/units';
+    this.router.navigate([path], unit != null ? { queryParams: { unit } } : {});
   }
 
   async cancel() {
@@ -173,7 +181,8 @@ export class EditOwnerComponent implements OnInit {
       this.copyOwnerToForm();
       return;
     }
-    this.router.navigate(['/units'], { queryParams: { unit: this.currentUnit } });
+    const unit = this.route.snapshot.queryParamMap.get('unit') || this.unitService.getSelectedUnit();
+    await this.returnToUnit(unit);
   }
 
   private ownerLabel(row: { firstname?: string; lastname?: string; email?: string } | null): string {

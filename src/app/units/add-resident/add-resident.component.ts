@@ -34,6 +34,12 @@ export class AddResidentComponent {
     }
   }
 
+  private async returnToUnit(unit: number | string | null) {
+    const admin = await this.supabaseService.isAdmin();
+    const path = admin ? '/admin/unit-search' : '/units';
+    this.router.navigate([path], unit != null ? { queryParams: { unit } } : {});
+  }
+
   async save() {
     if (!this.resident.firstname || !this.resident.lastname) {
       alert('First Name and Last Name are required.');
@@ -43,7 +49,7 @@ export class AddResidentComponent {
       alert('Open Add Resident from a unit page.');
       return;
     }
-
+    const unit = this.route.snapshot.queryParamMap.get('unit') || this.unitService.getSelectedUnit();
     const { data: userData } = await this.supabaseService.client.auth.getUser();
     const updatedBy = userData.user?.email || '';
 
@@ -63,10 +69,11 @@ export class AddResidentComponent {
       return;
     }
 
-    this.router.navigate(['/units'], { queryParams: { unit: this.resident.unit } });
+    await this.returnToUnit(unit);
   }
 
-  cancel() {
-    this.router.navigate(['/units'], { queryParams: { unit: this.resident.unit } });
-  }
+async cancel() {
+  const unit = this.route.snapshot.queryParamMap.get('unit') || this.unitService.getSelectedUnit();
+  await this.returnToUnit(unit);
+}
 }

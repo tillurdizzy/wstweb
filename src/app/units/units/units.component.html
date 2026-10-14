@@ -22,7 +22,7 @@
           </h3>
           <ul *ngIf="owner">
             <li>
-             <p-button *ngIf="isAdmin" [routerLink]="['/edit-owner', owner.owner_id]" [queryParams]="{ unit: selectedUnit }" label="edit" severity="secondary"></p-button>
+              <p-button *ngIf="isAdmin" [routerLink]="['/edit-owner', owner.owner_id]" [queryParams]="{ unit: selectedUnit }" label="edit" severity="secondary"></p-button>
               <div class="owner-details">
                 <div>{{ owner.firstname }} {{ owner.lastname }}</div>
                 <div>{{ owner.cell }}</div>
@@ -30,6 +30,10 @@
               </div>
             </li>
           </ul>
+          <label class="occupied-check" *ngIf="isAdmin">
+            <input type="checkbox" [ngModel]="ownerOccupied" (ngModelChange)="onOccupiedChange($event)" />
+            Owner occupied
+          </label>
 
           <hr class="divider" />
 

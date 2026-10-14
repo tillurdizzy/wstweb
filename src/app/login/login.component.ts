@@ -63,7 +63,8 @@ export class LoginComponent {
         if (password === TEMP_PASSWORD) {
           this.router.navigate(['/password-reset'], { queryParams: { force: '1' } });
         } else {
-          this.router.navigate(['/units']);
+          const admin = await this.supabaseService.isAdmin();
+          this.router.navigate([admin ? '/admin' : '/units']);
         }
       }
     } catch (error) {

@@ -92,3 +92,14 @@ h3 {
   background: #fff;
   font: inherit;
 }
+
+.occupied-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 8px 0 12px 0;
+}
+
+.occupied-check input {
+  margin: 0;
+}

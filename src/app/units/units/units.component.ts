@@ -270,6 +270,27 @@ async saveElection() {
   this.electionMessage = error ? error.message : 'Saved.';
 }
 
+async onOccupiedChange(checked: boolean) {
+  if (this.selectedUnit == null) return;
+  const previous = this.ownerOccupied;
+  this.ownerOccupied = checked;
+
+  const { error } = await this.supabaseService.client
+    .from('units')
+    .update({ owner_occupied: checked })
+    .eq('unit', this.selectedUnit);
+
+  if (error) {
+    this.ownerOccupied = previous;
+    this.electionMessage = error.message;
+    return;
+  }
+
+  const row = this.units.find((u) => u.unit === this.selectedUnit);
+  if (row) row.owner_occupied = checked;
+  this.residentsStatus = this.residentsSectionStatus();
+}
+
   async onUnitChange(event: any) {
     const newUnit = event.value;
     if (newUnit !== null) {

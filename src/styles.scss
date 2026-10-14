@@ -45,6 +45,20 @@ p-card {
   display: block;
 }
 
+.content-container .content-container {
+  max-width: none;
+  min-width: 0;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+textarea,
+input,
+select {
+  font-size: 16px;
+}
+
 
 // Forms
 .form-container {

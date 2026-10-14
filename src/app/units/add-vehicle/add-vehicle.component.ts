@@ -34,6 +34,12 @@ export class AddVehicleComponent {
     }
   }
 
+  private async returnToUnit(unit: number | string | null) {
+    const admin = await this.supabaseService.isAdmin();
+    const path = admin ? '/admin/unit-search' : '/units';
+    this.router.navigate([path], unit != null ? { queryParams: { unit } } : {});
+  }
+
   async save() {
     if (!this.vehicle.make || !this.vehicle.model || !this.vehicle.tag) {
       alert('Make, Model, and License are required.');
@@ -58,11 +64,12 @@ export class AddVehicleComponent {
       alert('Failed to add vehicle: ' + error.message);
       return;
     }
-
-    this.router.navigate(['/units'], { queryParams: { unit: this.vehicle.unit } });
+    const unit = this.route.snapshot.queryParamMap.get('unit') || this.unitService.getSelectedUnit();
+    await this.returnToUnit(unit);
   }
 
-  cancel() {
-    this.router.navigate(['/units'], { queryParams: { unit: this.vehicle.unit } });
+  async cancel() {
+    const unit = this.route.snapshot.queryParamMap.get('unit') || this.unitService.getSelectedUnit();
+    await this.returnToUnit(unit);
   }
 }

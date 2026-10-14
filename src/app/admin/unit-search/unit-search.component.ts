@@ -140,9 +140,12 @@ export class UnitSearchComponent implements OnInit {
   }
 
   viewOwnerUnits(ownerId: string) {
-    this.selectedOwnerId = ownerId;
-    this.activeUnit = null;
-  }
+  this.selectedOwnerId = ownerId;
+  this.activeUnit = null;
+  this.query = '';
+  this.searchResults = [];
+  this.searched = false;
+}
 
   private ownerLabel(row: { firstname?: string; lastname?: string; email?: string } | null): string {
     if (!row) return 'Unknown';
