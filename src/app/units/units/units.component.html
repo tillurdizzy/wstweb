@@ -111,11 +111,11 @@
 
           <h3>Vote Prediction</h3>
           <div class="election-form">
-            <div class="field">
-              <label for="proxy">Intends to vote:</label>
-              <select id="proxy" [(ngModel)]="proxy">
+              <div class="field">
+              <label for="vote">Intends to vote:</label>
+              <select id="vote" [(ngModel)]="vote">
                 <option [ngValue]="null">Select</option>
-                <option *ngFor="let choice of voteChoices" [ngValue]="choice">{{ choice }}</option>
+                <option *ngFor="let choice of voteChoices" [ngValue]="choice.value">{{ choice.label }}</option>
               </select>
             </div>
             <p *ngIf="electionMessage">{{ electionMessage }}</p>

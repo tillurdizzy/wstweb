@@ -66,11 +66,10 @@ export class UnitsComponent implements OnInit, OnChanges {
   'Corrected info',
 ];
 voteChoices = [
-  'In person with us',
-  'Proxy to us',
-  'Quorum only',
-  'In person not with us',
-  'Proxy not to us',
+  { label: 'FOR in person', value: 'FOR in person' },
+  { label: 'FOR by proxy', value: 'FOR by proxy' },
+  { label: 'Quorum Only', value: 'Quorum Only' },
+  { label: 'AGAINST', value: 'AGAINST' },
 ];
 
   constructor(
@@ -79,17 +78,20 @@ voteChoices = [
     private route: ActivatedRoute
   ) {}
 
-  isFlagChecked(item: string): boolean {
-  return this.contactNote.split('\n').map((s) => s.trim()).includes(item);
+isFlagChecked(item: string): boolean {
+  return this.contactNote
+    .split(',')
+    .map((s) => s.trim())
+    .includes(item);
 }
 
 toggleFlag(item: string, checked: boolean) {
-  const lines = this.contactNote
-    .split('\n')
+  const parts = this.contactNote
+    .split(',')
     .map((s) => s.trim())
     .filter((s) => s && s !== item);
-  if (checked) lines.push(item);
-  this.contactNote = lines.join('\n');
+  if (checked) parts.push(item);
+  this.contactNote = parts.join(', ');
 }
 
   async ngOnInit() {
@@ -282,9 +284,6 @@ async saveElection() {
   this.savingElection = true;
   this.electionMessage = '';
 
-  const withUs = ['In person with us', 'Proxy to us', 'Quorum only'];
-  const vote = !this.proxy ? null : withUs.includes(this.proxy) ? 'Yes' : 'No';
-
   const { error } = await this.supabaseService.client
     .from('election')
     .update({
@@ -292,8 +291,7 @@ async saveElection() {
       name: `${this.owner.firstname || ''} ${this.owner.lastname || ''}`.trim() || null,
       email: this.owner.email || null,
       phone: this.owner.cell || null,
-      vote,
-      proxy: this.proxy || null,
+      vote: this.vote || null,
     })
     .eq('owner_id', this.owner.owner_id);
 
