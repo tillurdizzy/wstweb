@@ -28,6 +28,7 @@ import { LetterComponent } from "./news/letter/letter.component";
 import { EventsComponent } from "./news/events/events.component";
 import { ActivatedRouteSnapshot } from "@angular/router";
 import { WhatsappComponent } from "./home/whatsapp/whatsapp.component";
+import { CanvassingComponent } from "./admin/canvassing/canvassing.component";
 
 const preserveFragmentResolver: ResolveFn<string | null> = (
   route: ActivatedRouteSnapshot
@@ -239,6 +240,12 @@ export const routes: Routes = [
         path: "admin/unit-search",
         component: UnitSearchComponent,
         canActivate: [authGuard, AdminGuard],
+      },
+      {
+        path: "admin/canvassing",
+        component: CanvassingComponent,
+        canActivate: [authGuard, AdminGuard],
+        title: "Canvassing",
       },
       {
         path: "admin/parking",

@@ -58,9 +58,8 @@ export class UnitsComponent implements OnInit, OnChanges {
   contactFlags = [
   'No Answer',
   'Hostile',
-  'Not interested',
-  'Somewhat interested',
-  'Very interested',
+  'Indifferent',
+  'Interested',
   'Gave flyer',
   'Send WhatsApp invite',
   'Corrected info',

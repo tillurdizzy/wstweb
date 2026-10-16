@@ -1,0 +1,34 @@
+<div class="content-container">
+  <p-card>
+    <ng-template #title>Canvassing</ng-template>
+    <div class="card-content">
+      <div class="field">
+        <label for="group">Group</label>
+        <select id="group" [(ngModel)]="group" (ngModelChange)="load()">
+          <option *ngFor="let g of groups" [ngValue]="g">{{ g }}</option>
+        </select>
+      </div>
+      <p class="start" *ngIf="startDate">Campaign began {{ startDate }}</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Unit</th>
+            <th>Name</th>
+            <th>Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let row of rows">
+            <td>{{ row.unit }}</td>
+            <td>{{ row.name }}</td>
+            <td>{{ row.note }}</td>
+          </tr>
+          <tr *ngIf="rows.length === 0">
+            <td colspan="3">None left in group {{ group }}.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </p-card>
+</div>
