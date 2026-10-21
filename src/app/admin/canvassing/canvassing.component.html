@@ -13,11 +13,11 @@
         <tbody>
           <tr *ngFor="let row of rows">
             <td class="icon">
-              <p-button icon="pi pi-file" [text]="true" (click)="openUnit(row.unit)"></p-button>
+              <p-button icon="pi pi-eye" [text]="true" (click)="openUnit(row.unit)"></p-button>
             </td>
             <td>{{ row.label }}</td>
             <td class="icon">
-              <p-button icon="pi pi-eye" [text]="true" (click)="showNote(row.note)"></p-button>
+              <p-button icon="pi pi-file" [text]="true" (click)="showNote(row.note)"></p-button>
             </td>
           </tr>
           <tr *ngIf="rows.length === 0">

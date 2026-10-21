@@ -57,9 +57,9 @@ export class UnitsComponent implements OnInit, OnChanges {
   signedInEmail = '';
   contactFlags = [
   'No Answer',
-  'Hostile',
+  'Hostile (Against us)',
   'Indifferent',
-  'Interested',
+  'Ally (For us)',
   'Gave flyer',
   'Send WhatsApp invite',
   'Corrected info',
