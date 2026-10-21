@@ -13,22 +13,23 @@ select {
   font-size: 16px;
 }
 
-.start {
-  margin: 0 0 12px 0;
-}
-
 table {
   width: 100%;
   border-collapse: collapse;
 }
 
-th, td {
-  text-align: left;
-  padding: 8px 6px;
+td {
+  padding: 6px 4px;
   border-bottom: 1px solid #d1d5db;
-  vertical-align: top;
+  vertical-align: middle;
 }
 
-th {
-  font-weight: 600;
+.icon {
+  width: 48px;
+  text-align: center;
+}
+
+.note {
+  white-space: pre-wrap;
+  margin: 0;
 }

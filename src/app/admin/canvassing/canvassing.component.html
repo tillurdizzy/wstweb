@@ -8,21 +8,17 @@
           <option *ngFor="let g of groups" [ngValue]="g">{{ g }}</option>
         </select>
       </div>
-      <p class="start" *ngIf="startDate">Campaign began {{ startDate }}</p>
 
       <table>
-        <thead>
-          <tr>
-            <th>Unit</th>
-            <th>Name</th>
-            <th>Note</th>
-          </tr>
-        </thead>
         <tbody>
           <tr *ngFor="let row of rows">
-            <td>{{ row.unit }}</td>
-            <td>{{ row.name }}</td>
-            <td>{{ row.note }}</td>
+            <td class="icon">
+              <p-button icon="pi pi-file" [text]="true" (click)="openUnit(row.unit)"></p-button>
+            </td>
+            <td>{{ row.label }}</td>
+            <td class="icon">
+              <p-button icon="pi pi-eye" [text]="true" (click)="showNote(row.note)"></p-button>
+            </td>
           </tr>
           <tr *ngIf="rows.length === 0">
             <td colspan="3">None left in group {{ group }}.</td>
@@ -31,4 +27,8 @@
       </table>
     </div>
   </p-card>
+
+  <p-dialog header="Latest note" [(visible)]="noteVisible" [modal]="true" [style]="{ width: '90vw', maxWidth: '420px' }">
+    <p class="note">{{ noteText }}</p>
+  </p-dialog>
 </div>
