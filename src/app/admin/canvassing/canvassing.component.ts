@@ -15,11 +15,18 @@ import { SupabaseService } from '../../services/supabase.service';
   styleUrls: ['./canvassing.component.scss'],
 })
 export class CanvassingComponent implements OnInit {
-  groups = ['A', 'B', 'C', 'D', 'E', 'F'];
-  group = 'A';
+  groups = [
+    { label: '100s', from: 100, to: 199 },
+    { label: '200s', from: 200, to: 299 },
+    { label: '300s', from: 300, to: 399 },
+    { label: '400s', from: 400, to: 499 },
+    { label: '500s', from: 500, to: 599 },
+  ];
+  group = this.groups[0];
   rows: { unit: number | null; label: string; note: string }[] = [];
   noteVisible = false;
   noteText = '';
+  sameGroup = (a: any, b: any) => a?.label === b?.label;
 
   constructor(
     private supabase: SupabaseService,
@@ -33,8 +40,9 @@ export class CanvassingComponent implements OnInit {
   async load() {
     const { data, error } = await this.supabase.client
       .from('election')
-      .select('unit, name, notes, vote, group')
-      .eq('group', this.group)
+      .select('unit, name, notes, vote')
+      .gte('unit', this.group.from)
+      .lte('unit', this.group.to)
       .is('vote', null)
       .order('unit');
     if (error) {

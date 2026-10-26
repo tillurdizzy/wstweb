@@ -3,9 +3,9 @@
     <ng-template #title>Canvassing</ng-template>
     <div class="card-content">
       <div class="field">
-        <label for="group">Group</label>
-        <select id="group" [(ngModel)]="group" (ngModelChange)="load()">
-          <option *ngFor="let g of groups" [ngValue]="g">{{ g }}</option>
+        <label for="group">Building</label>
+        <select id="group" [(ngModel)]="group" (ngModelChange)="load()" [compareWith]="sameGroup">
+          <option *ngFor="let g of groups" [ngValue]="g">{{ g.label }}</option>
         </select>
       </div>
 
@@ -17,11 +17,11 @@
             </td>
             <td>{{ row.label }}</td>
             <td class="icon">
-              <p-button icon="pi pi-file" [text]="true" (click)="showNote(row.note)"></p-button>
+              <p-button *ngIf="row.note" icon="pi pi-file" [text]="true" (click)="showNote(row.note)"></p-button>
             </td>
           </tr>
           <tr *ngIf="rows.length === 0">
-            <td colspan="3">None left in group {{ group }}.</td>
+            <td colspan="3">None left in the {{ group.label }}.</td>
           </tr>
         </tbody>
       </table>
