@@ -23,7 +23,7 @@ export class CanvassingComponent implements OnInit {
     { label: '500s', from: 500, to: 599 },
   ];
   group = this.groups[0];
-  rows: { unit: number | null; label: string; note: string }[] = [];
+  rows: { unit: number | null; label: string; note: string; vote: string }[] = [];
   noteVisible = false;
   noteText = '';
   sameGroup = (a: any, b: any) => a?.label === b?.label;
@@ -37,13 +37,12 @@ export class CanvassingComponent implements OnInit {
     await this.load();
   }
 
-  async load() {
+async load() {
     const { data, error } = await this.supabase.client
       .from('election')
       .select('unit, name, notes, vote')
       .gte('unit', this.group.from)
       .lte('unit', this.group.to)
-      .is('vote', null)
       .order('unit');
     if (error) {
       console.error(error.message);
@@ -55,7 +54,13 @@ export class CanvassingComponent implements OnInit {
       unit: row.unit,
       label: `${row.unit ?? ''} - ${row.name || ''}`.trim(),
       note: this.lastNote(row.notes),
+      vote: row.vote || '',
     }));
+  }
+
+  voteIcon(vote: string): string {
+    if (!vote) return '';
+    return vote === 'AGAINST' ? 'pi pi-times-circle' : 'pi pi-check-circle';
   }
 
   openUnit(unit: number | null) {

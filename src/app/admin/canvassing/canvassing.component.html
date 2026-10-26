@@ -15,7 +15,10 @@
             <td class="icon">
               <p-button icon="pi pi-eye" [text]="true" (click)="openUnit(row.unit)"></p-button>
             </td>
-            <td>{{ row.label }}</td>
+            <td>
+              {{ row.label }}
+              <i *ngIf="voteIcon(row.vote)" class="vote-mark" [ngClass]="voteIcon(row.vote)"></i>
+            </td>
             <td class="icon">
               <p-button *ngIf="row.note" icon="pi pi-file" [text]="true" (click)="showNote(row.note)"></p-button>
             </td>
