@@ -215,32 +215,28 @@ toggleFlag(item: string, checked: boolean) {
 
 async loadElection(unit: number | null) {
   this.vote = null;
-  this.proxy = null;
-  this.contactType = null;
   this.contactNote = '';
   this.contactHistory = '';
   this.contactMessage = '';
   this.electionMessage = '';
-  if (!this.owner?.owner_id) return;
+  if (unit == null) return;
 
   const { data, error } = await this.supabaseService.client
     .from('election')
-    .select('vote, proxy, notes')
-    .eq('owner_id', this.owner.owner_id)
-    .limit(1);
+    .select('vote, notes')
+    .eq('unit', unit)
+    .maybeSingle();
   if (error) {
     console.error('Error fetching election note:', error.message);
     return;
   }
-  const row = data && data.length ? data[0] : null;
-  if (!row) return;
-  this.vote = row.vote || null;
-  this.proxy = row.proxy || null;
-  this.contactHistory = row.notes || '';
+  if (!data) return;
+  this.vote = data.vote || null;
+  this.contactHistory = data.notes || '';
 }
 
 async saveContact() {
-  if (!this.owner?.owner_id) return;
+  if (this.selectedUnit == null) return;
   const note = (this.contactNote || '').trim();
   if (!note) {
     this.contactMessage = 'Notes are required.';
@@ -264,8 +260,16 @@ async saveContact() {
 
   const { error } = await this.supabaseService.client
     .from('election')
-    .update({ notes: next })
-    .eq('owner_id', this.owner.owner_id);
+    .update({
+      notes: next,
+      owner_id: this.owner?.owner_id || null,
+      name: this.owner
+        ? `${this.owner.firstname || ''} ${this.owner.lastname || ''}`.trim() || null
+        : null,
+      email: this.owner?.email || null,
+      phone: this.owner?.cell || null,
+    })
+    .eq('unit', this.selectedUnit);
 
   this.savingContact = false;
   if (error) {
@@ -279,20 +283,22 @@ async saveContact() {
 }
 
 async saveElection() {
-  if (this.selectedUnit == null || !this.owner?.owner_id) return;
+  if (this.selectedUnit == null) return;
   this.savingElection = true;
   this.electionMessage = '';
 
   const { error } = await this.supabaseService.client
     .from('election')
     .update({
-      unit: this.selectedUnit,
-      name: `${this.owner.firstname || ''} ${this.owner.lastname || ''}`.trim() || null,
-      email: this.owner.email || null,
-      phone: this.owner.cell || null,
       vote: this.vote || null,
+      owner_id: this.owner?.owner_id || null,
+      name: this.owner
+        ? `${this.owner.firstname || ''} ${this.owner.lastname || ''}`.trim() || null
+        : null,
+      email: this.owner?.email || null,
+      phone: this.owner?.cell || null,
     })
-    .eq('owner_id', this.owner.owner_id);
+    .eq('unit', this.selectedUnit);
 
   this.savingElection = false;
   this.electionMessage = error ? error.message : 'Saved.';
