@@ -38,6 +38,7 @@
   </p-card>
 
   <p-dialog [(visible)]="noteVisible" [modal]="true" [style]="{ width: '92vw', maxWidth: '440px' }" [showHeader]="false">
+    <h3 class="popup-who">{{ popupLabel }}</h3>
     <h3 class="popup-title">Last Note:</h3>
     <p class="note">{{ noteText }}</p>
     <hr class="divider" />

@@ -43,6 +43,7 @@ export class CanvassingComponent implements OnInit {
   savingContact = false;
   signedInEmail = '';
   savedVisible = false;
+  popupLabel = '';
 
   constructor(
     private supabase: SupabaseService,
@@ -87,22 +88,23 @@ export class CanvassingComponent implements OnInit {
     this.router.navigate(['/admin/unit-search'], { queryParams: { unit } });
   }
 
-  async showNote(row: { unit: number | null; note: string }) {
-    this.activeUnit = row.unit;
-    this.noteText = row.note || 'No note yet.';
-    this.contactChoice = null;
-    this.contactNote = '';
-    this.contactMessage = '';
-    this.noteVisible = true;
-    if (row.unit == null) return;
+ async showNote(row: { unit: number | null; label: string; note: string }) {
+  this.activeUnit = row.unit;
+  this.popupLabel = row.label;
+  this.noteText = row.note || 'No note yet.';
+  this.contactChoice = null;
+  this.contactNote = '';
+  this.contactMessage = '';
+  this.noteVisible = true;
+  if (row.unit == null) return;
 
-    const { data } = await this.supabase.client
-      .from('election')
-      .select('vote, proxy')
-      .eq('unit', row.unit)
-      .maybeSingle();
-    this.contactChoice = this.choiceFromRow(data?.vote, data?.proxy);
-  }
+  const { data } = await this.supabase.client
+    .from('election')
+    .select('vote, proxy')
+    .eq('unit', row.unit)
+    .maybeSingle();
+  this.contactChoice = this.choiceFromRow(data?.vote, data?.proxy);
+}
 
   async saveContact() {
     if (this.activeUnit == null) return;
