@@ -2,8 +2,8 @@
   <p-card>
     <ng-template #title>Canvassing</ng-template>
     <div class="card-content">
+      <p class="for-percent">Voting FOR: {{ forPercent }}%</p>
       <div class="field">
-        <label for="group">Building</label>
         <select id="group" [(ngModel)]="group" (ngModelChange)="load()" [compareWith]="sameGroup">
           <option *ngFor="let g of groups" [ngValue]="g">{{ g.label }}</option>
         </select>

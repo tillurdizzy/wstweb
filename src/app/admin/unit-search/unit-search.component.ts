@@ -67,13 +67,44 @@ export class UnitSearchComponent implements OnInit {
     private confirmationService: ConfirmationService
   ) {}
 
-  async ngOnInit() {
-    const unit = this.route.snapshot.queryParamMap.get('unit');
-    if (!unit) return;
-    this.query = unit;
-    this.activeUnit = Number(unit);
-    await this.searchByUnit(this.activeUnit);
+  unitNumbers: number[] = [];
+
+async ngOnInit() {
+  await this.loadUnitNumbers();
+  const unit = this.route.snapshot.queryParamMap.get('unit');
+  if (!unit) return;
+  this.query = unit;
+  this.activeUnit = Number(unit);
+  await this.searchByUnit(this.activeUnit);
+}
+
+async loadUnitNumbers() {
+  const { data, error } = await this.supabaseService.client
+    .from('units')
+    .select('unit')
+    .lt('unit', 600)
+    .order('unit');
+  if (error) {
+    console.error(error.message);
+    return;
   }
+  this.unitNumbers = (data || []).map((r: any) => r.unit);
+}
+
+async stepUnit(direction: number) {
+  if (this.activeUnit == null || !this.unitNumbers.length) return;
+  const index = this.unitNumbers.indexOf(this.activeUnit);
+  const nextIndex = index < 0
+    ? (direction > 0 ? 0 : this.unitNumbers.length - 1)
+    : index + direction;
+  if (nextIndex < 0 || nextIndex >= this.unitNumbers.length) return;
+  const unit = this.unitNumbers[nextIndex];
+  this.query = '';
+  this.searchResults = [];
+  this.searched = false;
+  this.activeUnit = unit;
+  await this.searchByUnit(unit);
+}
 
   onQueryChange() {
     const q = (this.query || '').trim();

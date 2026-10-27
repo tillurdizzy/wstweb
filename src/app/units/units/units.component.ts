@@ -44,7 +44,7 @@ export class UnitsComponent implements OnInit, OnChanges {
   residentsStatus: 'green' | 'red' | 'yellow' = 'red';
   vehiclesStatus: 'green' | 'red' | 'yellow' = 'red';
   private ready = false;
-  vote: string | null = null;
+
   proxy: string | null = null;
   notes = '';
   savingElection = false;
@@ -55,21 +55,16 @@ export class UnitsComponent implements OnInit, OnChanges {
   savingContact = false;
   contactMessage = '';
   signedInEmail = '';
-  contactFlags = [
-  'No Answer',
-  'Hostile (Against us)',
-  'Indifferent',
-  'Ally (For us)',
-  'Gave flyer',
-  'Send WhatsApp invite',
-  'Corrected info',
-];
-voteChoices = [
-  { label: 'FOR in person', value: 'FOR in person' },
-  { label: 'FOR by proxy', value: 'FOR by proxy' },
-  { label: 'Quorum Only', value: 'Quorum Only' },
-  { label: 'AGAINST', value: 'AGAINST' },
-];
+  contactChoices = [
+  'Try again later',
+  'FOR Us - Vote in person',
+  'FOR Us - Proxy promised',
+  'Proxy collected',
+  'AGAINST Us',
+  'Reset',
+  ];
+contactChoice: string | null = null;
+
 
   constructor(
     private supabaseService: SupabaseService,
@@ -77,21 +72,7 @@ voteChoices = [
     private route: ActivatedRoute
   ) {}
 
-isFlagChecked(item: string): boolean {
-  return this.contactNote
-    .split(',')
-    .map((s) => s.trim())
-    .includes(item);
-}
 
-toggleFlag(item: string, checked: boolean) {
-  const parts = this.contactNote
-    .split(',')
-    .map((s) => s.trim())
-    .filter((s) => s && s !== item);
-  if (checked) parts.push(item);
-  this.contactNote = parts.join(', ');
-}
 
   async ngOnInit() {
     this.isAdmin = await this.supabaseService.isAdmin();
@@ -214,16 +195,15 @@ toggleFlag(item: string, checked: boolean) {
   }
 
 async loadElection(unit: number | null) {
-  this.vote = null;
+  this.contactChoice = null;
   this.contactNote = '';
   this.contactHistory = '';
   this.contactMessage = '';
-  this.electionMessage = '';
   if (unit == null) return;
 
   const { data, error } = await this.supabaseService.client
     .from('election')
-    .select('vote, notes')
+    .select('vote, proxy, notes')
     .eq('unit', unit)
     .maybeSingle();
   if (error) {
@@ -231,15 +211,40 @@ async loadElection(unit: number | null) {
     return;
   }
   if (!data) return;
-  this.vote = data.vote || null;
   this.contactHistory = data.notes || '';
+  this.contactChoice = this.choiceFromRow(data.vote, data.proxy);
+}
+
+private choiceFromRow(vote: string | null, proxy: string | null): string | null {
+  if (proxy === 'Collected') return 'Proxy collected';
+  if (proxy === 'Promised') return 'FOR Us - Proxy promised';
+  if (vote === 'FOR') return 'FOR Us - Vote in person';
+  if (vote === 'AGAINST') return 'AGAINST Us';
+  return null;
+}
+
+private voteProxyFor(choice: string | null): { vote: string | null; proxy: string | null } {
+  switch (choice) {
+    case 'FOR Us - Vote in person':
+      return { vote: 'FOR', proxy: null };
+    case 'FOR Us - Proxy promised':
+      return { vote: 'FOR', proxy: 'Promised' };
+    case 'Proxy collected':
+      return { vote: 'FOR', proxy: 'Collected' };
+    case 'AGAINST Us':
+      return { vote: 'AGAINST', proxy: null };
+    case 'Reset':
+      return { vote: null, proxy: null };
+    default:
+      return { vote: null, proxy: null };
+  }
 }
 
 async saveContact() {
   if (this.selectedUnit == null) return;
   const note = (this.contactNote || '').trim();
-  if (!note) {
-    this.contactMessage = 'Notes are required.';
+  if (!this.contactChoice && !note) {
+    this.contactMessage = 'Choose a result or enter a note.';
     return;
   }
 
@@ -251,24 +256,32 @@ async saveContact() {
     day: 'numeric',
     year: 'numeric',
   });
+  const what = [this.contactChoice, note].filter(Boolean).join(' — ');
   const block = [
     `Date: ${today}`,
     `User: ${this.signedInEmail || 'unknown'}`,
-    `Note: ${note}`,
+    `Note: ${what}`,
   ].join('\n');
   const next = this.contactHistory ? `${this.contactHistory}\n\n${block}` : block;
 
+  const patch: any = {
+    notes: next,
+    owner_id: this.owner?.owner_id || null,
+    name: this.owner
+      ? `${this.owner.firstname || ''} ${this.owner.lastname || ''}`.trim() || null
+      : null,
+    email: this.owner?.email || null,
+    phone: this.owner?.cell || null,
+  };
+  if (this.contactChoice && this.contactChoice !== 'Try again later') {
+    const { vote, proxy } = this.voteProxyFor(this.contactChoice);
+    patch.vote = vote;
+    patch.proxy = proxy;
+  }
+
   const { error } = await this.supabaseService.client
     .from('election')
-    .update({
-      notes: next,
-      owner_id: this.owner?.owner_id || null,
-      name: this.owner
-        ? `${this.owner.firstname || ''} ${this.owner.lastname || ''}`.trim() || null
-        : null,
-      email: this.owner?.email || null,
-      phone: this.owner?.cell || null,
-    })
+    .update(patch)
     .eq('unit', this.selectedUnit);
 
   this.savingContact = false;
@@ -279,30 +292,11 @@ async saveContact() {
 
   this.contactHistory = next;
   this.contactNote = '';
+  if (this.contactChoice === 'Reset') this.contactChoice = null;
   this.contactMessage = 'Saved.';
 }
 
-async saveElection() {
-  if (this.selectedUnit == null) return;
-  this.savingElection = true;
-  this.electionMessage = '';
 
-  const { error } = await this.supabaseService.client
-    .from('election')
-    .update({
-      vote: this.vote || null,
-      owner_id: this.owner?.owner_id || null,
-      name: this.owner
-        ? `${this.owner.firstname || ''} ${this.owner.lastname || ''}`.trim() || null
-        : null,
-      email: this.owner?.email || null,
-      phone: this.owner?.cell || null,
-    })
-    .eq('unit', this.selectedUnit);
-
-  this.savingElection = false;
-  this.electionMessage = error ? error.message : 'Saved.';
-}
 
 async onOccupiedChange(checked: boolean) {
   if (this.selectedUnit == null) return;

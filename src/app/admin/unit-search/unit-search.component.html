@@ -5,20 +5,20 @@
       <div class="search-input">
         <div class="search-section search-row">
           <label for="query">Unit number or owner name</label>
-          <div class="search-controls">
-            <input
-              pInputText
-              id="unitOwnerSearch"
-              name="unitOwnerSearch"
-              autocomplete="off"
-              autocorrect="off"
-              autocapitalize="off"
-              spellcheck="false"
-              [(ngModel)]="query"
-              (ngModelChange)="onQueryChange()"
-            />
-            <p-button label="Clear" severity="secondary" (click)="clearSearch()"></p-button>
-          </div>
+               <div class="search-controls">
+        <input
+          pInputText
+          id="unitSearch"
+          name="unitSearch"
+          autocomplete="off"
+          [(ngModel)]="query"
+          (ngModelChange)="onQueryChange()"
+          placeholder="Unit number or owner name"
+        />
+        <p-button label="Clear" severity="secondary" (click)="clearSearch()"></p-button>
+        <p-button label="Prev" severity="secondary" [disabled]="!activeUnit" (click)="stepUnit(-1)"></p-button>
+        <p-button label="Next" severity="secondary" [disabled]="!activeUnit" (click)="stepUnit(1)"></p-button>
+      </div>
         </div>
       </div>
 
