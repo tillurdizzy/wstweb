@@ -226,7 +226,7 @@ private choiceFromRow(vote: string | null, proxy: string | null): string | null 
 private voteProxyFor(choice: string | null): { vote: string | null; proxy: string | null } {
   switch (choice) {
     case 'FOR Us - Vote in person':
-      return { vote: 'FOR', proxy: null };
+      return { vote: 'FOR', proxy: 'NA' };
     case 'FOR Us - Proxy promised':
       return { vote: 'FOR', proxy: 'Promised' };
     case 'Proxy collected':
@@ -239,6 +239,7 @@ private voteProxyFor(choice: string | null): { vote: string | null; proxy: strin
       return { vote: null, proxy: null };
   }
 }
+
 
 async saveContact() {
   if (this.selectedUnit == null) return;

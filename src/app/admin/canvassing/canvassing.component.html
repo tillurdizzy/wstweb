@@ -12,15 +12,21 @@
       <table>
         <tbody>
           <tr *ngFor="let row of rows">
-            <td class="icon">
-              <p-button icon="pi pi-eye" [text]="true" (click)="openUnit(row.unit)"></p-button>
+              <td class="icon">
+              <p-button icon="pi pi-pencil" severity="secondary" (click)="openUnit(row.unit)"></p-button>
             </td>
             <td>
               {{ row.label }}
-              <i *ngIf="voteIcon(row.vote)" class="vote-mark" [ngClass]="voteIcon(row.vote)"></i>
+              <span
+                *ngIf="voteMark(row.vote, row.proxy) as mark"
+                class="vote-box"
+                [ngClass]="mark.tone"
+              >
+                <i class="pi" [ngClass]="mark.icon"></i>
+              </span>
             </td>
             <td class="icon">
-              <p-button *ngIf="row.note" icon="pi pi-file" [text]="true" (click)="showNote(row.note)"></p-button>
+              <p-button icon="pi pi-comment" severity="secondary" (click)="showNote(row)"></p-button>
             </td>
           </tr>
           <tr *ngIf="rows.length === 0">
@@ -31,7 +37,26 @@
     </div>
   </p-card>
 
-  <p-dialog header="Latest note" [(visible)]="noteVisible" [modal]="true" [style]="{ width: '90vw', maxWidth: '420px' }">
+  <p-dialog [(visible)]="noteVisible" [modal]="true" [style]="{ width: '92vw', maxWidth: '440px' }" [showHeader]="false">
+    <h3 class="popup-title">Last Note:</h3>
     <p class="note">{{ noteText }}</p>
+    <hr class="divider" />
+    <h3 class="popup-title">Status</h3>
+    <div class="check-list">
+      <label *ngFor="let item of contactChoices">
+        <input type="radio" name="contactChoice" [value]="item" [(ngModel)]="contactChoice" />
+        {{ item }}
+      </label>
+    </div>
+    <div class="field">
+      <label for="contactNote">Notes</label>
+      <textarea id="contactNote" rows="4" [(ngModel)]="contactNote"></textarea>
+    </div>
+    <p *ngIf="contactMessage">{{ contactMessage }}</p>
+    <p-button label="Submit" [disabled]="savingContact" (click)="saveContact()"></p-button>
+  </p-dialog>
+    <p-dialog [(visible)]="savedVisible" [modal]="true" [closable]="false" [showHeader]="false" [style]="{ width: '240px' }">
+    <p class="saved">Saved!</p>
+    <p-button label="OK" (click)="savedVisible = false"></p-button>
   </p-dialog>
 </div>
