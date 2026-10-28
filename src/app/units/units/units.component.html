@@ -51,7 +51,7 @@
               </div>
             </li>
             <li *ngFor="let resident of residents">
-              <p-button [routerLink]="['/edit-resident', resident.id]" [queryParams]="{ unit: selectedUnit }" label="edit" severity="secondary"></p-button>
+              <p-button *ngIf="isAdmin" [routerLink]="['/edit-resident', resident.id]" [queryParams]="{ unit: selectedUnit }" label="edit" severity="secondary"></p-button>
               <div class="resident-details">
                 <div>{{ resident.firstname }} {{ resident.lastname }}</div>
                 <div>{{ resident.cell }}</div>
@@ -66,7 +66,6 @@
 
           <hr class="divider" />
 
-          <!-- Vehicles hidden for the election period
           <h3>
             Vehicles
             <span *ngIf="isAdmin" class="status-dot" [class.green]="vehiclesStatus === 'green'" [class.red]="vehiclesStatus === 'red'" [class.yellow]="vehiclesStatus === 'yellow'"></span>
@@ -85,40 +84,6 @@
             <p>No vehicles assigned.</p>
           </ng-template>
           <p-button [routerLink]="['/add-vehicle']" [queryParams]="{ unit: selectedUnit }" label="Add Vehicle"></p-button>
-          -->
-
-
-          <h3>Contact Summary</h3>
-          <div class="election-form">
-            <div class="check-list">
-              <label *ngFor="let item of contactChoices">
-                <input
-                  type="radio"
-                  name="contactChoice"
-                  [value]="item"
-                  [(ngModel)]="contactChoice"
-                />
-                {{ item }}
-              </label>
-            </div>
-            <div class="field">
-              <label for="contactNote">Notes</label>
-              <textarea id="contactNote" rows="5" [(ngModel)]="contactNote"></textarea>
-            </div>
-            <p *ngIf="contactMessage">{{ contactMessage }}</p>
-            <p-button label="Submit" [disabled]="savingContact" (click)="saveContact()"></p-button>
-          </div>
-
-          
-          <hr class="divider" />
-
-          <h3>Contact History</h3>
-          <div class="election-form">
-            <textarea id="contactHistory" rows="12" [ngModel]="contactHistory" readonly></textarea>
-          </div>
-
-
-
         </div>
       </p-fluid>
       <ng-template #loading>

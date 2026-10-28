@@ -1,6 +1,5 @@
 import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { TextareaModule } from 'primeng/textarea';
 import { CardModule } from 'primeng/card';
 import { SelectModule } from 'primeng/select';
 import { ButtonModule } from 'primeng/button';
@@ -45,38 +44,14 @@ export class UnitsComponent implements OnInit, OnChanges {
   vehiclesStatus: 'green' | 'red' | 'yellow' = 'red';
   private ready = false;
 
-  proxy: string | null = null;
-  notes = '';
-  savingElection = false;
-  electionMessage = '';
-  contactType: string | null = null;
-  contactNote = '';
-  contactHistory = '';
-  savingContact = false;
-  contactMessage = '';
-  signedInEmail = '';
-  contactChoices = [
-  'Try again later',
-  'FOR Us - Vote in person',
-  'FOR Us - Proxy promised',
-  'Proxy collected',
-  'AGAINST Us',
-  'Reset',
-  ];
-contactChoice: string | null = null;
-
-
   constructor(
     private supabaseService: SupabaseService,
     private unitService: UnitService,
     private route: ActivatedRoute
   ) {}
 
-
-
   async ngOnInit() {
     this.isAdmin = await this.supabaseService.isAdmin();
-    
     this.ready = true;
     await this.load();
   }
@@ -96,7 +71,6 @@ contactChoice: string | null = null;
     const { data: user } = await this.supabaseService.getUser();
 
     if (!user?.user) return;
-    this.signedInEmail = user.user.email || '';
     let ownerId: string | null = null;
 
     if (unitParam && this.isAdmin && !ownerIdParam) {
@@ -191,134 +165,28 @@ contactChoice: string | null = null;
 
     this.residentsStatus = this.residentsSectionStatus();
     this.vehiclesStatus = this.sectionStatus(this.vehicles);
-    await this.loadElection(unit);
   }
 
-async loadElection(unit: number | null) {
-  this.contactChoice = null;
-  this.contactNote = '';
-  this.contactHistory = '';
-  this.contactMessage = '';
-  if (unit == null) return;
+  async onOccupiedChange(checked: boolean) {
+    if (this.selectedUnit == null) return;
+    const previous = this.ownerOccupied;
+    this.ownerOccupied = checked;
 
-  const { data, error } = await this.supabaseService.client
-    .from('election')
-    .select('vote, proxy, notes')
-    .eq('unit', unit)
-    .maybeSingle();
-  if (error) {
-    console.error('Error fetching election note:', error.message);
-    return;
+    const { error } = await this.supabaseService.client
+      .from('units')
+      .update({ owner_occupied: checked })
+      .eq('unit', this.selectedUnit);
+
+    if (error) {
+      this.ownerOccupied = previous;
+      console.error(error.message);
+      return;
+    }
+
+    const row = this.units.find((u) => u.unit === this.selectedUnit);
+    if (row) row.owner_occupied = checked;
+    this.residentsStatus = this.residentsSectionStatus();
   }
-  if (!data) return;
-  this.contactHistory = data.notes || '';
-  this.contactChoice = this.choiceFromRow(data.vote, data.proxy);
-}
-
-private choiceFromRow(vote: string | null, proxy: string | null): string | null {
-  if (proxy === 'Collected') return 'Proxy collected';
-  if (proxy === 'Promised') return 'FOR Us - Proxy promised';
-  if (vote === 'FOR') return 'FOR Us - Vote in person';
-  if (vote === 'AGAINST') return 'AGAINST Us';
-  return null;
-}
-
-private voteProxyFor(choice: string | null): { vote: string | null; proxy: string | null } {
-  switch (choice) {
-    case 'FOR Us - Vote in person':
-      return { vote: 'FOR', proxy: 'NA' };
-    case 'FOR Us - Proxy promised':
-      return { vote: 'FOR', proxy: 'Promised' };
-    case 'Proxy collected':
-      return { vote: 'FOR', proxy: 'Collected' };
-    case 'AGAINST Us':
-      return { vote: 'AGAINST', proxy: null };
-    case 'Reset':
-      return { vote: null, proxy: null };
-    default:
-      return { vote: null, proxy: null };
-  }
-}
-
-
-async saveContact() {
-  if (this.selectedUnit == null) return;
-  const note = (this.contactNote || '').trim();
-  if (!this.contactChoice && !note) {
-    this.contactMessage = 'Choose a result or enter a note.';
-    return;
-  }
-
-  this.savingContact = true;
-  this.contactMessage = '';
-
-  const today = new Date().toLocaleDateString('en-US', {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-  const what = [this.contactChoice, note].filter(Boolean).join(' — ');
-  const block = [
-    `Date: ${today}`,
-    `User: ${this.signedInEmail || 'unknown'}`,
-    `Note: ${what}`,
-  ].join('\n');
-  const next = this.contactHistory ? `${this.contactHistory}\n\n${block}` : block;
-
-  const patch: any = {
-    notes: next,
-    owner_id: this.owner?.owner_id || null,
-    name: this.owner
-      ? `${this.owner.firstname || ''} ${this.owner.lastname || ''}`.trim() || null
-      : null,
-    email: this.owner?.email || null,
-    phone: this.owner?.cell || null,
-  };
-  if (this.contactChoice && this.contactChoice !== 'Try again later') {
-    const { vote, proxy } = this.voteProxyFor(this.contactChoice);
-    patch.vote = vote;
-    patch.proxy = proxy;
-  }
-
-  const { error } = await this.supabaseService.client
-    .from('election')
-    .update(patch)
-    .eq('unit', this.selectedUnit);
-
-  this.savingContact = false;
-  if (error) {
-    this.contactMessage = error.message;
-    return;
-  }
-
-  this.contactHistory = next;
-  this.contactNote = '';
-  if (this.contactChoice === 'Reset') this.contactChoice = null;
-  this.contactMessage = 'Saved.';
-}
-
-
-
-async onOccupiedChange(checked: boolean) {
-  if (this.selectedUnit == null) return;
-  const previous = this.ownerOccupied;
-  this.ownerOccupied = checked;
-
-  const { error } = await this.supabaseService.client
-    .from('units')
-    .update({ owner_occupied: checked })
-    .eq('unit', this.selectedUnit);
-
-  if (error) {
-    this.ownerOccupied = previous;
-    this.electionMessage = error.message;
-    return;
-  }
-
-  const row = this.units.find((u) => u.unit === this.selectedUnit);
-  if (row) row.owner_occupied = checked;
-  this.residentsStatus = this.residentsSectionStatus();
-}
 
   async onUnitChange(event: any) {
     const newUnit = event.value;
