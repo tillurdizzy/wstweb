@@ -24,6 +24,7 @@ export class CanvassingComponent implements OnInit {
     { label: '500s', from: 500, to: 599 },
   ];
   contactChoices = [
+    'Gave booklet',
     'Try again later',
     'FOR Us - Vote in person',
     'FOR Us - Proxy promised',
@@ -32,10 +33,11 @@ export class CanvassingComponent implements OnInit {
     'Reset',
   ];
   group = this.groups[0];
-  rows: { unit: number | null; label: string; note: string; vote: string; proxy: string }[] = [];
+  rows: { unit: number | null; label: string; note: string; vote: string; proxy: string; isPrimary: boolean;rawGroup?: any }[] = [];
   noteVisible = false;
   noteText = '';
   forPercent = '0.0';
+  forCount = 0;
   activeUnit: number | null = null;
   contactChoice: string | null = null;
   contactNote = '';
@@ -60,11 +62,15 @@ export class CanvassingComponent implements OnInit {
     const { data: all, error: allError } = await this.supabase.client
       .from('election')
       .select('unit, vote');
-    if (!allError) this.forPercent = this.percentFor(all || []);
+      if (!allError) {
+      const stats = this.percentFor(all || []);
+      this.forPercent = stats.percent;
+      this.forCount = stats.count;
+    }
 
     const { data, error } = await this.supabase.client
       .from('election')
-      .select('unit, name, notes, vote, proxy')
+      .select('unit, name, notes, vote, proxy, "group"')
       .gte('unit', this.group.from)
       .lte('unit', this.group.to)
       .order('unit');
@@ -74,13 +80,16 @@ export class CanvassingComponent implements OnInit {
       return;
     }
 
-    this.rows = (data || []).map((row: any) => ({
+      this.rows = (data || []).map((row: any) => ({
       unit: row.unit,
       label: `${row.unit ?? ''} - ${row.name || ''}`.trim(),
       note: this.lastNote(row.notes),
       vote: row.vote || '',
       proxy: row.proxy || '',
+      isPrimary: String(row.group ?? '').trim().toLowerCase() === 'primary',
+      rawGroup: row.group,
     }));
+    /* console.log('[canvassing] rows', this.rows.map(r => ({ unit: r.unit, group: r.rawGroup, isPrimary: r.isPrimary }))); */
   }
 
   openUnit(unit: number | null) {
@@ -88,23 +97,23 @@ export class CanvassingComponent implements OnInit {
     this.router.navigate(['/admin/unit-search'], { queryParams: { unit } });
   }
 
- async showNote(row: { unit: number | null; label: string; note: string }) {
-  this.activeUnit = row.unit;
-  this.popupLabel = row.label;
-  this.noteText = row.note || 'No note yet.';
-  this.contactChoice = null;
-  this.contactNote = '';
-  this.contactMessage = '';
-  this.noteVisible = true;
-  if (row.unit == null) return;
+  async showNote(row: { unit: number | null; label: string; note: string }) {
+    this.activeUnit = row.unit;
+    this.popupLabel = row.label;
+    this.noteText = row.note || 'No note yet.';
+    this.contactChoice = null;
+    this.contactNote = '';
+    this.contactMessage = '';
+    this.noteVisible = true;
+    if (row.unit == null) return;
 
-  const { data } = await this.supabase.client
-    .from('election')
-    .select('vote, proxy')
-    .eq('unit', row.unit)
-    .maybeSingle();
-  this.contactChoice = this.choiceFromRow(data?.vote, data?.proxy);
-}
+    const { data } = await this.supabase.client
+      .from('election')
+      .select('vote, proxy')
+      .eq('unit', row.unit)
+      .maybeSingle();
+    this.contactChoice = this.choiceFromRow(data?.vote, data?.proxy);
+  }
 
   async saveContact() {
     if (this.activeUnit == null) return;
@@ -153,10 +162,10 @@ export class CanvassingComponent implements OnInit {
     this.noteText = history;
     this.contactNote = '';
     if (this.contactChoice === 'Reset') this.contactChoice = null;
-        this.noteVisible = false;
-      this.contactNote = '';
+    this.noteVisible = false;
+    this.contactNote = '';
     if (this.contactChoice === 'Reset') this.contactChoice = null;
-      this.savedVisible = true;
+    this.savedVisible = true;
     await this.load();
   }
 
@@ -170,16 +179,23 @@ export class CanvassingComponent implements OnInit {
 
   sameGroup = (a: any, b: any) => a?.label === b?.label;
 
-  private percentFor(rows: { unit: number | null; vote: string | null }[]): string {
+  private percentFor(rows: { unit: number | null; vote: string | null }[]): { percent: string; count: number } {
     let total = 0;
     let forShares = 0;
+    let count = 0;
     for (const row of rows) {
       const share = row.unit != null ? SHARES[row.unit] : 0;
       if (!share) continue;
       total += share;
-      if (row.vote === 'FOR') forShares += share;
+      if (row.vote === 'FOR') {
+        forShares += share;
+        count += 1;
+      }
     }
-    return total ? ((forShares / total) * 100).toFixed(1) : '0.0';
+    return {
+      percent: total ? ((forShares / total) * 100).toFixed(1) : '0.0',
+      count,
+    };
   }
 
   private lastNote(notes: string | null): string {
@@ -188,28 +204,28 @@ export class CanvassingComponent implements OnInit {
     return parts[parts.length - 1] || '';
   }
 
-private voteProxyFor(choice: string | null): { vote: string | null; proxy: string | null } {
-  switch (choice) {
-    case 'FOR Us - Vote in person':
-      return { vote: 'FOR', proxy: 'NA' };
-    case 'FOR Us - Proxy promised':
-      return { vote: 'FOR', proxy: 'Promised' };
-    case 'Proxy collected':
-      return { vote: 'FOR', proxy: 'Collected' };
-    case 'AGAINST Us':
-      return { vote: 'AGAINST', proxy: null };
-    case 'Reset':
-      return { vote: null, proxy: null };
-    default:
-      return { vote: null, proxy: null };
+  private voteProxyFor(choice: string | null): { vote: string | null; proxy: string | null } {
+    switch (choice) {
+      case 'FOR Us - Vote in person':
+        return { vote: 'FOR', proxy: 'NA' };
+      case 'FOR Us - Proxy promised':
+        return { vote: 'FOR', proxy: 'Promised' };
+      case 'Proxy collected':
+        return { vote: 'FOR', proxy: 'Collected' };
+      case 'AGAINST Us':
+        return { vote: 'AGAINST', proxy: null };
+      case 'Reset':
+        return { vote: null, proxy: null };
+      default:
+        return { vote: null, proxy: null };
+    }
   }
-}
 
-private choiceFromRow(vote: string | null, proxy: string | null): string | null {
-  if (proxy === 'Collected') return 'Proxy collected';
-  if (proxy === 'Promised') return 'FOR Us - Proxy promised';
-  if (vote === 'FOR') return 'FOR Us - Vote in person';
-  if (vote === 'AGAINST') return 'AGAINST Us';
-  return null;
-}
+  private choiceFromRow(vote: string | null, proxy: string | null): string | null {
+    if (proxy === 'Collected') return 'Proxy collected';
+    if (proxy === 'Promised') return 'FOR Us - Proxy promised';
+    if (vote === 'FOR') return 'FOR Us - Vote in person';
+    if (vote === 'AGAINST') return 'AGAINST Us';
+    return null;
+  }
 }

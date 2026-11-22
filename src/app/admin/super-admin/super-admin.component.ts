@@ -140,6 +140,42 @@ export class SuperAdminComponent {
       owner_occupied: !!row.units?.owner_occupied,
     }));
   }
+    async setPrimary() {
+    const unit = Number((this.query || '').trim());
+    if (!Number.isInteger(unit) || unit <= 0) {
+      this.messageService.add({
+        severity: 'error',
+        summary: 'Unit required',
+        detail: 'Enter a unit number in the search field first.',
+      });
+      return;
+    }
+
+    const { data, error } = await this.supabaseService.client
+      .from('election')
+      .update({ group: 'Primary' })
+      .eq('unit', unit)
+      .select('unit');
+
+    if (error) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: error.message });
+      return;
+    }
+    if (!data || data.length === 0) {
+      this.messageService.add({
+        severity: 'warn',
+        summary: 'Not found',
+        detail: `No election row for unit ${unit}.`,
+      });
+      return;
+    }
+
+    this.messageService.add({
+      severity: 'success',
+      summary: 'Primary',
+      detail: `Unit ${unit} marked Primary.`,
+    });
+  }
 
   private async signUpOwner(email: string): Promise<string> {
     const tempClient = createClient(environment.supabaseUrl, environment.supabaseKey);

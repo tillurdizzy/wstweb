@@ -91,6 +91,17 @@ textarea {
   color: #fff;
 }
 
+:host ::ng-deep .icon .p-button.primary-comment,
+:host ::ng-deep .icon .p-button.primary-comment.p-button-secondary {
+  background: #7c3aed !important;
+  border-color: #7c3aed !important;
+  color: #fff !important;
+}
+
+:host ::ng-deep .icon .p-button.primary-comment .p-button-icon {
+  color: #fff !important;
+}
+
 .saved {
   margin: 0 0 12px 0;
   text-align: center;
@@ -130,4 +141,10 @@ textarea {
   margin: 0 0 12px 0;
   font-size: 18px;
   font-weight: 600;
+}
+
+.trace {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 2px;
 }

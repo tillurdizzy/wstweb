@@ -2,7 +2,7 @@
   <p-card>
     <ng-template #title>Canvassing</ng-template>
     <div class="card-content">
-      <p class="for-percent">Voting FOR: {{ forPercent }}%</p>
+      <p class="for-percent">Voting FOR: {{ forCount }} units / {{ forPercent }}%</p>
       <div class="field">
         <select id="group" [(ngModel)]="group" (ngModelChange)="load()" [compareWith]="sameGroup">
           <option *ngFor="let g of groups" [ngValue]="g">{{ g.label }}</option>
@@ -12,10 +12,10 @@
       <table>
         <tbody>
           <tr *ngFor="let row of rows">
-              <td class="icon">
+            <td class="icon">
               <p-button icon="pi pi-pencil" severity="secondary" (click)="openUnit(row.unit)"></p-button>
             </td>
-            <td>
+                       <td>
               {{ row.label }}
               <span
                 *ngIf="voteMark(row.vote, row.proxy) as mark"
@@ -24,9 +24,10 @@
               >
                 <i class="pi" [ngClass]="mark.icon"></i>
               </span>
+             <!--  <div class="trace">group={{ row.rawGroup | json }} isPrimary={{ row.isPrimary }}</div> -->
             </td>
             <td class="icon">
-              <p-button icon="pi pi-comment" severity="secondary" (click)="showNote(row)"></p-button>
+              <p-button icon="pi pi-comment" severity="secondary" [styleClass]="row.isPrimary ? 'primary-comment' : ''" (click)="showNote(row)"></p-button>
             </td>
           </tr>
           <tr *ngIf="rows.length === 0">
@@ -56,7 +57,7 @@
     <p *ngIf="contactMessage">{{ contactMessage }}</p>
     <p-button label="Submit" [disabled]="savingContact" (click)="saveContact()"></p-button>
   </p-dialog>
-    <p-dialog [(visible)]="savedVisible" [modal]="true" [closable]="false" [showHeader]="false" [style]="{ width: '240px' }">
+  <p-dialog [(visible)]="savedVisible" [modal]="true" [closable]="false" [showHeader]="false" [style]="{ width: '240px' }">
     <p class="saved">Saved!</p>
     <p-button label="OK" (click)="savedVisible = false"></p-button>
   </p-dialog>

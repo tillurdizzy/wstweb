@@ -29,6 +29,10 @@
           </div>
         </div>
 
+        <div class="primary-action" *ngIf="searched">
+          <p-button label="Set Primary" severity="secondary" (click)="setPrimary()"></p-button>
+        </div>
+
         <div class="search-section" *ngIf="searchResults.length > 0">
           <ul>
             <li *ngFor="let owner of searchResults">
