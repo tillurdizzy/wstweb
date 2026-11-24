@@ -26,8 +26,8 @@ export class CanvassingComponent implements OnInit {
   contactChoices = [
     'Gave booklet',
     'Try again later',
-    'FOR Us - Vote in person',
-    'FOR Us - Proxy promised',
+    'FOR Us - No Action Needed',
+    'FOR Us - Needs follow-up',
     'Proxy collected',
     'AGAINST Us',
     'Reset',
@@ -142,7 +142,11 @@ export class CanvassingComponent implements OnInit {
       : block;
 
     const patch: any = { notes: history };
-    if (this.contactChoice && this.contactChoice !== 'Try again later') {
+    if (
+      this.contactChoice &&
+      this.contactChoice !== 'Try again later' &&
+      this.contactChoice !== 'Gave booklet'
+    ) {
       const mapped = this.voteProxyFor(this.contactChoice);
       patch.vote = mapped.vote;
       patch.proxy = mapped.proxy;
@@ -204,11 +208,11 @@ export class CanvassingComponent implements OnInit {
     return parts[parts.length - 1] || '';
   }
 
-  private voteProxyFor(choice: string | null): { vote: string | null; proxy: string | null } {
+    private voteProxyFor(choice: string | null): { vote: string | null; proxy: string | null } {
     switch (choice) {
-      case 'FOR Us - Vote in person':
+      case 'FOR Us - No Action Needed':
         return { vote: 'FOR', proxy: 'NA' };
-      case 'FOR Us - Proxy promised':
+      case 'FOR Us - Needs follow-up':
         return { vote: 'FOR', proxy: 'Promised' };
       case 'Proxy collected':
         return { vote: 'FOR', proxy: 'Collected' };
@@ -223,8 +227,8 @@ export class CanvassingComponent implements OnInit {
 
   private choiceFromRow(vote: string | null, proxy: string | null): string | null {
     if (proxy === 'Collected') return 'Proxy collected';
-    if (proxy === 'Promised') return 'FOR Us - Proxy promised';
-    if (vote === 'FOR') return 'FOR Us - Vote in person';
+    if (proxy === 'Promised') return 'FOR Us - Needs follow-up';
+    if (vote === 'FOR') return 'FOR Us - No Action Needed';
     if (vote === 'AGAINST') return 'AGAINST Us';
     return null;
   }
