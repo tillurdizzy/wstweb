@@ -33,7 +33,7 @@ export class CanvassingComponent implements OnInit {
     'Reset',
   ];
   group = this.groups[0];
-  rows: { unit: number | null; label: string; note: string; vote: string; proxy: string; isPrimary: boolean;rawGroup?: any }[] = [];
+  rows: { unit: number | null; label: string; note: string; vote: string; proxy: string; isPrimary: boolean; isOffsite: boolean; rawGroup?: any }[] = [];
   noteVisible = false;
   noteText = '';
   forPercent = '0.0';
@@ -62,7 +62,7 @@ export class CanvassingComponent implements OnInit {
     const { data: all, error: allError } = await this.supabase.client
       .from('election')
       .select('unit, vote');
-      if (!allError) {
+    if (!allError) {
       const stats = this.percentFor(all || []);
       this.forPercent = stats.percent;
       this.forCount = stats.count;
@@ -80,16 +80,16 @@ export class CanvassingComponent implements OnInit {
       return;
     }
 
-      this.rows = (data || []).map((row: any) => ({
+    this.rows = (data || []).map((row: any) => ({
       unit: row.unit,
       label: `${row.unit ?? ''} - ${row.name || ''}`.trim(),
       note: this.lastNote(row.notes),
       vote: row.vote || '',
       proxy: row.proxy || '',
       isPrimary: String(row.group ?? '').trim().toLowerCase() === 'primary',
+      isOffsite: String(row.group ?? '').trim().toLowerCase() === 'offsite',
       rawGroup: row.group,
     }));
-    /* console.log('[canvassing] rows', this.rows.map(r => ({ unit: r.unit, group: r.rawGroup, isPrimary: r.isPrimary }))); */
   }
 
   openUnit(unit: number | null) {
@@ -208,7 +208,7 @@ export class CanvassingComponent implements OnInit {
     return parts[parts.length - 1] || '';
   }
 
-    private voteProxyFor(choice: string | null): { vote: string | null; proxy: string | null } {
+  private voteProxyFor(choice: string | null): { vote: string | null; proxy: string | null } {
     switch (choice) {
       case 'FOR Us - No Action Needed':
         return { vote: 'FOR', proxy: 'NA' };
