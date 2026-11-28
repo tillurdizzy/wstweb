@@ -24,7 +24,9 @@
               >
                 <i class="pi" [ngClass]="mark.icon"></i>
               </span>
-             
+              <span *ngIf="row.booklet" class="vote-box green" title="Gave booklet">
+                <i class="pi pi-book"></i>
+              </span>
             </td>
             <td class="icon">
               <p-button icon="pi pi-comment" severity="secondary" [styleClass]="row.isPrimary ? 'primary-comment' : ''" (click)="showNote(row)"></p-button>

@@ -33,7 +33,7 @@ export class CanvassingComponent implements OnInit {
     'Reset',
   ];
   group = this.groups[0];
-  rows: { unit: number | null; label: string; note: string; vote: string; proxy: string; isPrimary: boolean; isOffsite: boolean; rawGroup?: any }[] = [];
+  rows: { unit: number | null; label: string; note: string; vote: string; proxy: string; isPrimary: boolean; isOffsite: boolean; booklet: boolean; rawGroup?: any }[] = [];
   noteVisible = false;
   noteText = '';
   forPercent = '0.0';
@@ -70,7 +70,7 @@ export class CanvassingComponent implements OnInit {
 
     const { data, error } = await this.supabase.client
       .from('election')
-      .select('unit, name, notes, vote, proxy, "group"')
+      .select('unit, name, notes, vote, proxy, "group", booklet')
       .gte('unit', this.group.from)
       .lte('unit', this.group.to)
       .order('unit');
@@ -88,6 +88,7 @@ export class CanvassingComponent implements OnInit {
       proxy: row.proxy || '',
       isPrimary: String(row.group ?? '').trim().toLowerCase() === 'primary',
       isOffsite: String(row.group ?? '').trim().toLowerCase() === 'offsite',
+      booklet: !!row.booklet,
       rawGroup: row.group,
     }));
   }
@@ -141,7 +142,7 @@ export class CanvassingComponent implements OnInit {
       ? `${this.noteText}\n\n${block}`
       : block;
 
-    const patch: any = { notes: history };
+        const patch: any = { notes: history };
     if (
       this.contactChoice &&
       this.contactChoice !== 'Try again later' &&
@@ -150,6 +151,9 @@ export class CanvassingComponent implements OnInit {
       const mapped = this.voteProxyFor(this.contactChoice);
       patch.vote = mapped.vote;
       patch.proxy = mapped.proxy;
+    }
+    if (this.contactChoice === 'Gave booklet') {
+      patch.booklet = true;
     }
 
     const { error } = await this.supabase.client
